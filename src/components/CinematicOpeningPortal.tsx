@@ -22,8 +22,15 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
     offset: ["start start", "end end"]
   });
 
-  const portalOpacity = useTransform(scrollYProgress, [0, 0.62, 1], [1, 1, 0]);
-  const portalScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
+  // Fade tied to the section physically exiting (start->end at viewport top),
+  // NOT to "end end" — that progress saturates at the unpin point and would
+  // leave a full viewport of faded-out, empty black before the hero rises.
+  const { scrollYProgress: exitProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+  const portalOpacity = useTransform(exitProgress, [0, 0.72, 1], [1, 1, 0]);
+  const portalScale = useTransform(scrollYProgress, [0, 1], [1, 1.04]);
   const promptOpacity = useTransform(scrollYProgress, [0, 0.16, 1], [1, 0, 0]);
   const scanY = useTransform(scrollYProgress, [0, 1], ["-6%", "106%"]);
 
@@ -45,7 +52,7 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
         };
 
   return (
-    <section ref={sectionRef} className="relative h-[180vh] bg-brand-black">
+    <section ref={sectionRef} className="relative h-[150vh] bg-brand-black">
       <div className="sticky top-0 h-screen overflow-hidden luxury-noise">
         {/* Scroll-linked digital scan sweep */}
         {!isReduced && (
