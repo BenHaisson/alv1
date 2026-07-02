@@ -24,52 +24,70 @@ const CHAPTERS: EditorialChapter[] = [
   {
     id: "01",
     number: "01",
-    title: "The Standard",
-    subtitle: "Absolute Calibration",
+    title: "Request",
+    subtitle: "Send The Details",
     description:
-      "Routes, timing, cabin preparation, and handover are aligned before the vehicle arrives.",
-    image: imageAssets.bmwI7Departure,
+      "You send the journey details — pickup, destination, timing, passengers, luggage, and instructions.",
+    image: imageAssets.bmwI7CockpitNight,
   },
   {
     id: "02",
     number: "02",
-    title: "The Silence",
-    subtitle: "Acoustic Isolation",
+    title: "Confirm",
+    subtitle: "Direct Confirmation",
     description:
-      "Electric motion and acoustic glass create a quiet interval between obligations.",
-    image: imageAssets.bmwI7AlpineCruise,
+      "ALAIR NOIR confirms clearly and directly. No vague process. No anonymous platform feeling.",
+    image: imageAssets.luxuryBmwI7,
   },
   {
     id: "03",
     number: "03",
-    title: "The Journey",
-    subtitle: "Executive Sanctuary",
+    title: "Prepare",
+    subtitle: "Before You Notice",
     description:
-      "A protected cabin for confidential calls, preparation, rest, and reset.",
-    image: imageAssets.bmwI7RearWorkspace,
+      "Route, timing, vehicle suitability, luggage needs, airport information, and special instructions are reviewed.",
+    image: imageAssets.bmwI7Departure,
   },
   {
     id: "04",
     number: "04",
-    title: "The Arrival",
-    subtitle: "Impeccable Presence",
+    title: "Arrive",
+    subtitle: "Already There",
     description:
-      "Positioning and chauffeur choreography keep the arrival precise and quiet.",
-    image: imageAssets.bmwI7StMoritzDusk,
+      "The vehicle arrives prepared. You should not need to wonder if it is ready.",
+    image: imageAssets.bmwI7TarmacMeet,
   },
   {
     id: "05",
     number: "05",
-    title: "The Discretion",
-    subtitle: "Unmarked Privilege",
+    title: "Drive",
+    subtitle: "A Private Interval",
     description:
-      "No public markers, no unnecessary conversation, and no careless digital trace.",
-    image: imageAssets.bmwI7TarmacMeet,
+      "The cabin remains private. Work, call, think, read, rest — or remain in silence.",
+    image: imageAssets.bmwI7RearWorkspace,
+  },
+  {
+    id: "06",
+    number: "06",
+    title: "Adapt",
+    subtitle: "Quiet Adjustment",
+    description:
+      "Delays, schedule changes, and new instructions are absorbed without friction.",
+    image: imageAssets.bmwI7AlpineCruise,
+  },
+  {
+    id: "07",
+    number: "07",
+    title: "Deliver",
+    subtitle: "A Controlled Arrival",
+    description:
+      "The journey is handled quietly. The arrival feels controlled.",
+    image: imageAssets.bmwI7StMoritzDusk,
   },
 ];
 
 const CARD_COUNT = CHAPTERS.length;
-const SECTION_HEIGHT_VH = 560;
+const SECTION_HEIGHT_VH = 720;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -282,15 +300,18 @@ export default function EditorialGallery() {
             <div className="mb-3 flex items-center gap-3">
               <span className="h-px w-6 bg-brand-gold/20" />
               <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-stone">
-                Editorial Portfolio
+                04 / The Experience
               </span>
             </div>
             <h2 className="text-2xl font-serif font-light tracking-[0.16em] text-brand-ivory md:text-3xl">
-              Alair Noir Client Journey
+              What you don&rsquo;t see is the difference
             </h2>
+            <p className="mt-3 max-w-xl text-xs font-serif italic text-brand-ivory/70 md:text-sm">
+              A private transfer should feel effortless because the effort has already been made.
+            </p>
           </div>
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
-            01 - 05 / Discreet Chapters
+            01 - 07 / The Client Journey
           </span>
         </div>
 

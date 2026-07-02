@@ -16,27 +16,27 @@ export const ALAIR_STANDARDS: Pillar[] = [
   {
     number: "01",
     title: "Timing",
-    description: "Pickup rhythm, route planning, waiting time, and handover are considered before the journey begins."
+    description: "Pickup, waiting time, route planning, airport rhythm, and arrival timing are prepared before the journey begins. You should not need to wonder if the vehicle is ready. It should already be there."
   },
   {
     number: "02",
     title: "Privacy",
-    description: "Passenger details, routes, schedules, and instructions are handled with discretion by default."
+    description: "Passenger details, routes, schedules, conversations, phone calls, documents, and private addresses are handled with discretion. Privacy is not an extra request. It is the default."
   },
   {
     number: "03",
     title: "Presence",
-    description: "The vehicle, cabin, communication, and arrival posture are prepared to represent the client properly."
+    description: "The vehicle, chauffeur, cabin, and arrival posture must represent the client properly. Clean. Composed. Professional. Quiet."
   },
   {
     number: "04",
     title: "Composure",
-    description: "The cabin becomes a private interval between obligations — quiet enough to think, call, read, rest, or reset."
+    description: "The cabin is your private interval between obligations. Work. Call. Think. Read. Rest. Or remain in silence."
   },
   {
     number: "05",
     title: "Precision",
-    description: "Details are confirmed clearly, executed quietly, and adjusted when the schedule changes."
+    description: "Every detail is confirmed clearly and executed quietly — pickup point, destination, vehicle, passengers, luggage, flight details, special instructions. Premium clients notice what ordinary services ignore."
   }
 ];
 
@@ -44,55 +44,58 @@ export const AUDIENCE_CARDS: AudienceCard[] = [
   {
     number: "01",
     title: "CEOs & Founders",
-    description: "For those moving between decisions, meetings, investors, hotels, airports, and private obligations where the day cannot feel improvised."
+    description: "For meetings, investors, airports, hotels, private obligations, and days that cannot feel improvised. A calm cabin between decisions."
   },
   {
     number: "02",
     title: "Executives",
-    description: "For board meetings, client visits, roadshows, airport arrivals, corporate dinners, and schedules where timing matters."
+    description: "For board meetings, corporate visits, roadshows, conferences, dinners, and airport arrivals where timing and presentation matter. No confusion. No casual service. No repeated instructions."
   },
   {
     number: "03",
-    title: "Private Clients",
-    description: "For residence transfers, hotels, restaurants, appointments, shopping, private events, and long-distance travel handled without unnecessary exposure."
+    title: "Family Offices",
+    description: "For principal movement, guest coordination, private residences, multi-stop schedules, and confidential itineraries. Reliable movement without unnecessary exposure."
   },
   {
     number: "04",
-    title: "Family Offices",
-    description: "For principals, relatives, guests, luggage-heavy airport arrivals, recurring schedules, and cross-border journeys."
+    title: "Government & Diplomatic Guests",
+    description: "For official guests, delegations, protocol-sensitive travel, and private schedules requiring discretion and professional conduct. Composed service. Respectful communication. Controlled arrival."
   },
   {
     number: "05",
-    title: "Executive Assistants",
-    description: "For clear confirmations, reliable communication, vehicle recommendation, route details, and professional handling on behalf of someone else."
+    title: "Private Clients",
+    description: "For residence transfers, hotels, airport journeys, private dinners, shopping appointments, family travel, medical appointments, and weekend escapes. Personal without being intrusive."
   },
   {
     number: "06",
-    title: "Corporate Guests",
-    description: "For visiting clients, senior leadership, investors, delegations, and event guests who should be received with control."
+    title: "Hotels & Concierge",
+    description: "For premium hospitality partners who require a chauffeur service that reflects their own standard. The guest is received properly before reaching the destination."
   }
 ];
 
 export const VEHICLES: Vehicle[] = [
   {
     id: "bmw-i7",
-    name: "BMW i7 2026",
-    subTitle: "Silent, fully electric performance.",
-    description: "The BMW i7 2026 sets the standard for emission-free premium travel. Equipped with a whisper-silent electric powertrain, exquisite Merino leather seating, and the breathtaking Sky Lounge panoramic glass roof, it is the ultimate quiet mobile sanctuary.",
+    name: "BMW i7 xDrive60",
+    subTitle: "Silent executive mobility.",
+    description: "The BMW i7 xDrive60 is the executive choice for clients who value silence, comfort, and modern luxury. Ideal for airport transfers, business meetings, hotel arrivals, private appointments, and long-distance journeys across Switzerland.",
     highlights: [
-      "Electric drivetrain with 610 hp",
-      "Executive Lounge rear passenger seats",
-      "Sky Lounge panoramic glass roof with LED threads",
-      "Double-glazed acoustic insulation with active noise cancellation"
+      "Fully electric luxury sedan",
+      "Silent cabin atmosphere",
+      "Premium rear-seat comfort",
+      "Executive presence on arrival",
+      "Ideal for calls, work, rest, or privacy"
     ],
     bestFor: [
-      "CEOs & Founders",
-      "Private clients & Executives",
-      "ZRH Airport arrivals & Hotel transfers",
-      "Quiet Alpine transitions & long-distance routes"
+      "Executives & founders",
+      "Private clients",
+      "Airport arrivals",
+      "Business meetings",
+      "Hotel transfers",
+      "One to three passengers"
     ],
     specs: [
-      { label: "Power", value: "Electric 610 hp" },
+      { label: "Power", value: "Electric 544 hp" },
       { label: "Range", value: "Up to 625 km (WLTP)" },
       { label: "Upholstery", value: "Merino Luxury Leather" },
       { label: "Roof Style", value: "Sky Lounge Panoramic" }
@@ -100,27 +103,30 @@ export const VEHICLES: Vehicle[] = [
     image: imageAssets.luxuryBmwI7,
     interiorImage: imageAssets.bmwI7RearWorkspace,
     numericalSpecs: [
-      { label: "Power output", value: 610, suffix: " hp" },
+      { label: "Power output", value: 544, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },
-      { label: "Max Speed", value: 250, suffix: " km/h" }
+      { label: "Max Speed", value: 240, suffix: " km/h" }
     ]
   },
   {
     id: "v-class",
-    name: "Mercedes V-Class 2026",
-    subTitle: "Spacious luxury for groups and delegations.",
-    description: "The Mercedes V-Class 2026 is configured with a 4.9m wheelbase, luxurious AMG Line styling, and the latest intelligent MBUX infotainment. Complete with VIP captain seats and an optional 8-seat configuration, it transforms group transit into a premium lounge.",
+    name: "Mercedes-Benz V-Class",
+    subTitle: "Premium space for private groups.",
+    description: "The Mercedes-Benz V-Class is designed for families, delegations, executives, guests, and airport arrivals requiring more space. Ideal when the journey includes luggage, assistants, family members, hotel guests, event schedules, or long-distance private travel.",
     highlights: [
-      "4.9m long-wheelbase executive chassis",
-      "AMG Line premium aesthetics",
-      "MBUX dynamic dual-screen assistant",
-      "Individual reclining captain seats in 8-seat configuration"
+      "Spacious premium cabin",
+      "Comfortable group seating",
+      "Strong luggage capacity",
+      "Private, discreet presentation",
+      "Ideal for family offices, hospitality, and guest movement"
     ],
     bestFor: [
-      "Families & Private Offices",
-      "Corporate delegations & board teams",
-      "Assistants & VIP Event transfers",
-      "Luggage-heavy airport arrivals"
+      "Families",
+      "Executive groups",
+      "Delegations",
+      "Airport luggage",
+      "Hotel arrivals & event transfers",
+      "Long-distance routes"
     ],
     specs: [
       { label: "Wheelbase", value: "4.9m Long Wheelbase" },
@@ -140,8 +146,13 @@ export const VEHICLES: Vehicle[] = [
 
 export const ROUTES: RouteItem[] = [
   {
-    name: "Zürich",
-    description: "Airport arrivals, hotel transfers, private appointments, corporate movement, and city schedules.",
+    name: "Zürich Airport",
+    description: "Flight-aware arrivals and departures, guest pickup, luggage consideration, and onward transfers to hotels and residences.",
+    coordinates: { x: 52, y: 43 }
+  },
+  {
+    name: "Zürich City",
+    description: "Hotel transfers, private appointments, corporate movement, and city schedules.",
     coordinates: { x: 50, y: 50 }
   },
   {
@@ -152,42 +163,47 @@ export const ROUTES: RouteItem[] = [
   {
     name: "Lucerne",
     description: "Hotel arrivals, private stays, leisure routes, and guest reception.",
-    coordinates: { x: 45, y: 64 }
+    coordinates: { x: 44, y: 62 }
   },
   {
     name: "Basel",
     description: "Business travel, events, airport connections, and cross-city movement.",
-    coordinates: { x: 30, y: 40 }
+    coordinates: { x: 28, y: 38 }
+  },
+  {
+    name: "Bern",
+    description: "Government appointments, diplomatic schedules, corporate visits, and capital city movement.",
+    coordinates: { x: 30, y: 60 }
   },
   {
     name: "Geneva",
     description: "Long-distance executive routes, private travel, diplomatic schedules, and hotel arrivals.",
-    coordinates: { x: 10, y: 88 }
+    coordinates: { x: 8, y: 88 }
+  },
+  {
+    name: "Lausanne",
+    description: "Business schedules, lakeside hotels, private clients, and long-distance movement.",
+    coordinates: { x: 16, y: 78 }
   },
   {
     name: "Davos",
     description: "Event-week mobility, WEF schedules, private guests, and mountain transfers.",
-    coordinates: { x: 75, y: 65 }
+    coordinates: { x: 78, y: 60 }
   },
   {
     name: "St. Moritz",
     description: "Private long-distance travel, winter stays, hotel arrivals, and luggage-heavy journeys.",
-    coordinates: { x: 78, y: 76 }
+    coordinates: { x: 80, y: 74 }
   },
   {
     name: "Gstaad",
     description: "Private alpine routes, residences, hotels, and seasonal movement.",
-    coordinates: { x: 32, y: 74 }
+    coordinates: { x: 28, y: 76 }
   },
   {
-    name: "Milan",
-    description: "Cross-border private travel, business trips, fashion, events, and onward European journeys.",
-    coordinates: { x: 62, y: 98 }
-  },
-  {
-    name: "Munich",
-    description: "Executive routes, airport connections, events, and selected cross-border schedules.",
-    coordinates: { x: 88, y: 15 }
+    name: "Interlaken",
+    description: "Leisure journeys, five-star hotel arrivals, family travel, and mountain excursions.",
+    coordinates: { x: 38, y: 70 }
   }
 ];
 
@@ -226,44 +242,44 @@ export const OCCASIONS: OccasionItem[] = [
 
 export const PROOF_ITEMS: ProofItem[] = [
   {
-    title: "Swiss Company Identity",
-    value: "Registered Presence",
-    description: "Registered Swiss business presence and professional accountability."
+    title: "Direct Booking Communication",
+    value: "Person to Person",
+    description: "Requests are answered directly by ALAIR NOIR through email, dedicated phone, and WhatsApp — never an anonymous platform."
   },
   {
-    title: "Zürich Operating Base",
-    value: "Switzerland-Ready",
-    description: "Prepared for Zürich city, Zürich Airport, corporate schedules, hotel arrivals, and onward Swiss routes."
+    title: "Clear Journey Confirmation",
+    value: "Confirmed Before Departure",
+    description: "Pickup point, timing, vehicle, and special instructions are confirmed clearly before every journey."
   },
   {
-    title: "UID Registered",
-    value: "CHE-411.952.415",
-    description: "Official enterprise identification number registered in Switzerland."
+    title: "Discreet Handling",
+    value: "Privacy by Default",
+    description: "Personal details, routes, schedules, and private addresses are handled with strict discretion."
   },
   {
-    title: "Limousine Permit",
-    value: "Kanton Zürich",
-    description: "Duly licensed under cantonal regulations for professional private passenger transport."
+    title: "Professional Chauffeur Service",
+    value: "Composed & Prepared",
+    description: "Clean presentation, respectful communication, and professional conduct on every journey."
   },
   {
-    title: "Certified Tachograph",
-    value: "Compliant & Verified",
-    description: "Prepared for legal, professional chauffeur operations and driver safety logs."
+    title: "Prepared Vehicle Presentation",
+    value: "Ready on Arrival",
+    description: "The vehicle is prepared, positioned, and presented properly before you reach it."
   },
   {
-    title: "Direct Communication",
-    value: "24/7 Priority",
-    description: "Requests are handled directly through email, dedicated phone, and WhatsApp."
+    title: "Airport & Schedule Awareness",
+    value: "Flight-Aware Timing",
+    description: "Flights, waiting time, and schedule changes are tracked and absorbed quietly."
   },
   {
-    title: "Clear Rate Confirmation",
-    value: "Fixed & Disclosed",
-    description: "Rates are confirmed according to route, waiting time, vehicle, luggage, and event demand."
+    title: "Private Cabin Environment",
+    value: "Your Interval",
+    description: "Work, call, think, read, rest — or remain in silence. The cabin stays private."
   },
   {
-    title: "Privacy-First Handling",
-    value: "Absolute Discretion",
-    description: "Passenger names, routes, pickup timing, and instructions are treated with strict confidentiality."
+    title: "Switzerland-Wide Capability",
+    value: "Zürich & Beyond",
+    description: "Airport transfers, city schedules, and long-distance journeys across Switzerland."
   }
 ];
 

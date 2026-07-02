@@ -6,11 +6,23 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
   const links = [
     { label: "Arrival", target: "hero" },
     { label: "Standard", target: "standard" },
-    { label: "Journey", target: "journey" },
+    { label: "Clients", target: "clients" },
     { label: "Fleet", target: "fleet" },
     { label: "Routes", target: "routes" },
-    { label: "FAQ", target: "faq" },
+    { label: "Trust", target: "trust" },
     { label: "Request", target: "request" }
+  ];
+
+  const services = [
+    "Private Chauffeur Service Zürich",
+    "Executive Chauffeur Zürich",
+    "Airport Transfer Zürich",
+    "Private Driver Zürich",
+    "BMW i7 Chauffeur Zürich",
+    "Mercedes V-Class Chauffeur Zürich",
+    "Family Office Chauffeur Switzerland",
+    "Luxury Hotel Transfer Zürich",
+    "Long-Distance Chauffeur Switzerland"
   ];
 
   return (
@@ -30,13 +42,13 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
                 NOT FOR EVERYONE · FOR YOU
               </span>
               <p className="text-xs text-brand-stone font-light leading-relaxed max-w-sm">
-                Private chauffeur service in Zürich for CEOs, executives, private clients, family offices, airport arrivals, events, and long-distance journeys across Switzerland and selected European routes.
+                Private chauffeur service in Zürich for executives, private clients, family offices, premium hospitality, diplomatic guests, airport arrivals, and long-distance journeys across Switzerland.
               </p>
             </div>
           </div>
 
-          {/* Col 2: Navigation Links (3 columns) */}
-          <div className="md:col-span-3">
+          {/* Col 2: Navigation Links (2 columns) */}
+          <div className="md:col-span-2">
             <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
               Directory
             </h3>
@@ -54,8 +66,27 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
             </ul>
           </div>
 
-          {/* Col 3: Direct Communication (3 columns) */}
-          <div className="md:col-span-3">
+          {/* Col 3: Services (2 columns) */}
+          <div className="md:col-span-2">
+            <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
+              Services
+            </h3>
+            <ul className="space-y-3">
+              {services.map((service) => (
+                <li key={service}>
+                  <button
+                    onClick={() => onNavClick("request")}
+                    className="text-[11px] font-mono tracking-wider text-brand-stone hover:text-brand-cream transition-colors duration-300 cursor-pointer text-left"
+                  >
+                    {service}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Direct Communication (2 columns) */}
+          <div className="md:col-span-2">
             <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
               Booking Office
             </h3>
@@ -99,15 +130,15 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
             </ul>
           </div>
 
-          {/* Col 4: Operations hub (2 columns) */}
+          {/* Col 5: Operations hub (2 columns) */}
           <div className="md:col-span-2">
             <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
               Base Coordinates
             </h3>
             <p className="text-xs font-mono text-brand-stone leading-relaxed">
               ALAIR NOIR GmbH<br />
-              8001 Zürich<br />
-              Switzerland
+              Private Chauffeur Service Zürich<br />
+              Zürich, Switzerland
             </p>
           </div>
 

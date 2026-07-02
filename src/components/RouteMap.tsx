@@ -17,14 +17,17 @@ export default function RouteMap({ onRequestScroll }: RouteMapProps) {
         {/* Header Title */}
         <div className="max-w-3xl mb-16">
           <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-cream block mb-4">
-            Switzerland & Beyond
+            06 / Routes
           </span>
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-brand-ivory tracking-tight mb-6">
-            Zürich to the places <br />
-            <span className="italic text-brand-stone font-light">where timing matters.</span>
+            Zürich-based. <br />
+            <span className="italic text-brand-stone font-light">Switzerland-ready.</span>
           </h2>
           <p className="text-base text-brand-stone font-light leading-relaxed">
-            ALAIR NOIR is based in Zürich and arranges private chauffeur journeys across Switzerland and selected European routes by request. Hover over or tap any destination to inspect the custom operational layout.
+            ALAIR NOIR provides private chauffeur service from Zürich to key Swiss business,
+            hospitality, airport, and mountain destinations. From airport arrivals to private
+            residences, from financial centers to five-star hotels, every journey is planned
+            around timing, comfort, and discretion.
           </p>
         </div>
 
@@ -54,7 +57,7 @@ export default function RouteMap({ onRequestScroll }: RouteMapProps) {
                       {route.name}
                     </h3>
                     <span className="text-[10px] font-mono text-brand-stone block mt-1">
-                      {route.name === "Zürich" ? "Operations Base" : "Swiss / EU Transit"}
+                      {route.name === "Zürich City" ? "Operations Base" : "Swiss Destination"}
                     </span>
                   </div>
                 );
@@ -71,13 +74,16 @@ export default function RouteMap({ onRequestScroll }: RouteMapProps) {
               </p>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               <button
                 onClick={onRequestScroll}
                 className="px-8 py-4 bg-brand-cream text-brand-black text-xs font-mono uppercase tracking-[0.2em] font-medium hover:bg-brand-ivory hover:text-brand-deep-forest transition-all duration-300 cursor-pointer"
               >
-                Arrange a Route
+                Request Route Availability
               </button>
+              <span className="text-sm font-serif italic text-brand-ivory/70">
+                The destination can change. The standard does not.
+              </span>
             </div>
           </div>
 
@@ -115,7 +121,7 @@ export default function RouteMap({ onRequestScroll }: RouteMapProps) {
                 return (
                   <g key={route.name}>
                     {/* Connection line */}
-                    {route.name !== "Zürich" && (
+                    {route.name !== "Zürich City" && (
                       <motion.line
                         x1="50"
                         y1="50"
@@ -147,8 +153,8 @@ export default function RouteMap({ onRequestScroll }: RouteMapProps) {
                     <circle
                       cx={targetX}
                       cy={targetY}
-                      r={route.name === "Zürich" ? "3" : "2"}
-                      fill={isSelected ? "var(--color-brand-ivory)" : route.name === "Zürich" ? "var(--color-brand-cream)" : "var(--color-brand-stone)"}
+                      r={route.name === "Zürich City" ? "3" : "2"}
+                      fill={isSelected ? "var(--color-brand-ivory)" : route.name === "Zürich City" ? "var(--color-brand-cream)" : "var(--color-brand-stone)"}
                       onMouseEnter={() => setHoveredIdx(idx)}
                       className="cursor-pointer"
                     />

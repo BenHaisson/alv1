@@ -85,7 +85,7 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
               <span className="text-brand-gold font-mono text-sm tracking-widest">01 / THE ARRIVAL</span>
               <span className="h-px w-10 bg-brand-gold/35" />
               <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-                BMW i7 2026 / Zurich private chauffeur
+                Not for everyone. For you.
               </span>
             </motion.div>
 
@@ -100,7 +100,7 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
                 style={{ opacity: titleTwoOpacity, y: titleTwoY }}
                 className="block italic text-brand-stone font-light"
               >
-                in Zurich, revealed by the road ahead.
+                Zürich.
               </motion.span>
             </h1>
 
@@ -108,9 +108,10 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
               style={{ opacity: copyOpacity, y: copyY }}
               className="text-sm md:text-base lg:text-lg text-brand-ivory/80 font-light leading-relaxed max-w-2xl mb-10"
             >
-              ALAIR NOIR arranges discreet private mobility for CEOs, founders, executives,
-              private clients, family offices, corporate guests, and high-level airport arrivals
-              across Switzerland and selected European routes.
+              ALAIR NOIR is a Zürich-based private chauffeur service for executives, private
+              clients, family offices, diplomatic guests, premium hospitality, and airport
+              arrivals across Switzerland — built for clients whose time, privacy, and arrival
+              standard cannot be treated casually.
             </motion.p>
 
             <motion.div
@@ -121,7 +122,7 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
                 onClick={onRequestScroll}
                 className="px-8 py-4 bg-brand-cream text-brand-black text-xs font-mono uppercase tracking-[0.2em] font-medium hover:bg-brand-ivory hover:text-brand-deep-forest transition-all duration-300 text-center rounded-sm cursor-pointer shadow-lg shadow-brand-gold/5"
               >
-                Request Private Mobility
+                Request Private Transfer
               </MagneticButton>
 
               <a
@@ -130,7 +131,7 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
                 rel="noopener noreferrer"
                 className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-gold hover:text-white transition-colors duration-300"
               >
-                <span>WhatsApp Direct</span>
+                <span>WhatsApp Dispatch</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>
               </a>
             </motion.div>
@@ -142,26 +143,26 @@ export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
           >
             <div>
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone block mb-1">
-                01 / Primary Cabin
+                01 / Base
               </span>
               <span className="text-sm font-serif text-brand-ivory tracking-wide">
-                BMW i7 2026
+                Zürich-based chauffeur service
               </span>
             </div>
             <div>
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone block mb-1">
-                02 / Presence
+                02 / Journeys
               </span>
               <span className="text-sm font-serif text-brand-ivory tracking-wide">
-                Silent black arrival
+                Airport transfers & executive travel
               </span>
             </div>
             <div>
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone block mb-1">
-                03 / Core Ethos
+                03 / Reach
               </span>
               <span className="text-sm font-serif text-brand-ivory tracking-wide italic">
-                Timing, privacy & cabin composure.
+                Private clients · Switzerland-wide routes
               </span>
             </div>
           </motion.div>

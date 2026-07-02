@@ -12,12 +12,16 @@ export default function ClientAudience() {
         {/* Header Title */}
         <div className="max-w-3xl mb-16 md:mb-24">
           <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-gold block mb-4">
-            Custom Alignment
+            03 / Who We Serve
           </span>
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-brand-ivory tracking-tight leading-tight">
-            Built for people whose movement <br />
-            <span className="italic text-brand-stone font-light">represents more than movement.</span>
+            Built for people whose <br />
+            <span className="italic text-brand-stone font-light">movement matters.</span>
           </h2>
+          <p className="mt-6 text-base text-brand-stone font-light leading-relaxed max-w-2xl">
+            ALAIR NOIR serves clients who measure transportation by more than distance.
+            They measure it by timing, discretion, comfort, trust, and how the arrival feels.
+          </p>
         </div>
 
         {/* Audience Grid - 3 Columns on desktop with staggered cascade scroll animation */}
