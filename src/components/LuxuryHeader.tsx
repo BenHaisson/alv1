@@ -8,11 +8,12 @@ interface LuxuryHeaderProps {
 
 const links = [
   { label: "Arrival", target: "hero" },
-  { label: "Standard", target: "standard" },
-  { label: "Clients", target: "clients" },
+  { label: "Access", target: "access" },
+  { label: "Services", target: "services" },
   { label: "Fleet", target: "fleet" },
+  { label: "Journey", target: "journey" },
   { label: "Routes", target: "routes" },
-  { label: "Trust", target: "trust" },
+  { label: "Protocol", target: "protocol" },
   { label: "Request", target: "request" }
 ];
 
