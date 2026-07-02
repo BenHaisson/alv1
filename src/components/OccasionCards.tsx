@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { OCCASIONS } from "../data";
+import { imageAssets } from "../assets";
 
 interface OccasionCardsProps {
   onRequestScroll: () => void;
 }
 
 const SERVICE_IMAGES: Record<string, string> = {
-  "01": "/src/assets/images/luxury_airport_welcome_1782845067151.jpg",
+  "01": imageAssets.luxuryAirportWelcome,
   "02": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600",
-  "03": "/src/assets/images/luxury_vip_cabin_1782845049105.jpg",
-  "04": "/src/assets/images/luxury_bmw_i7_1782845017654.jpg",
-  "05": "/src/assets/images/luxury_v_class_1782845034354.jpg",
+  "03": imageAssets.luxuryVipCabin,
+  "04": imageAssets.luxuryBmwI7,
+  "05": imageAssets.luxuryVClass,
   "06": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600"
 };
 

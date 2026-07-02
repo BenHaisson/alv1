@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, MotionValue, useScroll, useSpring, useTransform } from "motion/react";
+import { imageAssets } from "../assets";
 
 interface EditorialChapter {
   id: string;
@@ -27,7 +28,7 @@ const CHAPTERS: EditorialChapter[] = [
     subtitle: "Absolute Calibration",
     description:
       "Routes, timing, cabin preparation, and handover are aligned before the vehicle arrives.",
-    image: "/src/assets/images/bmw_i7_departure_1782861743795.jpg",
+    image: imageAssets.bmwI7Departure,
   },
   {
     id: "02",
@@ -36,7 +37,7 @@ const CHAPTERS: EditorialChapter[] = [
     subtitle: "Acoustic Isolation",
     description:
       "Electric motion and acoustic glass create a quiet interval between obligations.",
-    image: "/src/assets/images/bmw_i7_alpine_cruise_1782861758267.jpg",
+    image: imageAssets.bmwI7AlpineCruise,
   },
   {
     id: "03",
@@ -45,7 +46,7 @@ const CHAPTERS: EditorialChapter[] = [
     subtitle: "Executive Sanctuary",
     description:
       "A protected cabin for confidential calls, preparation, rest, and reset.",
-    image: "/src/assets/images/bmw_i7_rear_workspace_1782861794303.jpg",
+    image: imageAssets.bmwI7RearWorkspace,
   },
   {
     id: "04",
@@ -54,7 +55,7 @@ const CHAPTERS: EditorialChapter[] = [
     subtitle: "Impeccable Presence",
     description:
       "Positioning and chauffeur choreography keep the arrival precise and quiet.",
-    image: "/src/assets/images/bmw_i7_st_moritz_dusk_1782861783352.jpg",
+    image: imageAssets.bmwI7StMoritzDusk,
   },
   {
     id: "05",
@@ -63,7 +64,7 @@ const CHAPTERS: EditorialChapter[] = [
     subtitle: "Unmarked Privilege",
     description:
       "No public markers, no unnecessary conversation, and no careless digital trace.",
-    image: "/src/assets/images/bmw_i7_tarmac_meet_1782861771287.jpg",
+    image: imageAssets.bmwI7TarmacMeet,
   },
 ];
 

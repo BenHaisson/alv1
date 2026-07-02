@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { imageAssets } from "../assets";
 
-const SECTION_IMAGE = "/src/assets/images/section_02_not_for_everyone_zurich.png";
+const SECTION_IMAGE = imageAssets.sectionNotForEveryoneZurich;
 
 const AUDIENCE_BEATS = [
   "For the principal arriving without exposure",

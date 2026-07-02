@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, MotionValue } from "motion/react";
+import { imageAssets } from "../assets";
 
 const CARDS = [
-  { id: 1, title: "BMW i7 2026", subtitle: "Sleek Electric Sedan", image: "https://picsum.photos/id/111/1200/800", text: "Silent, fully electric performance with Merino leather and Sky Lounge panoramic roof." },
-  { id: 2, title: "Mercedes V-Class 2026", subtitle: "VIP Luxury Cabin", image: "https://picsum.photos/id/133/1200/800", text: "Premium 4.9m wheelbase van with MBUX, AMG Line, and individual luxury seats." },
-  { id: 3, title: "Zurich Airport Arrival", subtitle: "Tarmac to Destination", image: "/src/assets/images/luxury_airport_welcome_1782845067151.jpg", text: "Seamless transition from private aviation to the road with utmost discretion." },
+  { id: 1, title: "BMW i7 2026", subtitle: "Sleek Electric Sedan", image: imageAssets.luxuryBmwI7, text: "Silent, fully electric performance with Merino leather and Sky Lounge panoramic roof." },
+  { id: 2, title: "Mercedes V-Class 2026", subtitle: "VIP Luxury Cabin", image: imageAssets.luxuryVClass, text: "Premium 4.9m wheelbase van with MBUX, AMG Line, and individual luxury seats." },
+  { id: 3, title: "Zurich Airport Arrival", subtitle: "Tarmac to Destination", image: imageAssets.luxuryAirportWelcome, text: "Seamless transition from private aviation to the road with utmost discretion." },
   { id: 4, title: "Executive Schedule", subtitle: "As Directed", image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200", text: "A dedicated mobile office for high-stakes days. We wait while you work." },
-  { id: 5, title: "Private Client Movement", subtitle: "Discreet Transit", image: "/src/assets/images/luxury_vip_cabin_1782845049105.jpg", text: "Absolute privacy for high-net-worth individuals and their families." },
+  { id: 5, title: "Private Client Movement", subtitle: "Discreet Transit", image: imageAssets.luxuryVipCabin, text: "Absolute privacy for high-net-worth individuals and their families." },
   { id: 6, title: "Long-Distance Route", subtitle: "Inter-City Excellence", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=1200", text: "First-class travel between European hubs. St. Moritz, Geneva, Milan, Munich." },
   { id: 7, title: "Event Week Mobility", subtitle: "WEF & Summits", image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200", text: "Coordinated logistics for global events. Flawless execution under pressure." },
   { id: 8, title: "Booking Request", subtitle: "Secure Your Journey", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200", text: "Reserve your vehicle with our private office. Experience Alair Noir." },

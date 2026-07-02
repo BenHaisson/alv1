@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { imageAssets } from "../assets";
 
 interface JourneyStage {
   step: string;
@@ -16,7 +17,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "Zürich Dawn Departure",
     subtitle: "Minimalist Preparation",
     description: "The journey begins in the quiet dawn fog of a private residence in Zürich. The BMW i7 2026 stands silent, pre-conditioned to the perfect cabin temperature, with its signature signature LED halo lights piercing the mist. Ready for departure.",
-    image: "/src/assets/images/bmw_i7_departure_1782861743795.jpg",
+    image: imageAssets.bmwI7Departure,
     location: "Zürich Gold Coast"
   },
   {
@@ -24,7 +25,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "The Alpine Transit",
     subtitle: "Dynamic Composure",
     description: "Cruising seamlessly through the elevated Swiss mountain passes. The vehicle's active air suspension absorbs every imperfection, while acoustic glazing isolates passengers from high-altitude winds. The cabin remains a silent sanctuary.",
-    image: "/src/assets/images/bmw_i7_alpine_cruise_1782861758267.jpg",
+    image: imageAssets.bmwI7AlpineCruise,
     location: "Gotthard Pass Region"
   },
   {
@@ -32,7 +33,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "Tarmac Rendezvous",
     subtitle: "Aviation Handover",
     description: "A direct meet on the private airfield tarmac in Zürich. Arriving guests transition effortlessly from their private aircraft straight into the spacious rear lounge of the BMW i7 2026, with luggage handled discreetly.",
-    image: "/src/assets/images/bmw_i7_tarmac_meet_1782861771287.jpg",
+    image: imageAssets.bmwI7TarmacMeet,
     location: "Zürich Airport (LSZH)"
   },
   {
@@ -40,7 +41,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "St. Moritz Alpine Dusk",
     subtitle: "High-Altitude Arrival",
     description: "As dusk falls over the snow-covered Engadin valley, the BMW i7 2026 glides into the grand driveway of a premier luxury resort in St. Moritz. Ambient light reflections highlight the clean, muscular contours of the chassis.",
-    image: "/src/assets/images/bmw_i7_st_moritz_dusk_1782861783352.jpg",
+    image: imageAssets.bmwI7StMoritzDusk,
     location: "St. Moritz, Engadin"
   },
   {
@@ -48,7 +49,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "The Rear Executive Workspace",
     subtitle: "Mobile Focus",
     description: "Inside the rear lounge, the focus shifts to business. An integrated luxury wooden folding desk supports critical notes and a high-end notebook, while deep-pile carpets and ultra-plush merino-and-leather seats provide executive comfort.",
-    image: "/src/assets/images/bmw_i7_rear_workspace_1782861794303.jpg",
+    image: imageAssets.bmwI7RearWorkspace,
     location: "Transit via Schwyz"
   },
   {
@@ -56,7 +57,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "Ambient Digital Cockpit",
     subtitle: "Intelligent Guidance",
     description: "As night falls, the crystal-cut Interaction Bar and Curved Display illuminate in warm amber and copper hues. Advanced navigation guidance directs the quiet electric drive through the dark Swiss landscape with watchmaker precision.",
-    image: "/src/assets/images/bmw_i7_cockpit_night_1782861804665.jpg",
+    image: imageAssets.bmwI7CockpitNight,
     location: "Zürich Environs"
   }
 ];

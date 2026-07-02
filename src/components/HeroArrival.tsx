@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import MagneticButton from "./MagneticButton";
+import { imageAssets } from "../assets";
 
 interface HeroArrivalProps {
   onRequestScroll: () => void;
 }
 
-const HERO_IMAGE = "/src/assets/images/alair_noir_hero.png";
+const HERO_IMAGE = imageAssets.alairNoirHero;
 
 export default function HeroArrival({ onRequestScroll }: HeroArrivalProps) {
   const heroRef = useRef<HTMLElement>(null);

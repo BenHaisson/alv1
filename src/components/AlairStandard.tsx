@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { imageAssets } from "../assets";
 
 interface ProtocolRow {
   number: string;
@@ -19,7 +20,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Timing",
     paragraph: "Routes, pickup rhythm, waiting time, and handover are prepared before the journey begins.",
     statusLabel: "PRE-JOURNEY",
-    image: "/src/assets/images/bmw_i7_departure_1782861743795.jpg",
+    image: imageAssets.bmwI7Departure,
     location: "ZÜRICH REGION",
     meta: "ROUTE TRACKING CALIBRATED"
   },
@@ -29,7 +30,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Privacy",
     paragraph: "Passenger details, routes, schedules, and instructions are handled with discretion by default.",
     statusLabel: "DISCRETION",
-    image: "/src/assets/images/bmw_i7_tarmac_meet_1782861771287.jpg",
+    image: imageAssets.bmwI7TarmacMeet,
     location: "LSZH TERMINAL",
     meta: "ZERO DIGITAL footprint"
   },
@@ -39,7 +40,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Presence",
     paragraph: "The vehicle, cabin, communication, and arrival posture are prepared to represent the client properly.",
     statusLabel: "REPRESENTATION",
-    image: "/src/assets/images/bmw_i7_st_moritz_dusk_1782861783352.jpg",
+    image: imageAssets.bmwI7StMoritzDusk,
     location: "ENGADIN VALLEY",
     meta: "IMPECCABLE POSTURE"
   },
@@ -49,7 +50,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Composure",
     paragraph: "The cabin becomes a private interval between obligations — quiet enough to think, call, read, or reset.",
     statusLabel: "CABIN SANCTUARY",
-    image: "/src/assets/images/bmw_i7_rear_workspace_1782861794303.jpg",
+    image: imageAssets.bmwI7RearWorkspace,
     location: "TRANSIT CALM",
     meta: "ACOUSTIC DECOUPLING"
   },
@@ -59,7 +60,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Precision",
     paragraph: "Every detail is confirmed clearly, executed quietly, and adjusted when the schedule changes.",
     statusLabel: "REAL-TIME ADJUSTMENT",
-    image: "/src/assets/images/bmw_i7_cockpit_night_1782861804665.jpg",
+    image: imageAssets.bmwI7CockpitNight,
     location: "ZÜRICH HEADQUARTERS",
     meta: "DYNAMIC ROUTING ACTIVE"
   }

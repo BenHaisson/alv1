@@ -1,12 +1,13 @@
 import { Vehicle, Pillar, AudienceCard, RouteItem, OccasionItem, ProofItem, Testimonial, FAQItem } from "./types";
+import { imageAssets } from "./assets";
 
 export const IMAGES = {
-  bmw_i7_exterior: "/src/assets/images/luxury_bmw_i7_1782845017654.jpg",
-  vclass_interior: "/src/assets/images/luxury_v_class_1782845034354.jpg",
-  zurich_airport_arrival: "/src/assets/images/luxury_airport_welcome_1782845067151.jpg",
-  zurich_luxury_arrival: "/src/assets/images/luxury_vip_cabin_1782845049105.jpg",
+  bmw_i7_exterior: imageAssets.luxuryBmwI7,
+  vclass_interior: imageAssets.luxuryVClass,
+  zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
+  zurich_luxury_arrival: imageAssets.luxuryVipCabin,
   // Standard premium placeholders or dark vignettes for minor slides
-  cabin_1: "/src/assets/images/luxury_vip_cabin_1782845049105.jpg", // Sleek leather
+  cabin_1: imageAssets.luxuryVipCabin, // Sleek leather
   cabin_2: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=1200", // Night drive
   cabin_3: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200", // Clean console
 };
@@ -96,8 +97,8 @@ export const VEHICLES: Vehicle[] = [
       { label: "Upholstery", value: "Merino Luxury Leather" },
       { label: "Roof Style", value: "Sky Lounge Panoramic" }
     ],
-    image: "https://picsum.photos/id/111/1200/800",
-    interiorImage: "https://picsum.photos/id/120/1200/800",
+    image: imageAssets.luxuryBmwI7,
+    interiorImage: imageAssets.bmwI7RearWorkspace,
     numericalSpecs: [
       { label: "Power output", value: 610, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },
@@ -127,8 +128,8 @@ export const VEHICLES: Vehicle[] = [
       { label: "Infotainment", value: "Dynamic MBUX" },
       { label: "Seating", value: "8-Seat Luxury Configuration" }
     ],
-    image: "https://picsum.photos/id/133/1200/800",
-    interiorImage: "https://picsum.photos/id/180/1200/800",
+    image: imageAssets.luxuryVClass,
+    interiorImage: imageAssets.vclassInterior,
     numericalSpecs: [
       { label: "Wheelbase length", value: 4.9, suffix: " m" },
       { label: "Max seating capacity", value: 8, suffix: " seats" },
