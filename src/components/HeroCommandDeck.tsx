@@ -63,7 +63,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
     offset: ["start start", "end end"]
   });
 
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.05, 0.35, 0.7, 1], [0.5, 0.9, 0.85, 0.58, 0.46]);
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.05, 0.35, 0.7, 1], [0.82, 0.9, 0.85, 0.58, 0.46]);
   const imageScale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
   const imageX = useTransform(scrollYProgress, [0, 1], ["2.5%", "0%"]);
 
