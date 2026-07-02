@@ -50,3 +50,44 @@ export interface FAQItem {
   question: string;
   answer: string;
 }
+
+export interface AccessClass {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface ServiceMatrixItem {
+  id: string;
+  number: string;
+  title: string;
+  tagline: string;
+  details: string[];
+}
+
+export interface JourneyStep {
+  id: string;
+  number: string;
+  title: string;
+  status: string;
+  instruction: string;
+  tag: string;
+  description: string;
+  image: string;
+}
+
+export interface IntelRoute {
+  id: string;
+  name: string;
+  sector: string;
+  eta: string;
+  description: string;
+  coordinates: { x: number; y: number };
+}
+
+export interface ProtocolItem {
+  number: string;
+  title: string;
+  description: string;
+}

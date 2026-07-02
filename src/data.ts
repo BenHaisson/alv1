@@ -1,4 +1,18 @@
-import { Vehicle, Pillar, AudienceCard, RouteItem, OccasionItem, ProofItem, Testimonial, FAQItem } from "./types";
+import {
+  Vehicle,
+  Pillar,
+  AudienceCard,
+  RouteItem,
+  OccasionItem,
+  ProofItem,
+  Testimonial,
+  FAQItem,
+  AccessClass,
+  ServiceMatrixItem,
+  JourneyStep,
+  IntelRoute,
+  ProtocolItem
+} from "./types";
 import { imageAssets } from "./assets";
 
 export const IMAGES = {
@@ -338,5 +352,340 @@ export const FAQS: FAQItem[] = [
   {
     question: "How do I book?",
     answer: "Send the date, time, route, passenger count, luggage requirements, preferred vehicle, and any private instructions by email or WhatsApp. Availability and rate are confirmed directly."
+  }
+];
+
+export const ACCESS_CLASSES: AccessClass[] = [
+  {
+    id: "ceo-founders",
+    number: "01",
+    title: "CEO & Founders",
+    description:
+      "Moving between decisions, boardrooms, investors, and airports — days that cannot feel improvised."
+  },
+  {
+    id: "family-offices",
+    number: "02",
+    title: "Family Offices",
+    description:
+      "Principals, relatives, guests, recurring schedules, and luggage-heavy arrivals handled quietly."
+  },
+  {
+    id: "diplomatic-guests",
+    number: "03",
+    title: "Diplomatic Guests",
+    description:
+      "Protocol-sensitive movement, delegation logistics, and discreet professional conduct throughout."
+  },
+  {
+    id: "premium-hospitality",
+    number: "04",
+    title: "Premium Hospitality",
+    description:
+      "Hotel and concierge partners extending a five-star standard beyond the lobby doors."
+  },
+  {
+    id: "private-clients",
+    number: "05",
+    title: "Private Clients",
+    description:
+      "Residences, hotels, appointments, private dinners, and weekend escapes without exposure."
+  }
+];
+
+export const SERVICE_MATRIX: ServiceMatrixItem[] = [
+  {
+    id: "airport-transfer",
+    number: "01",
+    title: "Airport Transfer",
+    tagline: "Flight-aware arrival control",
+    details: [
+      "Flight-aware pickup",
+      "Terminal coordination",
+      "Luggage consideration",
+      "Hotel or residence handover"
+    ]
+  },
+  {
+    id: "executive-transfer",
+    number: "02",
+    title: "Executive Transfer",
+    tagline: "Corporate schedule precision",
+    details: ["Board meetings", "Investor days", "Client dinners", "Roadshows"]
+  },
+  {
+    id: "private-client",
+    number: "03",
+    title: "Private Client Movement",
+    tagline: "Quiet personal mobility",
+    details: [
+      "Residences",
+      "Hotels",
+      "Appointments",
+      "Private dinners",
+      "Weekend escapes"
+    ]
+  },
+  {
+    id: "diplomatic",
+    number: "04",
+    title: "Diplomatic / Government",
+    tagline: "Protocol-grade handling",
+    details: [
+      "Protocol-sensitive travel",
+      "Delegation movement",
+      "Discreet handling",
+      "Professional conduct"
+    ]
+  },
+  {
+    id: "hotel-concierge",
+    number: "05",
+    title: "Hotel & Concierge",
+    tagline: "Five-star guest reception",
+    details: [
+      "Guest reception",
+      "Premium arrival",
+      "Concierge coordination",
+      "Five-star standard"
+    ]
+  },
+  {
+    id: "long-distance",
+    number: "06",
+    title: "Long-Distance Routes",
+    tagline: "Switzerland-wide reach",
+    details: [
+      "Davos & St. Moritz",
+      "Geneva & Basel",
+      "Cross-country schedules",
+      "Selected European routes"
+    ]
+  }
+];
+
+export const JOURNEY_STEPS: JourneyStep[] = [
+  {
+    id: "request",
+    number: "01",
+    title: "Request",
+    status: "INQUIRY RECEIVED",
+    instruction: "Route, timing, passengers, and instructions arrive by WhatsApp or email.",
+    tag: "DIRECT LINE",
+    description:
+      "The journey begins with a direct message — no portals, no call centers, no exposure.",
+    image: imageAssets.bmwI7RearWorkspace
+  },
+  {
+    id: "confirm",
+    number: "02",
+    title: "Confirm",
+    status: "AVAILABILITY LOCKED",
+    instruction: "Vehicle, rate, and pickup detail are confirmed in writing before the journey.",
+    tag: "WRITTEN CONFIRMATION",
+    description:
+      "Every detail is fixed clearly and quietly — nothing left to interpretation.",
+    image: imageAssets.bmwI7Departure
+  },
+  {
+    id: "prepare",
+    number: "03",
+    title: "Prepare",
+    status: "CABIN CALIBRATED",
+    instruction: "Temperature, water, silence settings, and route pre-checks are completed.",
+    tag: "PRE-DEPARTURE",
+    description:
+      "The cabin is prepared to represent the client before the door ever opens.",
+    image: imageAssets.bmwI7CockpitNight
+  },
+  {
+    id: "arrive",
+    number: "04",
+    title: "Arrive",
+    status: "ON POSITION",
+    instruction: "The chauffeur is positioned early — flight-aware and terminal-ready.",
+    tag: "FLIGHT-AWARE",
+    description:
+      "Arrival choreography stays precise: the vehicle is already waiting, never searched for.",
+    image: imageAssets.bmwI7TarmacMeet
+  },
+  {
+    id: "drive",
+    number: "05",
+    title: "Drive",
+    status: "EN ROUTE",
+    instruction: "A silent electric cabin between obligations — calls, preparation, or rest.",
+    tag: "PRIVATE CABIN",
+    description:
+      "The road becomes a protected interval: quiet enough to think, work, or reset.",
+    image: imageAssets.bmwI7AlpineCruise
+  },
+  {
+    id: "adapt",
+    number: "06",
+    title: "Adapt",
+    status: "SCHEDULE SYNC",
+    instruction: "Delays, added stops, or changed plans are absorbed without friction.",
+    tag: "LIVE ADJUSTMENT",
+    description:
+      "When the day moves, the journey moves with it — recalculated, not renegotiated.",
+    image: imageAssets.bmwI7StMoritzDusk
+  },
+  {
+    id: "deliver",
+    number: "07",
+    title: "Deliver",
+    status: "HANDOVER COMPLETE",
+    instruction: "Arrival at hotel, residence, or terminal — handled to the door.",
+    tag: "COMPLETION",
+    description:
+      "The journey closes the way it opened: prepared, discreet, and exactly on time.",
+    image: imageAssets.luxuryAirportWelcome
+  }
+];
+
+export const INTEL_ROUTES: IntelRoute[] = [
+  {
+    id: "zurich-airport",
+    name: "Zürich Airport",
+    sector: "ZRH-A",
+    eta: "≈ 15 MIN",
+    description:
+      "Flight-aware pickup, terminal coordination, luggage consideration, and onward handover.",
+    coordinates: { x: 60, y: 22 }
+  },
+  {
+    id: "zurich-city",
+    name: "Zürich City",
+    sector: "ZRH-C",
+    eta: "OPERATIONS BASE",
+    description:
+      "Hotel arrivals, corporate schedules, private appointments, and city movement — the hub itself.",
+    coordinates: { x: 57, y: 30 }
+  },
+  {
+    id: "zug",
+    name: "Zug",
+    sector: "ZG-01",
+    eta: "≈ 35 MIN",
+    description: "Executive travel, private offices, residences, and corporate transfers.",
+    coordinates: { x: 54, y: 41 }
+  },
+  {
+    id: "lucerne",
+    name: "Lucerne",
+    sector: "LU-02",
+    eta: "≈ 50 MIN",
+    description: "Hotel arrivals, private stays, leisure routes, and guest reception.",
+    coordinates: { x: 47, y: 45 }
+  },
+  {
+    id: "basel",
+    name: "Basel",
+    sector: "BS-03",
+    eta: "≈ 1 H 05",
+    description: "Business travel, Art Basel weeks, airport connections, and cross-city movement.",
+    coordinates: { x: 36, y: 15 }
+  },
+  {
+    id: "bern",
+    name: "Bern",
+    sector: "BE-04",
+    eta: "≈ 1 H 20",
+    description: "Government schedules, diplomatic visits, and federal-city appointments.",
+    coordinates: { x: 33, y: 43 }
+  },
+  {
+    id: "geneva",
+    name: "Geneva",
+    sector: "GE-05",
+    eta: "≈ 2 H 45",
+    description:
+      "Long-distance executive routes, private travel, diplomatic schedules, and hotel arrivals.",
+    coordinates: { x: 8, y: 79 }
+  },
+  {
+    id: "lausanne",
+    name: "Lausanne",
+    sector: "VD-06",
+    eta: "≈ 2 H 30",
+    description: "Lakeside residences, business appointments, and onward Léman-region movement.",
+    coordinates: { x: 16, y: 67 }
+  },
+  {
+    id: "davos",
+    name: "Davos",
+    sector: "GR-07",
+    eta: "≈ 2 H 00",
+    description: "Event-week mobility, WEF schedules, private guests, and mountain transfers.",
+    coordinates: { x: 85, y: 44 }
+  },
+  {
+    id: "st-moritz",
+    name: "St. Moritz",
+    sector: "GR-08",
+    eta: "≈ 2 H 30",
+    description:
+      "Private long-distance travel, winter stays, hotel arrivals, and luggage-heavy journeys.",
+    coordinates: { x: 86, y: 62 }
+  },
+  {
+    id: "gstaad",
+    name: "Gstaad",
+    sector: "BE-09",
+    eta: "≈ 2 H 15",
+    description: "Private alpine routes, residences, hotels, and seasonal movement.",
+    coordinates: { x: 27, y: 62 }
+  },
+  {
+    id: "interlaken",
+    name: "Interlaken",
+    sector: "BE-10",
+    eta: "≈ 1 H 50",
+    description: "Alpine resort arrivals, private stays, and scenic long-distance schedules.",
+    coordinates: { x: 38, y: 56 }
+  }
+];
+
+export const PROTOCOLS: ProtocolItem[] = [
+  {
+    number: "01",
+    title: "Direct Booking",
+    description: "Requests are handled directly — no marketplace, no third-party dispatch."
+  },
+  {
+    number: "02",
+    title: "Clear Confirmation",
+    description: "Vehicle, rate, timing, and pickup are confirmed in writing before departure."
+  },
+  {
+    number: "03",
+    title: "Privacy by Default",
+    description: "Names, routes, and schedules are treated as confidential — always."
+  },
+  {
+    number: "04",
+    title: "Professional Chauffeur",
+    description: "Trained, discreet, and prepared to represent the client properly."
+  },
+  {
+    number: "05",
+    title: "Prepared Vehicle",
+    description: "Cabin, temperature, water, and presentation calibrated before arrival."
+  },
+  {
+    number: "06",
+    title: "Flight-Aware Timing",
+    description: "Landings are tracked; pickup adjusts to the aircraft, not the estimate."
+  },
+  {
+    number: "07",
+    title: "Private Cabin",
+    description: "A silent interval between obligations — no unnecessary conversation."
+  },
+  {
+    number: "08",
+    title: "Switzerland-Wide Capability",
+    description: "Zürich-based and prepared for every Swiss route and selected EU journeys."
   }
 ];

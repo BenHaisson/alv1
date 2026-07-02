@@ -1,27 +1,27 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import BrandOpening from "./components/BrandOpening";
+import { MotionProvider } from "./components/MotionProvider";
+import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
-import HeroArrival from "./components/HeroArrival";
-import NotForEveryoneScene from "./components/NotForEveryoneScene";
-import AlairStandard from "./components/AlairStandard";
-import ClientAudience from "./components/ClientAudience";
-import EditorialGallery from "./components/EditorialGallery";
-import VehicleCollection from "./components/VehicleCollection";
-import RouteMap from "./components/RouteMap";
-import ProofSection from "./components/ProofSection";
-import RequestSection from "./components/RequestSection";
+import HeroCommandDeck from "./components/HeroCommandDeck";
+import PrivateAccessScene from "./components/PrivateAccessScene";
+import ServiceMatrix from "./components/ServiceMatrix";
+import FleetControlSlider from "./components/FleetControlSlider";
+import JourneyCardRail from "./components/JourneyCardRail";
+import SwissRouteIntelligence from "./components/SwissRouteIntelligence";
+import ProtocolGrid from "./components/ProtocolGrid";
+import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
 
 const SECTIONS = [
-  { key: "hero", id: "hero-section", label: "01 // ARRIVAL", navLabel: "Arrival" },
-  { key: "standard", id: "standard-section", label: "02 // THE STANDARD", navLabel: "Standard" },
-  { key: "clients", id: "clients-section", label: "03 // WHO WE SERVE", navLabel: "Clients" },
-  { key: "experience", id: "experience-section", label: "04 // THE EXPERIENCE", navLabel: "Experience" },
-  { key: "fleet", id: "fleet-section", label: "05 // THE FLEET", navLabel: "Fleet" },
-  { key: "routes", id: "routes-section", label: "06 // THE ROUTES", navLabel: "Routes" },
-  { key: "trust", id: "trust-section", label: "07 // TRUST", navLabel: "Trust" },
-  { key: "request", id: "request-section", label: "08 // THE REQUEST", navLabel: "Request" }
+  { key: "hero", id: "hero-section", label: "01 // COMMAND DECK", navLabel: "Arrival" },
+  { key: "access", id: "access-section", label: "02 // PRIVATE ACCESS", navLabel: "Access" },
+  { key: "services", id: "services-section", label: "03 // SERVICE MATRIX", navLabel: "Services" },
+  { key: "fleet", id: "fleet-section", label: "04 // FLEET CONTROL", navLabel: "Fleet" },
+  { key: "journey", id: "journey-section", label: "05 // JOURNEY RAIL", navLabel: "Journey" },
+  { key: "routes", id: "routes-section", label: "06 // ROUTE INTEL", navLabel: "Routes" },
+  { key: "protocol", id: "protocol-section", label: "07 // PROTOCOL", navLabel: "Protocol" },
+  { key: "request", id: "request-section", label: "08 // DISPATCH", navLabel: "Request" }
 ];
 
 function ChapterReveal({ children }: { children: ReactNode }) {
@@ -62,7 +62,7 @@ function JourneyRail({
 }) {
   return (
     <nav
-      aria-label="Alair Noir journey chapters"
+      aria-label="Alair Noir interface chapters"
       className="fixed left-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
     >
       {SECTIONS.map((section, index) => {
@@ -101,10 +101,9 @@ function JourneyRail({
 
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState("best");
+  const [selectedVehicle, setSelectedVehicle] = useState("bmw-i7");
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [activeLabel, setActiveLabel] = useState("01 // ARRIVAL");
   const [activeKey, setActiveKey] = useState("hero");
 
   useEffect(() => {
@@ -132,7 +131,6 @@ export default function App() {
         const top = el ? el.getBoundingClientRect().top + window.scrollY : Number.POSITIVE_INFINITY;
 
         if (top <= scrollPos) {
-          setActiveLabel(SECTIONS[i].label);
           setActiveKey(SECTIONS[i].key);
           break;
         }
@@ -173,139 +171,131 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-cream/35 selection:text-brand-black">
-      {isIntroComplete && (
-        <motion.div
-          className="fixed left-0 right-0 top-0 z-[100] h-[2px] origin-left bg-brand-gold"
-          style={{ scaleX }}
-        />
-      )}
-
-      {isIntroComplete && <JourneyRail activeKey={activeKey} onSelect={scrollToSection} />}
-
-      <AnimatePresence>
-        {isIntroComplete && showBackToTop && (
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-8 right-8 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-brand-gold/30 bg-brand-black/90 text-brand-gold shadow-xl transition-all duration-300 hover:border-brand-gold hover:bg-brand-gold-muted hover:shadow-[0_0_15px_rgba(205,162,80,0.2)] focus:outline-none"
-            aria-label="Back to Top"
-          >
-            <span className="text-[10px] font-mono font-medium tracking-widest">UP</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isCurtainActive && (
+    <MotionProvider>
+      <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-cream/35 selection:text-brand-black">
+        {isIntroComplete && (
           <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.72, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center border-r border-brand-gold bg-brand-deep-forest shadow-[15px_0_40px_rgba(205,162,80,0.18)] luxury-noise"
-          >
-            <motion.div
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              exit={{ scaleX: 0, opacity: 0 }}
-              transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute left-0 right-0 top-1/2 h-px origin-left bg-brand-gold/30"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ delay: 0.16, duration: 0.36 }}
-              className="text-center"
-            >
-              <h2 className="text-2xl font-serif font-light uppercase tracking-[0.35em] text-brand-cream">
-                ALAIR NOIR
-              </h2>
-              <span className="mt-3 block text-[9px] font-mono tracking-[0.25em] text-brand-stone">
-                NEXT CHAPTER
-              </span>
-            </motion.div>
-          </motion.div>
+            className="fixed left-0 right-0 top-0 z-[100] h-[2px] origin-left bg-brand-gold"
+            style={{ scaleX }}
+          />
         )}
-      </AnimatePresence>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="relative z-10"
-      >
-        <BrandOpening onComplete={setIsIntroComplete} />
+        {isIntroComplete && <JourneyRail activeKey={activeKey} onSelect={scrollToSection} />}
 
-        {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
+        <AnimatePresence>
+          {isIntroComplete && showBackToTop && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="fixed bottom-8 right-8 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-brand-gold/30 bg-brand-black/90 text-brand-gold shadow-xl transition-all duration-300 hover:border-brand-gold hover:bg-brand-gold-muted hover:shadow-[0_0_15px_rgba(205,162,80,0.2)] focus:outline-none"
+              aria-label="Back to Top"
+            >
+              <span className="text-[10px] font-mono font-medium tracking-widest">UP</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
 
-        <div id="hero-section">
-          <HeroArrival onRequestScroll={() => scrollToSection("request")} />
-        </div>
+        <AnimatePresence>
+          {isCurtainActive && (
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: "0%" }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.72, ease: [0.76, 0, 0.24, 1] }}
+              className="fixed inset-0 z-[9999] flex flex-col items-center justify-center border-r border-brand-gold bg-brand-deep-forest shadow-[15px_0_40px_rgba(205,162,80,0.18)] luxury-noise"
+            >
+              <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                exit={{ scaleX: 0, opacity: 0 }}
+                transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-0 right-0 top-1/2 h-px origin-left bg-brand-gold/30"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ delay: 0.16, duration: 0.36 }}
+                className="text-center"
+              >
+                <h2 className="text-2xl font-serif font-light uppercase tracking-[0.35em] text-brand-cream">
+                  ALAIR NOIR
+                </h2>
+                <span className="mt-3 block text-[9px] font-mono tracking-[0.25em] text-brand-stone">
+                  NEXT SECTOR
+                </span>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <SectionBridge />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="relative z-10"
+        >
+          <CinematicOpeningPortal onComplete={setIsIntroComplete} />
 
-        <ChapterReveal>
-          <NotForEveryoneScene />
-        </ChapterReveal>
+          {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-        <SectionBridge />
+          <div id="hero-section">
+            <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
+          </div>
 
-        <div id="standard-section" className="scroll-mt-20">
+          <SectionBridge />
+
+          <PrivateAccessScene />
+
+          <SectionBridge />
+
+          <div id="services-section" className="scroll-mt-20">
+            <ChapterReveal>
+              <ServiceMatrix />
+            </ChapterReveal>
+          </div>
+
+          <SectionBridge />
+
           <ChapterReveal>
-            <AlairStandard />
+            <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </ChapterReveal>
-        </div>
 
-        <SectionBridge />
+          <SectionBridge />
 
-        <div id="clients-section" className="scroll-mt-20">
+          <div id="journey-section" className="relative scroll-mt-20">
+            <JourneyCardRail />
+          </div>
+
+          <SectionBridge />
+
+          <div id="routes-section" className="scroll-mt-20">
+            <ChapterReveal>
+              <SwissRouteIntelligence onRequestScroll={() => scrollToSection("request")} />
+            </ChapterReveal>
+          </div>
+
+          <SectionBridge />
+
+          <div id="protocol-section" className="scroll-mt-20">
+            <ChapterReveal>
+              <ProtocolGrid />
+            </ChapterReveal>
+          </div>
+
+          <SectionBridge />
+
           <ChapterReveal>
-            <ClientAudience />
+            <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
           </ChapterReveal>
-        </div>
 
-        <SectionBridge />
+          <LuxuryFooter onNavClick={scrollToSection} />
+        </motion.div>
 
-        <div id="experience-section" className="relative scroll-mt-20">
-          <EditorialGallery />
-        </div>
-
-        <SectionBridge />
-
-        <ChapterReveal>
-          <VehicleCollection onRequestScroll={handleFleetRequest} />
-        </ChapterReveal>
-
-        <SectionBridge />
-
-        <div id="routes-section" className="scroll-mt-20">
-          <ChapterReveal>
-            <RouteMap onRequestScroll={() => scrollToSection("request")} />
-          </ChapterReveal>
-        </div>
-
-        <SectionBridge />
-
-        <div id="trust-section" className="scroll-mt-20">
-          <ChapterReveal>
-            <ProofSection />
-          </ChapterReveal>
-        </div>
-
-        <SectionBridge />
-
-        <ChapterReveal>
-          <RequestSection prefilledVehicle={selectedVehicle} />
-        </ChapterReveal>
-
-        <LuxuryFooter onNavClick={scrollToSection} />
-      </motion.div>
-
-      <div className="fixed inset-0 z-30 pointer-events-none luxury-noise opacity-30" />
-    </div>
+        <div className="fixed inset-0 z-30 pointer-events-none luxury-noise opacity-30" />
+      </div>
+    </MotionProvider>
   );
 }
