@@ -1,0 +1,8 @@
+{
+  "name": "Remix: ALAIR NOIR v2",
+  "description": "Private chauffeur service in Zürich for CEOs, executives, private clients, family offices, airport arrivals, events, and long-distance journeys across Switzerland and selected European routes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
