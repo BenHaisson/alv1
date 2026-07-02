@@ -94,11 +94,15 @@ export default function VehicleCollection({ onRequestScroll }: VehicleCollection
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16">
           <div>
             <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-gold block mb-4">
-              The Selection
+              05 / The Fleet
             </span>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-brand-ivory tracking-tight">
-              The 2026 Fleet
+              Two vehicles. <span className="italic text-brand-stone font-light">One standard.</span>
             </h2>
+            <p className="mt-4 max-w-xl text-sm md:text-base text-brand-stone font-light leading-relaxed">
+              Silent executive travel. Premium private capacity. Both follow the same
+              standard: timing, privacy, presence, composure, and precision.
+            </p>
           </div>
           
           {/* Tabbing Control */}
@@ -261,7 +265,7 @@ export default function VehicleCollection({ onRequestScroll }: VehicleCollection
                     {/* Active badge */}
                     {isActive && (
                       <div className="absolute top-6 right-6 px-3 py-1 border border-brand-gold/30 bg-brand-black/95 text-[9px] font-mono tracking-widest text-brand-gold uppercase">
-                        2026 SPEC
+                        ALAIR FLEET
                       </div>
                     )}
                   </div>
@@ -435,7 +439,7 @@ export default function VehicleCollection({ onRequestScroll }: VehicleCollection
                       style={{ transform: "skewX(-20deg)" }}
                     />
                     <span className="relative z-10 flex items-center justify-center space-x-2">
-                      <span>Book {activeVehicle.name === "BMW i7 2026" ? "BMW i7 2026" : "Mercedes V-Class 2026"}</span>
+                      <span>Request {activeVehicle.id === "bmw-i7" ? "BMW i7" : "V-Class"} Transfer</span>
                       <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                     </span>
                   </button>

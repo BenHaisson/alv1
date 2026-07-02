@@ -1,6 +1,6 @@
 {
   "name": "Remix: ALAIR NOIR v2",
-  "description": "Private chauffeur service in Zürich for CEOs, executives, private clients, family offices, airport arrivals, events, and long-distance journeys across Switzerland and selected European routes.",
+  "description": "ALAIR NOIR is a Zürich-based private chauffeur service for executives, private clients, family offices, diplomatic guests, airport transfers, premium hospitality, and long-distance journeys across Switzerland.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

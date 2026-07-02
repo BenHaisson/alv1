@@ -9,13 +9,15 @@ export default function ProofSection() {
         {/* Section Header */}
         <div className="max-w-3xl mb-16 md:mb-24">
           <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-gold block mb-4">
-            Legal Compliance & Trust
+            07 / Trust
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-light text-brand-ivory tracking-tight mb-6">
-            Verified where <span className="italic text-brand-stone font-light">it matters.</span>
+            Confidence before <span className="italic text-brand-stone font-light">the journey begins.</span>
           </h2>
           <p className="text-base text-brand-stone font-light leading-relaxed">
-            Private mobility requires trust before the vehicle arrives. ALAIR NOIR operates with clear company identity, Zürich-based availability, professional preparation, direct communication, and discreet handling of passenger details.
+            Premium clients do not only book a vehicle. They book trust. ALAIR NOIR is built
+            around direct communication, professional presentation, privacy awareness, and
+            clear confirmation.
           </p>
         </div>
 
@@ -33,7 +35,7 @@ export default function ProofSection() {
               <div>
                 {/* Minimalist certification tag */}
                 <span className="text-[9px] font-mono tracking-widest text-brand-stone uppercase block mb-3">
-                  Verification Log // 0{idx + 1}
+                  Client Expectation // 0{idx + 1}
                 </span>
                 
                 <h3 className="text-xs font-mono uppercase tracking-wider text-brand-gold">
@@ -53,10 +55,10 @@ export default function ProofSection() {
           ))}
         </div>
 
-        {/* Micro Legal Banner */}
-        <div className="mt-12 flex justify-center items-center space-x-2 text-[10px] font-mono tracking-widest text-brand-stone/60 uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-gold" />
-          <span>ALAIR NOIR GMBH IS FULLY COMPLIANT WITH SWISS FEDERAL PASSENGER REGULATIONS</span>
+        {/* Trust Statement Banner */}
+        <div className="mt-12 flex justify-center items-center space-x-2 text-[10px] font-mono tracking-widest text-brand-stone/60 uppercase text-center">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-gold flex-shrink-0" />
+          <span>No vague process · No anonymous platform feeling · No unnecessary friction · Just clear communication and private execution</span>
         </div>
 
       </div>

@@ -4,23 +4,24 @@ import BrandOpening from "./components/BrandOpening";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroArrival from "./components/HeroArrival";
 import NotForEveryoneScene from "./components/NotForEveryoneScene";
+import AlairStandard from "./components/AlairStandard";
+import ClientAudience from "./components/ClientAudience";
 import EditorialGallery from "./components/EditorialGallery";
 import VehicleCollection from "./components/VehicleCollection";
 import RouteMap from "./components/RouteMap";
 import ProofSection from "./components/ProofSection";
-import Testimonials from "./components/Testimonials";
-import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestSection from "./components/RequestSection";
 import LuxuryFooter from "./components/LuxuryFooter";
 
 const SECTIONS = [
-  { key: "hero", id: "hero-section", label: "01 // THE ARRIVAL", navLabel: "Arrival" },
+  { key: "hero", id: "hero-section", label: "01 // ARRIVAL", navLabel: "Arrival" },
   { key: "standard", id: "standard-section", label: "02 // THE STANDARD", navLabel: "Standard" },
-  { key: "journey", id: "journey-section", label: "03 // THE JOURNEY", navLabel: "Journey" },
-  { key: "fleet", id: "fleet-section", label: "04 // THE FLEET", navLabel: "Fleet" },
-  { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
-  { key: "faq", id: "before-request-section", label: "06 // BEFORE REQUEST", navLabel: "FAQ" },
-  { key: "request", id: "request-section", label: "07 // THE REQUEST", navLabel: "Request" }
+  { key: "clients", id: "clients-section", label: "03 // WHO WE SERVE", navLabel: "Clients" },
+  { key: "experience", id: "experience-section", label: "04 // THE EXPERIENCE", navLabel: "Experience" },
+  { key: "fleet", id: "fleet-section", label: "05 // THE FLEET", navLabel: "Fleet" },
+  { key: "routes", id: "routes-section", label: "06 // THE ROUTES", navLabel: "Routes" },
+  { key: "trust", id: "trust-section", label: "07 // TRUST", navLabel: "Trust" },
+  { key: "request", id: "request-section", label: "08 // THE REQUEST", navLabel: "Request" }
 ];
 
 function ChapterReveal({ children }: { children: ReactNode }) {
@@ -100,10 +101,10 @@ function JourneyRail({
 
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState("bmw-i7");
+  const [selectedVehicle, setSelectedVehicle] = useState("best");
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [activeLabel, setActiveLabel] = useState("01 // THE ARRIVAL");
+  const [activeLabel, setActiveLabel] = useState("01 // ARRIVAL");
   const [activeKey, setActiveKey] = useState("hero");
 
   useEffect(() => {
@@ -253,7 +254,23 @@ export default function App() {
 
         <SectionBridge />
 
-        <div id="journey-section" className="relative scroll-mt-20">
+        <div id="standard-section" className="scroll-mt-20">
+          <ChapterReveal>
+            <AlairStandard />
+          </ChapterReveal>
+        </div>
+
+        <SectionBridge />
+
+        <div id="clients-section" className="scroll-mt-20">
+          <ChapterReveal>
+            <ClientAudience />
+          </ChapterReveal>
+        </div>
+
+        <SectionBridge />
+
+        <div id="experience-section" className="relative scroll-mt-20">
           <EditorialGallery />
         </div>
 
@@ -273,11 +290,9 @@ export default function App() {
 
         <SectionBridge />
 
-        <div id="before-request-section" className="scroll-mt-20">
+        <div id="trust-section" className="scroll-mt-20">
           <ChapterReveal>
             <ProofSection />
-            <Testimonials />
-            <BeforeRequestFAQ />
           </ChapterReveal>
         </div>
 

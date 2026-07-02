@@ -79,12 +79,12 @@ export default function BrandOpening({ onComplete }: BrandOpeningProps) {
               <span className="font-serif text-4xl md:text-6xl font-light tracking-[0.08em]">N</span>
             </motion.div>
 
-            <motion.h1
+            <motion.p
               style={{ y: titleY, opacity: titleOpacity }}
               className="text-4xl md:text-7xl lg:text-8xl tracking-[0.3em] font-serif font-light text-white glow-subtle select-none"
             >
               ALAIR NOIR
-            </motion.h1>
+            </motion.p>
 
             <motion.div
               style={{ width: ruleWidth }}
@@ -102,14 +102,14 @@ export default function BrandOpening({ onComplete }: BrandOpeningProps) {
               style={{ opacity: locationOpacity, y: locationY }}
               className="mt-10 text-[11px] md:text-xs font-mono uppercase tracking-[0.34em] text-brand-stone"
             >
-              Zurich / Switzerland
+              Zürich / Switzerland
             </motion.p>
 
             <motion.p
               style={{ opacity: serviceOpacity, y: serviceY }}
               className="mt-5 max-w-xl text-lg md:text-2xl font-serif text-brand-ivory/88 font-light leading-relaxed"
             >
-              Private chauffeur services for people whose arrival carries weight.
+              Private chauffeur service Zürich — prepared, discreet, and precise.
             </motion.p>
           </div>
         </motion.div>

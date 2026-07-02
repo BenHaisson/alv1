@@ -9,10 +9,10 @@ interface LuxuryHeaderProps {
 const links = [
   { label: "Arrival", target: "hero" },
   { label: "Standard", target: "standard" },
-  { label: "Journey", target: "journey" },
+  { label: "Clients", target: "clients" },
   { label: "Fleet", target: "fleet" },
   { label: "Routes", target: "routes" },
-  { label: "FAQ", target: "faq" },
+  { label: "Trust", target: "trust" },
   { label: "Request", target: "request" }
 ];
 
@@ -32,11 +32,11 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             onClick={() => handleLinkClick("hero")}
             className="group flex cursor-pointer flex-col items-start"
           >
-            <h1 className="text-xl font-serif font-light leading-none tracking-[0.2em] text-white transition-all duration-300 group-hover:tracking-[0.25em] md:text-2xl">
+            <span className="block text-xl font-serif font-light leading-none tracking-[0.2em] text-white transition-all duration-300 group-hover:tracking-[0.25em] md:text-2xl">
               ALAIR NOIR
-            </h1>
+            </span>
             <span className="mt-1 text-[8px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-              Zurich - Switzerland
+              Zürich · Switzerland
             </span>
           </div>
 
@@ -75,7 +75,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                   : "border-brand-gold/30 text-brand-gold hover:border-brand-gold hover:bg-brand-gold-muted"
               }`}
             >
-              Request Chauffeur
+              Request Private Transfer
             </button>
           </div>
 
@@ -128,7 +128,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                 onClick={() => handleLinkClick("request")}
                 className="w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.2em] text-brand-black transition-colors duration-300 hover:bg-brand-ivory"
               >
-                Request Private Mobility
+                Request Private Transfer
               </button>
               <div className="flex justify-between text-[9px] font-mono uppercase text-brand-stone">
                 <span>booking@alairnoir.ch</span>

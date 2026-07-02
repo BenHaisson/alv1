@@ -18,7 +18,7 @@ const PROTOCOLS: ProtocolRow[] = [
     number: "01",
     category: "CHRONOMETRY",
     title: "Timing",
-    paragraph: "Routes, pickup rhythm, waiting time, and handover are prepared before the journey begins.",
+    paragraph: "Pickup, waiting time, route planning, airport rhythm, and arrival timing are prepared before the journey begins. You should not need to wonder if the vehicle is ready. It should already be there.",
     statusLabel: "PRE-JOURNEY",
     image: imageAssets.bmwI7Departure,
     location: "ZÜRICH REGION",
@@ -28,7 +28,7 @@ const PROTOCOLS: ProtocolRow[] = [
     number: "02",
     category: "CONFIDENTIALITY",
     title: "Privacy",
-    paragraph: "Passenger details, routes, schedules, and instructions are handled with discretion by default.",
+    paragraph: "Passenger details, routes, schedules, conversations, phone calls, documents, and private addresses are handled with discretion. Privacy is not an extra request. It is the default.",
     statusLabel: "DISCRETION",
     image: imageAssets.bmwI7TarmacMeet,
     location: "LSZH TERMINAL",
@@ -38,7 +38,7 @@ const PROTOCOLS: ProtocolRow[] = [
     number: "03",
     category: "AESTHETICS",
     title: "Presence",
-    paragraph: "The vehicle, cabin, communication, and arrival posture are prepared to represent the client properly.",
+    paragraph: "The vehicle, chauffeur, cabin, and arrival posture must represent the client properly. Clean. Composed. Professional. Quiet.",
     statusLabel: "REPRESENTATION",
     image: imageAssets.bmwI7StMoritzDusk,
     location: "ENGADIN VALLEY",
@@ -48,7 +48,7 @@ const PROTOCOLS: ProtocolRow[] = [
     number: "04",
     category: "SANCTUARY",
     title: "Composure",
-    paragraph: "The cabin becomes a private interval between obligations — quiet enough to think, call, read, or reset.",
+    paragraph: "The cabin is your private interval between obligations. Work. Call. Think. Read. Rest. Or remain in silence.",
     statusLabel: "CABIN SANCTUARY",
     image: imageAssets.bmwI7RearWorkspace,
     location: "TRANSIT CALM",
@@ -58,7 +58,7 @@ const PROTOCOLS: ProtocolRow[] = [
     number: "05",
     category: "CHOREOGRAPHY",
     title: "Precision",
-    paragraph: "Every detail is confirmed clearly, executed quietly, and adjusted when the schedule changes.",
+    paragraph: "Every detail is confirmed clearly and executed quietly — pickup point, destination, vehicle, passengers, luggage, flight details, special instructions. Premium clients notice what ordinary services ignore.",
     statusLabel: "REAL-TIME ADJUSTMENT",
     image: imageAssets.bmwI7CockpitNight,
     location: "ZÜRICH HEADQUARTERS",
@@ -89,22 +89,23 @@ export default function AlairStandard() {
           <div className="flex items-center space-x-3 mb-4">
             <span className="h-[1px] w-6 bg-brand-cream/35" />
             <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-cream">
-              STANDARD
+              02 / THE STANDARD
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
             <div className="lg:col-span-8">
               <h2 className="text-3xl md:text-5xl font-serif text-brand-ivory font-light tracking-wide uppercase">
-                The Alair Noir <span className="italic text-brand-cream/90 normal-case">Operating Code</span>
+                More Than A Driver. <span className="italic text-brand-cream/90 normal-case">A private standard.</span>
               </h2>
               <p className="text-sm md:text-base text-brand-stone/85 mt-4 max-w-xl font-light leading-relaxed">
-                Before the vehicle arrives, the journey is already controlled. Five disciplines define how every request is prepared, handled, and delivered.
+                ALAIR NOIR exists for clients who expect the journey to be handled before
+                they enter the vehicle. Luxury is not decoration. It is discipline.
               </p>
             </div>
             <div className="lg:col-span-4 lg:text-right">
               <span className="font-mono text-xs text-brand-cream/40 tracking-widest uppercase block">
-                Swiss Dispatch Protocol // 2026
+                Five disciplines // One standard
               </span>
             </div>
           </div>

@@ -5,10 +5,10 @@ import { imageAssets } from "../assets";
 const SECTION_IMAGE = imageAssets.sectionNotForEveryoneZurich;
 
 const AUDIENCE_BEATS = [
-  "For the principal arriving without exposure",
-  "For the founder between rooms that matter",
-  "For the family office that values silence",
-  "For the guest who should never ask twice",
+  "For executives & founders",
+  "For family offices & private clients",
+  "For diplomatic guests & delegations",
+  "For premium hospitality & airport arrivals",
 ];
 
 export default function NotForEveryoneScene() {
@@ -63,7 +63,6 @@ export default function NotForEveryoneScene() {
   return (
     <section
       ref={sectionRef}
-      id="standard-section"
       className="relative h-[300vh] bg-brand-black border-y border-brand-cream/10"
     >
       <div className="sticky top-0 min-h-screen overflow-hidden luxury-noise">
@@ -97,10 +96,10 @@ export default function NotForEveryoneScene() {
               style={{ opacity: eyebrowOpacity, y: eyebrowY }}
               className="mb-7 flex items-center gap-4"
             >
-              <span className="text-brand-stone font-mono text-sm tracking-widest">02 / THE STANDARD</span>
+              <span className="text-brand-stone font-mono text-sm tracking-widest">01 / THE ARRIVAL</span>
               <span className="h-px w-10 bg-brand-gold/20" />
               <span className="hidden sm:inline text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-                Zurich hotel arrival
+                Private mobility, not transportation
               </span>
             </motion.div>
 
@@ -120,8 +119,9 @@ export default function NotForEveryoneScene() {
               style={{ opacity: copyOpacity, y: copyY }}
               className="mt-10 max-w-2xl text-base font-light leading-relaxed text-brand-ivory/82 md:text-xl"
             >
-              For clients who value privacy, timing, and the quiet certainty of being
-              expected before they arrive.
+              This is not transportation. This is private mobility — prepared, discreet,
+              and precise. Built for clients whose time, privacy, and arrival standard
+              cannot be treated casually.
             </motion.p>
 
             <motion.div
