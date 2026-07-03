@@ -13,7 +13,6 @@ import DestinationStackMotion from "./components/motion/DestinationStackMotion";
 import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
 import SectionTransition from "./components/motion/SectionTransition";
 import StandardsSection from "./components/StandardsSection";
-import SwissRouteIntelligence from "./components/SwissRouteIntelligence";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
@@ -286,15 +285,9 @@ export default function App() {
           <SectionTransition />
 
           <div id="routes-section" className="scroll-mt-20">
-            {/* 08 — Routes from Zürich: cinematic destination stack (sticky pin —
-                no ChapterReveal), followed by the route map. */}
+            {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
+                (sticky pin — no ChapterReveal). */}
             <DestinationStackMotion />
-
-            <SectionTransition />
-
-            <ChapterReveal>
-              <SwissRouteIntelligence onRequestScroll={() => scrollToSection("request")} />
-            </ChapterReveal>
           </div>
 
           <SectionTransition />
