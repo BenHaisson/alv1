@@ -11,6 +11,7 @@ import ServiceMatrix from "./components/ServiceMatrix";
 import FleetControlSlider from "./components/FleetControlSlider";
 import FleetRevealMotion from "./components/motion/FleetRevealMotion";
 import DestinationStackMotion from "./components/motion/DestinationStackMotion";
+import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
 import SectionTransition from "./components/motion/SectionTransition";
 import StandardsSection from "./components/StandardsSection";
 import JourneyCardRail from "./components/JourneyCardRail";
@@ -307,6 +308,13 @@ export default function App() {
               <BeforeRequestFAQ />
             </ChapterReveal>
           </div>
+
+          <SectionTransition />
+
+          {/* Section 06 — Private Interval: the third approved video moment. */}
+          <ChapterReveal>
+            <PrivateIntervalMotion />
+          </ChapterReveal>
 
           <SectionTransition />
 

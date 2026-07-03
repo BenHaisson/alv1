@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { FLEET_REVEAL } from "../../data/visualJourney";
 import { useMediaQuery, useReducedMotionPref, CornerMarkers } from "../MotionProvider";
 import MotionImage from "./MotionImage";
+import CinematicVideoBackground from "./CinematicVideoBackground";
 
 interface FleetRevealMotionProps {
   onRequestScroll?: (vehicleName?: string) => void;
@@ -67,14 +68,24 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                 className="group relative border border-brand-cream/12 bg-brand-deep-forest/40"
               >
                 <CornerMarkers tone="cream" />
-                <MotionImage
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  reveal={isFirst ? "up" : "left"}
-                  delay={isReduced ? 0 : index * 0.18}
-                  className="aspect-[16/10]"
-                  imgClassName="brightness-[0.92] contrast-[1.08] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                />
+                {vehicle.video ? (
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <CinematicVideoBackground
+                      slot={vehicle.video}
+                      overlay={false}
+                      mediaClassName="brightness-[0.92] contrast-[1.08]"
+                    />
+                  </div>
+                ) : (
+                  <MotionImage
+                    src={vehicle.image}
+                    alt={vehicle.name}
+                    reveal={isFirst ? "up" : "left"}
+                    delay={isReduced ? 0 : index * 0.18}
+                    className="aspect-[16/10]"
+                    imgClassName="brightness-[0.92] contrast-[1.08] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                )}
 
                 <div className="flex flex-col gap-3 p-6 md:p-8">
                   <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-gold">
