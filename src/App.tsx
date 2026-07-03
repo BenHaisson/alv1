@@ -4,7 +4,6 @@ import { MotionProvider } from "./components/MotionProvider";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
-import PrivateAccessScene from "./components/PrivateAccessScene";
 import WhatWeAre from "./components/WhatWeAre";
 import NotForEveryone from "./components/NotForEveryone";
 import ServiceMatrix from "./components/ServiceMatrix";
@@ -14,9 +13,7 @@ import DestinationStackMotion from "./components/motion/DestinationStackMotion";
 import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
 import SectionTransition from "./components/motion/SectionTransition";
 import StandardsSection from "./components/StandardsSection";
-import JourneyCardRail from "./components/JourneyCardRail";
 import SwissRouteIntelligence from "./components/SwissRouteIntelligence";
-import ProtocolGrid from "./components/ProtocolGrid";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
@@ -25,7 +22,7 @@ const SECTIONS = [
   { key: "hero", id: "hero-section", label: "01 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
   { key: "services", id: "services-section", label: "02 // SERVICES", navLabel: "Services" },
   { key: "fleet", id: "fleet-section", label: "03 // THE FLEET", navLabel: "Fleet" },
-  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standards" },
+  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" },
   { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
   { key: "request", id: "request-section", label: "06 // BOOKING", navLabel: "Booking" }
 ];
@@ -238,18 +235,16 @@ export default function App() {
 
           <SectionTransition />
 
-          <PrivateAccessScene />
-
-          <SectionTransition />
-
+          {/* 03 — What ALAIR NOIR is: company clarity directly after the hero. */}
           <ChapterReveal>
             <WhatWeAre />
           </ChapterReveal>
 
           <SectionTransition />
 
-          {/* Section 02 — "NOT FOR EVERYONE. FOR YOU." scroll-pinned identity stack.
-              Not wrapped in ChapterReveal: its transform would break the sticky pin. */}
+          {/* 04 — "NOT FOR EVERYONE. FOR YOU." — the single manifesto section.
+              Scroll-pinned identity stack; not wrapped in ChapterReveal because
+              its transform would break the sticky pin. */}
           <NotForEveryone />
 
           <SectionTransition />
@@ -262,35 +257,37 @@ export default function App() {
 
           <SectionTransition />
 
-          {/* Section 04 — Fleet: product reveal first (scroll-driven separation),
-              detailed slider below it. FleetRevealMotion drives its own scroll
-              progress, so it stays outside ChapterReveal. */}
-          <FleetRevealMotion onRequestScroll={handleFleetRequest} />
+          {/* 06 — Fleet: one chapter, two beats. Cinematic reveal first, compact
+              selector below it. FleetRevealMotion drives its own scroll progress,
+              so it stays outside ChapterReveal. */}
+          <div id="fleet-section" className="scroll-mt-20">
+            <FleetRevealMotion onRequestScroll={handleFleetRequest} />
 
-          <ChapterReveal>
-            <FleetControlSlider onRequestScroll={handleFleetRequest} />
-          </ChapterReveal>
+            <ChapterReveal>
+              <FleetControlSlider onRequestScroll={handleFleetRequest} />
+            </ChapterReveal>
+          </div>
 
           <SectionTransition />
 
+          {/* 07 — The ALAIR Standard, with the trust strip merged in below. */}
           <div id="standards-section" className="scroll-mt-20">
             <ChapterReveal>
               <StandardsSection />
             </ChapterReveal>
           </div>
 
-          <SectionTransition />
-
-          <div id="journey-section" className="relative scroll-mt-20">
-            <JourneyCardRail />
-          </div>
+          {/* Private Interval: the approved cabin video moment — the Composure
+              standard made visible. */}
+          <ChapterReveal>
+            <PrivateIntervalMotion />
+          </ChapterReveal>
 
           <SectionTransition />
 
           <div id="routes-section" className="scroll-mt-20">
-            {/* Section 05 — "Zürich to wherever": 3D destination stack over an
-                animated SVG route line (sticky pin — no ChapterReveal), followed
-                by the detailed route intelligence map. */}
+            {/* 08 — Routes from Zürich: cinematic destination stack (sticky pin —
+                no ChapterReveal), followed by the route map. */}
             <DestinationStackMotion />
 
             <SectionTransition />
@@ -302,24 +299,15 @@ export default function App() {
 
           <SectionTransition />
 
-          <div id="protocol-section" className="scroll-mt-20">
-            <ChapterReveal>
-              <ProtocolGrid />
-              <BeforeRequestFAQ />
-            </ChapterReveal>
-          </div>
-
-          <SectionTransition />
-
-          {/* Section 06 — Private Interval: the third approved video moment. */}
+          {/* 09 — How booking works + request, one conversion section. */}
           <ChapterReveal>
-            <PrivateIntervalMotion />
+            <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
           </ChapterReveal>
 
           <SectionTransition />
 
           <ChapterReveal>
-            <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
+            <BeforeRequestFAQ />
           </ChapterReveal>
 
           <LuxuryFooter onNavClick={scrollToSection} />

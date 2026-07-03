@@ -81,24 +81,20 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
 
   return (
     <motion.section
-      id="fleet-section"
       animate={{ backgroundColor: selectedIdx === 0 ? "#0A0A0A" : "#08130D" }}
       transition={{ duration: isReduced ? 0 : 1.1, ease: "easeInOut" }}
-      className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise"
+      className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >
       <div className="mx-auto max-w-7xl">
-        {/* Header + vehicle tabs */}
+        {/* Compact selector header + vehicle tabs — the chapter title lives in
+            FleetRevealMotion directly above; no second fleet headline here. */}
         <div className="mb-12 flex flex-col justify-between md:mb-16 md:flex-row md:items-end">
           <div>
             <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-              Fleet
+              Vehicle Selection
             </span>
-            <h2 className="font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-              Two vehicles. <span className="font-light italic text-brand-stone">One standard.</span>
-            </h2>
-            <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-brand-stone md:text-base">
-              ALAIR NOIR operates a focused premium fleet selected for executive silence, private
-              comfort, and refined passenger movement.
+            <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
+              Compare the two cabins <span className="italic text-brand-stone">and choose yours.</span>
             </p>
           </div>
 
@@ -171,15 +167,11 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                   </span>
                 </div>
 
-                <div className="absolute right-5 top-5 border border-brand-gold/30 bg-brand-black/90 px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-brand-gold">
-                  2026 SPEC
-                </div>
-
                 {/* Vehicle nameplate */}
                 <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5 md:p-7">
                   <div>
                     <span className="mb-1 block text-[10px] font-mono uppercase tracking-widest text-brand-stone">
-                      {viewMode === "exterior" ? "CHASSIS VIEW" : "CABIN VIEW"} // 0{selectedIdx + 1}
+                      {viewMode === "exterior" ? "EXTERIOR" : "INTERIOR"} // 0{selectedIdx + 1}
                     </span>
                     <h3 className="font-serif text-xl font-light tracking-wide text-white md:text-3xl">
                       {activeVehicle.name}
@@ -207,7 +199,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                         : "text-brand-stone hover:text-brand-cream"
                     }`}
                   >
-                    {mode === "exterior" ? "Exterior" : "Interior Cabin"}
+                    {mode === "exterior" ? "Exterior" : "Interior"}
                   </button>
                 ))}
               </div>

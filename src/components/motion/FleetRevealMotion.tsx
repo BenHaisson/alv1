@@ -44,12 +44,16 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
-            The Fleet
+            Fleet
           </span>
           <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl">
-            Two cabins.
+            Two vehicles.
             <span className="italic text-brand-stone"> One standard.</span>
           </h2>
+          <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-brand-stone md:text-base">
+            BMW i7 for silent executive travel. Mercedes-Benz V-Class for space, guests,
+            and luggage.
+          </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">

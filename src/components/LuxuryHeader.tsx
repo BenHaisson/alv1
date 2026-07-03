@@ -7,10 +7,10 @@ interface LuxuryHeaderProps {
 }
 
 const links = [
-  { label: "Private Chauffeur", target: "hero" },
+  { label: "Chauffeur", target: "hero" },
   { label: "Services", target: "services" },
   { label: "Fleet", target: "fleet" },
-  { label: "Standards", target: "standards" },
+  { label: "Standard", target: "standards" },
   { label: "Routes", target: "routes" },
   { label: "Booking", target: "request" }
 ];

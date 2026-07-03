@@ -27,14 +27,11 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
             Routes
           </span>
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-            From Zürich to wherever <br />
-            <span className="font-light italic text-brand-stone">the day requires.</span>
+            Routes <span className="font-light italic text-brand-stone">from Zürich.</span>
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-stone">
-            ALAIR NOIR provides private chauffeur journeys from Zürich across Switzerland and
-            selected European routes. Every route is arranged with timing, passenger comfort,
-            luggage, privacy, and arrival expectations in mind. Select a destination to inspect
-            the route.
+            Airport, city, alpine, and Switzerland-wide chauffeur journeys — with selected
+            cross-border routes to Milan, Como, and Munich by request. Select a destination.
           </p>
         </div>
 
@@ -46,7 +43,7 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
                 Destinations
               </span>
               <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-gold/70">
-                {selected.sector}
+                {isHubSelected ? "Zürich" : `Zürich → ${selected.name}`}
               </span>
             </div>
 
@@ -67,14 +64,7 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
                     }`}
                   >
                     {isActive && <CornerMarkers />}
-                    <span
-                      className={`block text-[9px] font-mono tracking-[0.2em] ${
-                        isActive ? "text-brand-gold" : "text-brand-stone/70"
-                      }`}
-                    >
-                      {route.sector}
-                    </span>
-                    <span className="mt-2 block font-serif text-base font-light text-brand-cream">
+                    <span className="block font-serif text-base font-light text-brand-cream">
                       {route.name}
                     </span>
                     <span className="mt-1 block text-[9px] font-mono uppercase tracking-[0.14em] text-brand-stone/80">
@@ -86,19 +76,13 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
             </div>
           </div>
 
-          {/* Right: aviation-console route map */}
+          {/* Right: route map */}
           <div className="order-1 lg:order-2 lg:col-span-7">
             <div className="relative flex h-full min-h-[380px] items-center justify-center border border-brand-cream/10 bg-brand-deep-forest/20 p-6">
               <CornerMarkers tone="cream" />
-              <div className="absolute left-4 top-4 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/40">
-                Route Intelligence v2.1
-              </div>
-              <div className="absolute right-4 top-4 flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/40">
+              <div className="absolute left-4 top-4 flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/40">
                 <span className={`h-1 w-1 rounded-full bg-brand-gold ${isReduced ? "" : "animate-pulse"}`} />
-                ZRH HUB / LIVE
-              </div>
-              <div className="absolute bottom-4 right-4 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/40">
-                CH SECTOR GRID
+                Zürich · Switzerland
               </div>
 
               <svg
@@ -233,13 +217,10 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
             >
               <div className="max-w-2xl">
                 <div className="mb-2 flex items-center gap-3">
-                  <span className="text-[10px] font-mono tracking-[0.24em] text-brand-gold">
-                    {selected.sector}
+                  <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-gold">
+                    {isHubSelected ? "Home base" : `Zürich → ${selected.name}`}
                   </span>
                   <span className="h-px w-8 bg-brand-gold/30" />
-                  <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
-                    {isHubSelected ? "Operations base" : `Zürich → ${selected.name}`}
-                  </span>
                 </div>
                 <p className="font-serif text-lg font-light italic text-brand-ivory md:text-xl">
                   “{selected.description}”
