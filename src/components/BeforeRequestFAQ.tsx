@@ -22,7 +22,7 @@ export default function BeforeRequestFAQ() {
             Private chauffeur service, <span className="italic text-brand-stone">clearly arranged.</span>
           </h2>
           <p className="text-sm text-brand-stone font-light">
-            Answers to common booking and operational scenarios. For custom arrangements, please reach out directly.
+            For anything not covered here, ask directly.
           </p>
         </div>
 

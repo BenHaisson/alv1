@@ -11,7 +11,6 @@ import {
   ServiceMatrixItem,
   JourneyStep,
   IntelRoute,
-  ProtocolItem,
   ValueCard
 } from "./types";
 import { imageAssets } from "./assets";
@@ -690,40 +689,3 @@ export const INTEL_ROUTES: IntelRoute[] = [
   }
 ];
 
-export const PROTOCOLS: ProtocolItem[] = [
-  {
-    number: "01",
-    title: "Discreet Passenger Handling",
-    description: "Passengers are received and moved with calm attention and absolute discretion."
-  },
-  {
-    number: "02",
-    title: "Private Route & Schedule Awareness",
-    description: "Routes, timing, and schedules are treated as confidential from the first message."
-  },
-  {
-    number: "03",
-    title: "Clear Direct Communication",
-    description: "Requests are answered directly — clear, discreet, and professional throughout."
-  },
-  {
-    number: "04",
-    title: "Premium Vehicle Presentation",
-    description: "The vehicle is prepared, positioned, and presented properly before you reach it."
-  },
-  {
-    number: "05",
-    title: "Professional Chauffeur Conduct",
-    description: "Composed presentation and respectful communication on every journey."
-  },
-  {
-    number: "06",
-    title: "Confidential Instructions Respected",
-    description: "Special instructions are followed exactly and never discussed elsewhere."
-  },
-  {
-    number: "07",
-    title: "Prepared Airport & Hotel Coordination",
-    description: "Flight-aware timing and refined coordination for airport and hotel arrivals."
-  }
-];

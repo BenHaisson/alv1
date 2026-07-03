@@ -19,16 +19,15 @@ export default function ServiceMatrix() {
               Services
             </span>
             <h2 className="font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-              Chauffeur service for private, executive, <span className="font-light italic text-brand-stone">and high-trust movement.</span>
+              Private chauffeur <span className="font-light italic text-brand-stone">services.</span>
             </h2>
             <p className="mt-6 text-sm font-light leading-relaxed text-brand-stone md:text-base">
-              ALAIR NOIR serves clients who need a chauffeur experience that is discreet, punctual,
-              and suitable for premium personal and professional schedules. Select a service to
-              unlock its scope.
+              Discreet, punctual chauffeur service for premium personal and professional
+              schedules. Select a service to view its scope.
             </p>
           </div>
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
-            0{activeIndex + 1} / 06 ACTIVE
+            0{activeIndex + 1} / 06
           </span>
         </div>
 
@@ -67,7 +66,7 @@ export default function ServiceMatrix() {
               >
                 {isActive && <CornerMarkers />}
 
-                {/* Unlock hairline */}
+                {/* Top hairline */}
                 <motion.span
                   aria-hidden="true"
                   initial={isReduced ? false : { scaleX: 0 }}
@@ -93,7 +92,7 @@ export default function ServiceMatrix() {
                         isActive ? "text-brand-gold/80" : "text-brand-stone/40"
                       }`}
                     >
-                      {isActive ? "UNLOCKED" : "LOCKED"}
+                      {isActive ? "SELECTED" : "AVAILABLE"}
                     </span>
                   </div>
 

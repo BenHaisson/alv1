@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { imageAssets } from "../assets";
+import { JOURNEY_STEPS } from "../data";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 
 interface RequestDispatchConsoleProps {
@@ -51,12 +52,12 @@ export default function RequestDispatchConsole({ prefilledVehicle = "" }: Reques
     const ready = guestComplete && routeComplete && timingComplete;
 
     return [
-      { id: "guest" as StepId, number: "01", label: "Guest", complete: guestComplete },
+      { id: "guest" as StepId, number: "01", label: "Contact", complete: guestComplete },
       { id: "route" as StepId, number: "02", label: "Route", complete: routeComplete },
       { id: "timing" as StepId, number: "03", label: "Timing", complete: timingComplete },
       { id: "vehicle" as StepId, number: "04", label: "Vehicle", complete: true },
       { id: "instructions" as StepId, number: "05", label: "Instructions", complete: notes.trim() !== "" },
-      { id: "dispatch" as StepId, number: "06", label: "Dispatch", complete: ready }
+      { id: "dispatch" as StepId, number: "06", label: "Request", complete: ready }
     ];
   }, [contact, route, date, time, notes]);
 
@@ -64,16 +65,16 @@ export default function RequestDispatchConsole({ prefilledVehicle = "" }: Reques
   const requiredComplete = [steps[0], steps[1], steps[2]].filter((step) => step.complete).length;
 
   const getSpecificationText = () => {
-    return `ALAIR NOIR PRIVATE TRANSFER CONSOLE
+    return `ALAIR NOIR PRIVATE CHAUFFEUR REQUEST
 --------------------------------------------------
 Origin / Destination : ${route || "To be specified"}
 Date                 : ${date || "To be specified"}
 Time (CET)           : ${time || "To be specified"}
-Passenger Count      : ${passengers} Executive(s)
+Passenger Count      : ${passengers} Passenger(s)
 Luggage Count        : ${luggage} Large Bag(s)
 Preferred Vehicle    : ${vehicleMeta.label} (${vehicleMeta.caption})
 Contact Reference    : ${contact || "To be specified"}
-Special Directives   : ${notes || "None"}
+Private Instructions : ${notes || "None"}
 --------------------------------------------------
 Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
   };
@@ -104,7 +105,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
       className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise"
     >
       <div className="mx-auto max-w-7xl">
-        {/* Console header */}
+        {/* Section header */}
         <div className="mb-12 max-w-3xl md:mb-16">
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
             Booking
@@ -119,7 +120,37 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
           </p>
         </div>
 
-        {/* Step progress rail */}
+        {/* How booking works — the five-step process, compact. */}
+        <div className="mb-14 border-y border-brand-cream/10 py-10 md:mb-16">
+          <span className="mb-8 block text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
+            How Booking Works
+          </span>
+          <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+            {JOURNEY_STEPS.map((step, index) => (
+              <motion.li
+                key={step.id}
+                initial={isReduced ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.6, delay: isReduced ? 0 : index * 0.08, ease: EASE_OUT }}
+                className="relative"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="font-serif text-2xl font-light text-brand-gold/80">{step.number}</span>
+                  <span className="h-px flex-1 bg-brand-cream/10" />
+                </div>
+                <h3 className="mb-2 font-serif text-base font-light tracking-wide text-brand-ivory">
+                  {step.title}
+                </h3>
+                <p className="text-xs font-light leading-relaxed text-brand-stone">
+                  {step.description}
+                </p>
+              </motion.li>
+            ))}
+          </ol>
+        </div>
+
+        {/* Private Chauffeur Request — step progress rail */}
         <div className="mb-12 grid grid-cols-3 gap-2 md:grid-cols-6 md:gap-3">
           {steps.map((step) => {
             const isActive = activeStep === step.id;
@@ -175,9 +206,9 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                 onFocus={() => setActiveStep("guest")}
                 className={groupClass("guest")}
               >
-                <legend className="sr-only">Guest details</legend>
+                <legend className="sr-only">Contact details</legend>
                 <span className="mb-4 text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                  01 / Guest
+                  01 / Contact
                 </span>
                 <div className="space-y-5">
                   <div className="flex flex-col">
@@ -205,7 +236,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                         onChange={(e) => setPassengers(e.target.value)}
                         className={`${inputClass} cursor-pointer`}
                       >
-                        <option value="1">1 Executive</option>
+                        <option value="1">1 Passenger</option>
                         <option value="2">2 Passengers</option>
                         <option value="3">3 Passengers</option>
                         <option value="4">4 Group Passengers</option>
@@ -349,7 +380,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                 </span>
                 <div className="flex flex-col">
                   <label htmlFor="console-notes" className={labelClass}>
-                    Private Directives / Notes
+                    Private Instructions / Notes
                   </label>
                   <textarea
                     id="console-notes"
@@ -418,7 +449,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
               {/* Required-field progress */}
               <div className="mb-6">
                 <div className="mb-2 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                  <span>Dispatch sequence</span>
+                  <span>Booking request</span>
                   <span>{requiredComplete} / 3 required</span>
                 </div>
                 <div className="h-[2px] w-full bg-brand-cream/10">
@@ -460,13 +491,13 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                       rel="noopener noreferrer"
                       className="block bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.15em] text-brand-black transition-all duration-300 hover:bg-brand-ivory"
                     >
-                      WhatsApp Dispatch
+                      Book by WhatsApp
                     </a>
                     <a
                       href={mailtoLink}
                       className="block border border-brand-gold py-4 text-center text-xs font-mono uppercase tracking-[0.15em] text-brand-gold transition-all duration-300 hover:bg-brand-gold-muted"
                     >
-                      Email Booking Desk
+                      Request by Email
                     </a>
                   </motion.div>
                 ) : (
@@ -477,7 +508,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                     exit={isReduced ? undefined : { opacity: 0 }}
                     className="border border-brand-cream/10 bg-brand-black/40 px-4 py-3.5 text-center text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone"
                   >
-                    Complete guest / route / timing to unlock dispatch
+                    Complete contact, route, and timing to send the request
                   </motion.p>
                 )}
               </AnimatePresence>

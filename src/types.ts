@@ -94,9 +94,3 @@ export interface IntelRoute {
   description: string;
   coordinates: { x: number; y: number };
 }
-
-export interface ProtocolItem {
-  number: string;
-  title: string;
-  description: string;
-}
