@@ -29,6 +29,13 @@ export default function DestinationStackMotion() {
             The base is Zürich. The range is the day&apos;s requirement — airport,
             city, alps, or the other end of the country.
           </p>
+          <p className="mt-4 max-w-md text-sm font-light leading-relaxed text-brand-ivory/75">
+            Private chauffeur journeys from Zürich to Davos, St. Moritz, Gstaad,
+            Geneva, Lucerne, and Lugano — with flight-aware airport transfers,
+            hourly bookings, and selected cross-border routes to Milan and Munich
+            on request. Send the route; availability and rate are confirmed
+            directly.
+          </p>
 
           <ol className="mt-10 hidden max-w-sm flex-col gap-1 lg:flex">
             {DESTINATIONS.map((card, index) => {

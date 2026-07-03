@@ -86,11 +86,3 @@ export interface JourneyStep {
   image: string;
 }
 
-export interface IntelRoute {
-  id: string;
-  name: string;
-  sector: string;
-  eta: string;
-  description: string;
-  coordinates: { x: number; y: number };
-}
