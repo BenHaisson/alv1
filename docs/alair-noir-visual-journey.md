@@ -29,13 +29,14 @@ build components → wire in → verify desktop + mobile → refine.
 | 01 | Hero Arrival | "This is composed." | `HeroCommandDeck` | existing |
 | 02 | **Not for everyone. For you.** | "This is for me." | **`NotForEveryone` (new)** | **added** |
 | 03 | The Standard | "Nothing is improvised." | `StandardsSection` | existing |
-| 04 | Fleet Reveal | "The tools match the standard." | `FleetControlSlider` | existing |
-| 05 | Zürich to wherever | "It goes where my day goes." | `SwissRouteIntelligence`, `JourneyCardRail` | existing |
-| 06 | Private Interval | "The cabin is mine." | `PrivateAccessScene`, `CabinExperience`* | existing / orphaned* |
+| 04 | Fleet Reveal | "The tools match the standard." | `FleetControlSlider`, **`FleetRevealMotion` (new)** | existing + added |
+| 05 | Zürich to wherever | "It goes where my day goes." | `SwissRouteIntelligence`, **`DestinationStackMotion` (new)** | existing + added |
+| 06 | Private Interval | "The cabin is mine." | **`PrivateIntervalMotion` (new)** | **added** |
 | 07 | Booking | "No pressure. Just availability." | `RequestDispatchConsole` | existing |
 
-\* `CabinExperience` / `PrivateOffice` exist in `src/components` but are not
-currently wired into `App.tsx`. See "Next candidates" below.
+`CabinExperience` / `PrivateOffice` still exist in `src/components` as
+orphaned gallery/booking-desk components, distinct from the new
+`PrivateIntervalMotion` video moment — not wired in, left for a future pass.
 
 ### Gap analysis (what this change addressed)
 
@@ -125,29 +126,55 @@ refreshed.
 ## Motion layer (`src/components/motion/`)
 
 Code motion first; OpenART only for the three approved video moments (hero,
-fleet, cabin) — produced later via image-to-video from approved stills of the
-real vehicles. Credit-safe + vehicle-reference rules are encoded in the skill.
+fleet, cabin) — all three are now produced and installed, via image-to-video
+(`wan2-7`, 1080p, ~7s) from approved stills of the real vehicles. Credit-safe +
+vehicle-reference rules are encoded in the skill.
 
 | Component | Role | Wired at |
 |---|---|---|
-| `CinematicVideoBackground` | Poster-first video bg (mp4 + poster + overlay + mobile/reduced-motion/missing-file fallback, `preload="metadata"`, muted loop, 1.06→1.0 settle) | Hero (`HeroCommandDeck`) |
+| `CinematicVideoBackground` | Poster-first video bg (mp4 + poster + overlay + mobile/reduced-motion/missing-file/codec-failure fallback, `preload="metadata"`, muted loop, 1.06→1.0 settle) | Hero (`HeroCommandDeck`), V-Class fleet card, Private Interval |
 | `StackedClientCards` | Reusable scroll-pinned 3D card stack engine (swipe, dots, aside index, reduced-motion grid) | Powers `NotForEveryone` + destinations |
-| `FleetRevealMotion` | Product reveal: cards separate from stacked to side-by-side on scroll; mask reveal + slow scale | Fleet beat, above `FleetControlSlider` |
+| `FleetRevealMotion` | Product reveal: cards separate from stacked to side-by-side on scroll; mask reveal + slow scale on BMW, live video on V-Class | Fleet beat, above `FleetControlSlider` |
 | `DestinationStackMotion` | 3D destination stack over a scroll-drawn SVG route line (no AI video) | Routes beat, above `SwissRouteIntelligence` |
+| `PrivateIntervalMotion` | Section 06 — the third video moment: near-still rear-cabin scene behind short copy | Between the protocol/FAQ beat and booking |
 | `SectionTransition` | Fade-through-black bridge with thin gold line reveal | All section gaps in `App.tsx` |
-| `MotionImage` | Editorial mask-reveal + 1.08→1.0 settle image primitive | Used by fleet reveal; reusable anywhere |
+| `MotionImage` | Editorial mask-reveal + 1.08→1.0 settle image primitive | Used by fleet reveal (BMW card); reusable anywhere |
 
 Data: `src/data/visualJourney.ts` (video slots, fleet reveal cards,
-destinations). Video files go in `public/videos/` — see the README there;
-every slot falls back to its poster until the mp4 exists.
+destinations). Video files live in `public/videos/` — see the README there.
+`CinematicVideoBackground` falls back to its poster automatically if a file
+is missing, on mobile, under `prefers-reduced-motion`, or if the browser's
+codec can't decode the file — so the site never breaks on any browser.
 
 Tuning: durations/easing per component (`EASE = [0.16, 1, 0.3, 1]`, 0.9s card
 transitions, 1.4s mask reveals); stack geometry in
 `StackedClientCards.cardTransform()`; scroll length per card via the
 `heightPerCardVh` prop.
 
+## Video production log
+
+All three videos were generated image-to-video (`wan2-7`, 1080p, ~7s) from
+approved still frames per the pipeline rule (still approved → then video):
+
+| Video | Source still | Scene |
+|---|---|---|
+| `bmw-i7-hero.mp4` | The live hero poster (`alairNoirHero`) | Slow forward tracking toward the parked i7, stable headlights |
+| `mercedes-vclass-arrival.mp4` | The live V-Class fleet poster (`luxuryVClass`) | Slow drift toward the V-Class at a terminal-style entrance |
+| `bmw-i7-cabin.mp4` | An OpenART image-to-image correction of the rear-cabin still (recolored to black leather, passenger anonymized to a silhouette — the original reference had a cream interior and a visible face, both off-brand) | Near-static cabin, city lights drifting past the window, tablet glow |
+
+The two black-cabin stills produced for the cabin video (BMW rear cabin and a
+V-Class equivalent) were approved inline in chat rather than as file
+attachments, so their bytes aren't in the repo — the V-Class interior view
+(`VEHICLES[1].interiorImage` in `src/data.ts`) still points at the original
+cognac-leather asset pending that file being attached the same way the videos
+were.
+
 ## Next candidates
 
-- Wire `CabinExperience` / `PrivateOffice` in as an explicit **Private Interval**
-  beat (06) using `CinematicVideoBackground` with the `CABIN_VIDEO` slot.
-- Produce the three video moments via image-to-video once stills are approved.
+- Get the two approved black-cabin stills into the repo as real files (attach
+  them like the videos) and repoint `VEHICLES[1].interiorImage` and any other
+  cream/cognac interior references still in `src/data.ts`.
+- Wire `CabinExperience` / `PrivateOffice` in for a secondary interior gallery
+  or booking-desk beat — distinct from `PrivateIntervalMotion`, still orphaned.
+- Consider stripping the (unused, muted-only) audio track from the three mp4s
+  to shave file size once a full `ffmpeg` is available in this environment.

@@ -45,6 +45,8 @@ export interface FleetRevealCard {
   role: string;
   line: string;
   image: string;
+  /** Optional approved video moment for this card (falls back to `image`). */
+  video?: VideoSlot;
 }
 
 export const FLEET_REVEAL: FleetRevealCard[] = [
@@ -60,7 +62,8 @@ export const FLEET_REVEAL: FleetRevealCard[] = [
     name: "Mercedes-Benz V-Class",
     role: "The Private Shuttle",
     line: "Space for families, guests, and luggage — without losing the standard.",
-    image: imageAssets.luxuryVClass
+    image: imageAssets.luxuryVClass,
+    video: VCLASS_ARRIVAL_VIDEO
   }
 ];
 
