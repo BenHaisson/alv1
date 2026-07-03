@@ -30,7 +30,9 @@ const identityCeoFounders = bmwI7Departure;
 const identityFamilyOffices = luxuryVClass;
 const identityDiplomaticGuests = bmwI7TarmacMeet;
 const identityPremiumHospitality = zurichLuxuryArrival;
-const identityPrivateClients = luxuryVipCabin;
+// luxuryVipCabin shows a cream interior — fleet interiors are black, so the
+// dark private-terminal exterior serves this card instead.
+const identityPrivateClients = bmwI7Exterior;
 
 export const imageAssets = {
   alairNoirHero,

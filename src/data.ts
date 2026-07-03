@@ -134,7 +134,10 @@ export const VEHICLES: Vehicle[] = [
       { label: "Roof Style", value: "Sky Lounge Panoramic" }
     ],
     image: imageAssets.luxuryBmwI7,
-    interiorImage: imageAssets.bmwI7RearWorkspace,
+    // Fleet interiors are black — the rear-workspace shot shows a cream cabin,
+    // so the black i7 cockpit serves until the corrected black rear-cabin
+    // still (OpenArt i2i) is approved and dropped in.
+    interiorImage: imageAssets.bmwI7CockpitNight,
     numericalSpecs: [
       { label: "Power output", value: 544, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },
@@ -528,7 +531,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
     tag: "DIRECT LINE",
     description:
       "Booking begins with a direct message — no portals, no call centers, no exposure.",
-    image: imageAssets.bmwI7RearWorkspace
+    image: imageAssets.bmwI7CockpitNight
   },
   {
     id: "confirm",

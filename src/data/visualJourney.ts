@@ -26,7 +26,10 @@ export const HERO_VIDEO: VideoSlot = {
 
 export const CABIN_VIDEO: VideoSlot = {
   src: "/videos/bmw-i7-cabin.mp4",
-  poster: imageAssets.bmwI7RearWorkspace,
+  // Fleet interiors are black — poster uses the black i7 cockpit until the
+  // corrected black rear-cabin still is approved; the video will be generated
+  // from that approved frame, and this poster should then match it.
+  poster: imageAssets.bmwI7CockpitNight,
   alt: "Private rear cabin of the BMW i7 at night"
 };
 
