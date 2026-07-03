@@ -54,14 +54,16 @@ export default function ProtocolGrid() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 max-w-3xl md:mb-20">
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            07 / Trust Protocol
+            Trust & Discretion
           </span>
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl">
-            Verified where <span className="font-light italic text-brand-stone">it matters.</span>
+            Built for clients who value <span className="font-light italic text-brand-stone">privacy before luxury.</span>
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-stone">
-            Private mobility requires trust before the vehicle arrives. Every ALAIR NOIR
-            journey runs on the same operational checklist — confirmed, prepared, and discreet.
+            ALAIR NOIR is designed for clients whose movement requires confidence. The service
+            protects privacy, handles instructions carefully, and keeps communication direct,
+            discreet, and professional. Luxury is not only the vehicle. It is the absence of
+            uncertainty.
           </p>
         </div>
 

@@ -24,15 +24,17 @@ export default function SwissRouteIntelligence({ onRequestScroll }: SwissRouteIn
         {/* Header */}
         <div className="mb-14 max-w-3xl md:mb-20">
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            06 / Swiss Route Intelligence
+            Routes
           </span>
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-            Zürich to wherever <br />
-            <span className="font-light italic text-brand-stone">Switzerland requires.</span>
+            From Zürich to wherever <br />
+            <span className="font-light italic text-brand-stone">the day requires.</span>
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-stone">
-            ALAIR NOIR operates from Zürich as the hub and arranges private chauffeur journeys
-            across Switzerland. Select a destination to inspect the route.
+            ALAIR NOIR provides private chauffeur journeys from Zürich across Switzerland and
+            selected European routes. Every route is arranged with timing, passenger comfort,
+            luggage, privacy, and arrival expectations in mind. Select a destination to inspect
+            the route.
           </p>
         </div>
 

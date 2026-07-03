@@ -7,14 +7,12 @@ interface LuxuryHeaderProps {
 }
 
 const links = [
-  { label: "Arrival", target: "hero" },
-  { label: "Access", target: "access" },
+  { label: "Private Chauffeur", target: "hero" },
   { label: "Services", target: "services" },
   { label: "Fleet", target: "fleet" },
-  { label: "Journey", target: "journey" },
+  { label: "Standards", target: "standards" },
   { label: "Routes", target: "routes" },
-  { label: "Protocol", target: "protocol" },
-  { label: "Request", target: "request" }
+  { label: "Booking", target: "request" }
 ];
 
 export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryHeaderProps) {
@@ -76,7 +74,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                   : "border-brand-gold/30 text-brand-gold hover:border-brand-gold hover:bg-brand-gold-muted"
               }`}
             >
-              Request Private Transfer
+              Request Chauffeur
             </button>
           </div>
 
@@ -129,7 +127,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                 onClick={() => handleLinkClick("request")}
                 className="w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.2em] text-brand-black transition-colors duration-300 hover:bg-brand-ivory"
               >
-                Request Private Transfer
+                Request Chauffeur
               </button>
               <div className="flex justify-between text-[9px] font-mono uppercase text-brand-stone">
                 <span>booking@alairnoir.ch</span>

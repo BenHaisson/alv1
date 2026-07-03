@@ -127,8 +127,8 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           range={[0.46, 0.58]}
           from={{ y: 30 }}
           className="bottom-[38%] right-10 xl:right-16"
-          label="Journey Classes"
-          lines={["Airport / Executive / Private", "Diplomatic / Hotel"]}
+          label="Service Classes"
+          lines={["Airport · Executive · Private", "Family Office · Hotel · Long-Distance"]}
           isReduced={isReduced}
         />
 
@@ -138,10 +138,10 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
               style={isReduced ? undefined : { opacity: eyebrowOpacity, y: eyebrowY }}
               className="mb-5 flex flex-wrap items-center gap-4"
             >
-              <span className="font-mono text-sm tracking-widest text-brand-gold">01 / COMMAND DECK</span>
+              <span className="font-mono text-sm tracking-widest text-brand-gold">Private Chauffeur Service Zürich</span>
               <span className="h-px w-10 bg-brand-gold/35" />
               <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-                BMW i7 xDrive60 / Zürich private chauffeur
+                Zürich-based · Switzerland-wide · Directly arranged
               </span>
             </motion.div>
 
@@ -150,13 +150,13 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
                 style={isReduced ? undefined : { opacity: titleOneOpacity, y: titleOneY }}
                 className="block"
               >
-                Private chauffeur service
+                Discreet chauffeur service
               </motion.span>
               <motion.span
                 style={isReduced ? undefined : { opacity: titleTwoOpacity, y: titleTwoY }}
                 className="block font-light italic text-brand-stone"
               >
-                in Zürich, revealed by the road ahead.
+                for people whose time cannot feel improvised.
               </motion.span>
             </h1>
 
@@ -164,9 +164,10 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
               style={isReduced ? undefined : { opacity: copyOpacity, y: copyY }}
               className="mb-10 max-w-2xl text-sm font-light leading-relaxed text-brand-ivory/80 md:text-base lg:text-lg"
             >
-              ALAIR NOIR arranges discreet private mobility for CEOs, founders, executives,
-              private clients, family offices, diplomatic guests, and high-level airport
-              arrivals across Switzerland and selected European routes.
+              ALAIR NOIR GmbH provides private chauffeur service in Zürich and across Switzerland
+              for executives, founders, private clients, family offices, diplomatic guests, hotels,
+              and airport arrivals. Every journey is prepared with timing, privacy, presence, and
+              composure before the vehicle reaches the door.
             </motion.p>
 
             <motion.div
@@ -177,7 +178,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
                 onClick={onRequestScroll}
                 className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-brand-gold/5 transition-all duration-300 hover:bg-brand-ivory hover:text-brand-deep-forest"
               >
-                Request Private Mobility
+                Request Private Chauffeur
               </MagneticButton>
 
               <a
@@ -186,7 +187,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
                 rel="noopener noreferrer"
                 className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-gold transition-colors duration-300 hover:text-white"
               >
-                <span>WhatsApp Direct</span>
+                <span>Book by WhatsApp</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>
               </a>
             </motion.div>
@@ -194,28 +195,18 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
 
           <motion.div
             style={isReduced ? undefined : { opacity: detailOpacity, y: detailY }}
-            className="mt-12 grid grid-cols-1 gap-5 border-t border-brand-cream/10 pt-7 text-brand-stone/85 md:grid-cols-3"
+            className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-brand-cream/10 pt-7"
           >
-            <div>
-              <span className="mb-1 block text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                01 / Primary Cabin
-              </span>
-              <span className="font-serif text-sm tracking-wide text-brand-ivory">BMW i7 xDrive60</span>
-            </div>
-            <div>
-              <span className="mb-1 block text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                02 / Presence
-              </span>
-              <span className="font-serif text-sm tracking-wide text-brand-ivory">Silent black arrival</span>
-            </div>
-            <div>
-              <span className="mb-1 block text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                03 / Core Ethos
-              </span>
-              <span className="font-serif text-sm italic tracking-wide text-brand-ivory">
-                Timing, privacy & cabin composure.
-              </span>
-            </div>
+            {["Airport Transfers", "Executive Travel", "Private Clients", "Hotel & Concierge", "Long-Distance Routes"].map(
+              (label) => (
+                <span key={label} className="flex items-center gap-2">
+                  <span className="h-1 w-1 rounded-full bg-brand-gold" />
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/85">
+                    {label}
+                  </span>
+                </span>
+              )
+            )}
           </motion.div>
         </div>
 

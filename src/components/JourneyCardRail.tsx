@@ -245,15 +245,15 @@ function DesktopRail() {
             <div className="mb-3 flex items-center gap-3">
               <span className="h-px w-6 bg-brand-gold/20" />
               <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-stone">
-                05 / Executive Journey
+                How It Works
               </span>
             </div>
             <h2 className="font-serif text-2xl font-light tracking-[0.16em] text-brand-ivory md:text-3xl">
-              The Journey Sequence
+              Private booking. Quiet execution.
             </h2>
           </div>
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
-            01 - 07 / Request to Delivery
+            01 - 05 / Request to Journey
           </span>
         </div>
 
@@ -297,11 +297,11 @@ function MobileTimeline({ isReduced }: { isReduced: boolean }) {
           <div className="mb-3 flex items-center gap-3">
             <span className="h-px w-6 bg-brand-gold/20" />
             <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-stone">
-              05 / Executive Journey
+              How It Works
             </span>
           </div>
           <h2 className="font-serif text-2xl font-light tracking-[0.16em] text-brand-ivory md:text-3xl">
-            The Journey Sequence
+            Private booking. Quiet execution.
           </h2>
         </div>
 

@@ -107,14 +107,15 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
         {/* Console header */}
         <div className="mb-12 max-w-3xl md:mb-16">
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            08 / Private Transfer Console
+            Booking
           </span>
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-            Begin with <span className="font-light italic text-brand-stone">the route.</span>
+            Begin with the route. <span className="font-light italic text-brand-stone">We will prepare the rest.</span>
           </h2>
           <p className="text-sm font-light leading-relaxed text-brand-stone md:text-base">
-            Complete the dispatch sequence below. ALAIR NOIR confirms availability, vehicle
-            recommendation, and rate directly before the journey.
+            Send your pickup point, destination, date, time, passenger count, luggage details, and
+            preferred vehicle. ALAIR NOIR will confirm availability, route suitability, and the
+            chauffeur arrangement directly.
           </p>
         </div>
 
