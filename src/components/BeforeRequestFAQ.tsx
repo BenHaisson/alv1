@@ -15,11 +15,11 @@ export default function BeforeRequestFAQ() {
         
         {/* Section Header */}
         <div className="max-w-2xl mb-16">
-          <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-cream block mb-4">
-            Pre-Journey Guidelines
+          <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-gold block mb-4">
+            Questions
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-light text-brand-ivory tracking-tight mb-4">
-            Before You Request
+            Private chauffeur service, <span className="italic text-brand-stone">clearly arranged.</span>
           </h2>
           <p className="text-sm text-brand-stone font-light">
             Answers to common booking and operational scenarios. For custom arrangements, please reach out directly.

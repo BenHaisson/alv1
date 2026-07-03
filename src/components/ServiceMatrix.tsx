@@ -16,14 +16,15 @@ export default function ServiceMatrix() {
         <div className="mb-14 flex flex-col gap-6 md:mb-20 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-              03 / Service Matrix
+              Services
             </span>
             <h2 className="font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-              Every movement, <span className="font-light italic text-brand-stone">one standard.</span>
+              Chauffeur service for private, executive, <span className="font-light italic text-brand-stone">and high-trust movement.</span>
             </h2>
             <p className="mt-6 text-sm font-light leading-relaxed text-brand-stone md:text-base">
-              Six operational classes cover what ALAIR NOIR handles — from flight-aware airport
-              pickups to protocol-sensitive delegation movement. Select a class to unlock its scope.
+              ALAIR NOIR serves clients who need a chauffeur experience that is discreet, punctual,
+              and suitable for premium personal and professional schedules. Select a service to
+              unlock its scope.
             </p>
           </div>
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
@@ -115,14 +116,21 @@ export default function ServiceMatrix() {
 
                       <AnimatePresence initial={false}>
                         {isActive && (
-                          <motion.ul
+                          <motion.div
                             initial={isReduced ? false : { opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={isReduced ? undefined : { opacity: 0, height: 0 }}
                             transition={{ duration: 0.5, ease: EASE_OUT }}
-                            className="mt-5 space-y-2 overflow-hidden"
+                            className="overflow-hidden"
                           >
-                            {item.details.map((detail, detailIndex) => (
+                            <p className="mt-4 max-w-md text-xs font-light leading-relaxed text-brand-ivory/75 md:text-sm">
+                              {item.description}
+                            </p>
+                            <span className="mt-5 block text-[9px] font-mono uppercase tracking-[0.24em] text-brand-gold/80">
+                              Best for
+                            </span>
+                            <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              {item.details.map((detail, detailIndex) => (
                               <motion.li
                                 key={detail}
                                 initial={isReduced ? false : { opacity: 0, x: -12 }}
@@ -132,13 +140,14 @@ export default function ServiceMatrix() {
                                   delay: isReduced ? 0 : 0.15 + detailIndex * 0.07,
                                   ease: EASE_OUT
                                 }}
-                                className="flex items-center gap-3 text-xs font-light text-brand-ivory/80 md:text-sm"
+                                className="flex items-center gap-3 text-xs font-light text-brand-ivory/80"
                               >
                                 <span className="h-px w-4 shrink-0 bg-brand-gold/50" />
                                 <span>{detail}</span>
                               </motion.li>
                             ))}
-                          </motion.ul>
+                            </ul>
+                          </motion.div>
                         )}
                       </AnimatePresence>
                     </div>

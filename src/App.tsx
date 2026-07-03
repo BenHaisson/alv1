@@ -5,23 +5,24 @@ import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import PrivateAccessScene from "./components/PrivateAccessScene";
+import WhatWeAre from "./components/WhatWeAre";
 import ServiceMatrix from "./components/ServiceMatrix";
 import FleetControlSlider from "./components/FleetControlSlider";
+import StandardsSection from "./components/StandardsSection";
 import JourneyCardRail from "./components/JourneyCardRail";
 import SwissRouteIntelligence from "./components/SwissRouteIntelligence";
 import ProtocolGrid from "./components/ProtocolGrid";
+import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
 
 const SECTIONS = [
-  { key: "hero", id: "hero-section", label: "01 // COMMAND DECK", navLabel: "Arrival" },
-  { key: "access", id: "access-section", label: "02 // PRIVATE ACCESS", navLabel: "Access" },
-  { key: "services", id: "services-section", label: "03 // SERVICE MATRIX", navLabel: "Services" },
-  { key: "fleet", id: "fleet-section", label: "04 // FLEET CONTROL", navLabel: "Fleet" },
-  { key: "journey", id: "journey-section", label: "05 // JOURNEY RAIL", navLabel: "Journey" },
-  { key: "routes", id: "routes-section", label: "06 // ROUTE INTEL", navLabel: "Routes" },
-  { key: "protocol", id: "protocol-section", label: "07 // PROTOCOL", navLabel: "Protocol" },
-  { key: "request", id: "request-section", label: "08 // DISPATCH", navLabel: "Request" }
+  { key: "hero", id: "hero-section", label: "01 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
+  { key: "services", id: "services-section", label: "02 // SERVICES", navLabel: "Services" },
+  { key: "fleet", id: "fleet-section", label: "03 // THE FLEET", navLabel: "Fleet" },
+  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standards" },
+  { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
+  { key: "request", id: "request-section", label: "06 // BOOKING", navLabel: "Booking" }
 ];
 
 function ChapterReveal({ children }: { children: ReactNode }) {
@@ -251,6 +252,12 @@ export default function App() {
 
           <SectionBridge />
 
+          <ChapterReveal>
+            <WhatWeAre />
+          </ChapterReveal>
+
+          <SectionBridge />
+
           <div id="services-section" className="scroll-mt-20">
             <ChapterReveal>
               <ServiceMatrix />
@@ -262,6 +269,14 @@ export default function App() {
           <ChapterReveal>
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </ChapterReveal>
+
+          <SectionBridge />
+
+          <div id="standards-section" className="scroll-mt-20">
+            <ChapterReveal>
+              <StandardsSection />
+            </ChapterReveal>
+          </div>
 
           <SectionBridge />
 
@@ -282,6 +297,7 @@ export default function App() {
           <div id="protocol-section" className="scroll-mt-20">
             <ChapterReveal>
               <ProtocolGrid />
+              <BeforeRequestFAQ />
             </ChapterReveal>
           </div>
 

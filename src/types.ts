@@ -63,7 +63,14 @@ export interface ServiceMatrixItem {
   number: string;
   title: string;
   tagline: string;
+  description: string;
   details: string[];
+}
+
+export interface ValueCard {
+  number: string;
+  title: string;
+  description: string;
 }
 
 export interface JourneyStep {

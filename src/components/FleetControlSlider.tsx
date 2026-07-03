@@ -91,11 +91,15 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
         <div className="mb-12 flex flex-col justify-between md:mb-16 md:flex-row md:items-end">
           <div>
             <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-              04 / Fleet Control
+              Fleet
             </span>
             <h2 className="font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-              The 2026 Fleet
+              Two vehicles. <span className="font-light italic text-brand-stone">One standard.</span>
             </h2>
+            <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-brand-stone md:text-base">
+              ALAIR NOIR operates a focused premium fleet selected for executive silence, private
+              comfort, and refined passenger movement.
+            </p>
           </div>
 
           <div className="mt-8 flex space-x-1 border-b border-brand-cream/10 pb-1 md:mt-0">

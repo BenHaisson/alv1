@@ -222,10 +222,10 @@ export default function PrivateAccessScene() {
                 style={{ opacity: eyebrowOpacity, y: eyebrowY }}
                 className="mb-7 flex items-center gap-4"
               >
-                <span className="font-mono text-sm tracking-widest text-brand-stone">02 / PRIVATE ACCESS</span>
+                <span className="font-mono text-sm tracking-widest text-brand-stone">The Brand</span>
                 <span className="h-px w-10 bg-brand-gold/20" />
                 <span className="hidden text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone sm:inline">
-                  Client selection protocol
+                  Not built for volume
                 </span>
               </SceneBlock>
 
@@ -265,8 +265,12 @@ export default function PrivateAccessScene() {
                 className="mt-10 max-w-xl"
               >
                 <p className="text-base font-light leading-relaxed text-brand-ivory/82 md:text-xl">
-                  For clients who value privacy, timing, and the quiet certainty of being
-                  expected before they arrive. Select an access class.
+                  ALAIR NOIR is not built for volume, shortcuts, or anonymous transport. It is
+                  built for clients who expect calm execution, discreet handling, and a vehicle
+                  that arrives already aligned with the day ahead.
+                </p>
+                <p className="mt-6 max-w-xl font-serif text-lg italic text-brand-cream md:text-xl">
+                  Luxury is not noise. It is control.
                 </p>
               </SceneBlock>
             </div>
