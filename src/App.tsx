@@ -6,6 +6,7 @@ import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import PrivateAccessScene from "./components/PrivateAccessScene";
 import WhatWeAre from "./components/WhatWeAre";
+import NotForEveryone from "./components/NotForEveryone";
 import ServiceMatrix from "./components/ServiceMatrix";
 import FleetControlSlider from "./components/FleetControlSlider";
 import StandardsSection from "./components/StandardsSection";
@@ -255,6 +256,12 @@ export default function App() {
           <ChapterReveal>
             <WhatWeAre />
           </ChapterReveal>
+
+          <SectionBridge />
+
+          {/* Section 02 — "NOT FOR EVERYONE. FOR YOU." scroll-pinned identity stack.
+              Not wrapped in ChapterReveal: its transform would break the sticky pin. */}
+          <NotForEveryone />
 
           <SectionBridge />
 

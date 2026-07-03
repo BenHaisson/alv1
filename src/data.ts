@@ -379,36 +379,46 @@ export const ACCESS_CLASSES: AccessClass[] = [
     id: "ceo-founders",
     number: "01",
     title: "CEO & Founders",
+    tagline: "A calm cabin between decisions",
     description:
-      "Moving between decisions, boardrooms, investors, and airports — days that cannot feel improvised."
+      "Moving between decisions, boardrooms, investors, and airports — days that cannot feel improvised.",
+    image: imageAssets.identityCeoFounders
   },
   {
     id: "family-offices",
     number: "02",
     title: "Family Offices",
+    tagline: "Movement without exposure",
     description:
-      "Principals, relatives, guests, recurring schedules, and luggage-heavy arrivals handled quietly."
+      "Principals, relatives, guests, recurring schedules, and luggage-heavy arrivals handled quietly.",
+    image: imageAssets.identityFamilyOffices
   },
   {
     id: "diplomatic-guests",
     number: "03",
     title: "Diplomatic Guests",
+    tagline: "Protocol-grade discretion",
     description:
-      "Protocol-sensitive movement, delegation logistics, and discreet professional conduct throughout."
+      "Protocol-sensitive movement, delegation logistics, and discreet professional conduct throughout.",
+    image: imageAssets.identityDiplomaticGuests
   },
   {
     id: "premium-hospitality",
     number: "04",
     title: "Premium Hospitality",
+    tagline: "Five-star, beyond the lobby",
     description:
-      "Hotel and concierge partners extending a five-star standard beyond the lobby doors."
+      "Hotel and concierge partners extending a five-star standard beyond the lobby doors.",
+    image: imageAssets.identityPremiumHospitality
   },
   {
     id: "private-clients",
     number: "05",
     title: "Private Clients",
+    tagline: "Personal, never intrusive",
     description:
-      "Residences, hotels, appointments, private dinners, and weekend escapes without exposure."
+      "Residences, hotels, appointments, private dinners, and weekend escapes without exposure.",
+    image: imageAssets.identityPrivateClients
   }
 ];
 
