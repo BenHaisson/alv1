@@ -122,9 +122,32 @@ refreshed.
   deliberately **not** wrapped in `ChapterReveal` (its transform would break the
   sticky pin).
 
-## Next candidates (not built here, to avoid disturbing the live design)
+## Motion layer (`src/components/motion/`)
+
+Code motion first; OpenART only for the three approved video moments (hero,
+fleet, cabin) — produced later via image-to-video from approved stills of the
+real vehicles. Credit-safe + vehicle-reference rules are encoded in the skill.
+
+| Component | Role | Wired at |
+|---|---|---|
+| `CinematicVideoBackground` | Poster-first video bg (mp4 + poster + overlay + mobile/reduced-motion/missing-file fallback, `preload="metadata"`, muted loop, 1.06→1.0 settle) | Hero (`HeroCommandDeck`) |
+| `StackedClientCards` | Reusable scroll-pinned 3D card stack engine (swipe, dots, aside index, reduced-motion grid) | Powers `NotForEveryone` + destinations |
+| `FleetRevealMotion` | Product reveal: cards separate from stacked to side-by-side on scroll; mask reveal + slow scale | Fleet beat, above `FleetControlSlider` |
+| `DestinationStackMotion` | 3D destination stack over a scroll-drawn SVG route line (no AI video) | Routes beat, above `SwissRouteIntelligence` |
+| `SectionTransition` | Fade-through-black bridge with thin gold line reveal | All section gaps in `App.tsx` |
+| `MotionImage` | Editorial mask-reveal + 1.08→1.0 settle image primitive | Used by fleet reveal; reusable anywhere |
+
+Data: `src/data/visualJourney.ts` (video slots, fleet reveal cards,
+destinations). Video files go in `public/videos/` — see the README there;
+every slot falls back to its poster until the mp4 exists.
+
+Tuning: durations/easing per component (`EASE = [0.16, 1, 0.3, 1]`, 0.9s card
+transitions, 1.4s mask reveals); stack geometry in
+`StackedClientCards.cardTransform()`; scroll length per card via the
+`heightPerCardVh` prop.
+
+## Next candidates
 
 - Wire `CabinExperience` / `PrivateOffice` in as an explicit **Private Interval**
-  beat (06) with a bespoke rear-cabin OpenART frame.
-- Optional 3D **Destination Stack** variant of `SwissRouteIntelligence` reusing
-  this same pinned-stack mechanism.
+  beat (06) using `CinematicVideoBackground` with the `CABIN_VIDEO` slot.
+- Produce the three video moments via image-to-video once stills are approved.

@@ -21,10 +21,10 @@ export const IMAGES = {
   vclass_interior: imageAssets.luxuryVClass,
   zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
   zurich_luxury_arrival: imageAssets.luxuryVipCabin,
-  // Standard premium placeholders or dark vignettes for minor slides
+  // Approved local assets only — no external/stock URLs (see SKILL.md asset rules)
   cabin_1: imageAssets.luxuryVipCabin, // Sleek leather
-  cabin_2: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=1200", // Night drive
-  cabin_3: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200", // Clean console
+  cabin_2: imageAssets.bmwI7CockpitNight, // Night drive
+  cabin_3: imageAssets.bmwI7RearWorkspace, // Clean console
 };
 
 export const ALAIR_STANDARDS: Pillar[] = [

@@ -76,6 +76,32 @@ Visual style:
 - No cheap glow
 - No colorful gradients
 
+## Vehicle Asset Rules (MANDATORY)
+
+Never generate BMW i7 or Mercedes V-Class visuals from text-only prompts.
+AI will distort grilles, headlights, proportions, doors, wheels, and logos.
+
+For cars, always use this order:
+1. Real reference image (uploaded/approved).
+2. Image-to-image refinement only if needed.
+3. Image-to-video from an approved still frame.
+4. Website motion using CSS / the motion library — not more generation.
+
+Always preserve the exact vehicle body, grille, headlights, proportions,
+wheels, and paint from the reference. If a generated image changes the car
+model, stop immediately and report failure.
+
+## Credit-Safe Rules (MANDATORY)
+
+- Never generate more than 2 variations of an asset before asking for approval.
+- Never generate a video until its still frame is approved.
+- Never use text-to-image for the BMW i7 or Mercedes V-Class.
+- Prefer code animation (motion/react, CSS, SVG) over generated assets.
+- The website uses only 3 real video moments; everything else is code motion:
+  1. Hero background (BMW i7 arriving in Zürich, 6–8s loop, slow tracking).
+  2. Fleet reveal (BMW i7 + V-Class product motion).
+  3. Private cabin (rear cabin, silhouette, tablet glow, subtle movement).
+
 ## Image Generation Rules
 
 When generating images with OpenArt AI MCP:
