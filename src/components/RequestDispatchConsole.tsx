@@ -99,11 +99,10 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
   const inputClass =
     "w-full border border-brand-cream/10 bg-brand-black/60 p-4 text-sm font-light font-sans text-brand-ivory transition-all placeholder:text-brand-stone/40 focus:border-brand-gold/60 focus:outline-none";
 
+  // The request-section nav anchor lives on StackedChapter's flow sentinel in
+  // App.tsx — a pinned section would mis-report its own position.
   return (
-    <section
-      id="request-section"
-      className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise"
-    >
+    <section className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise">
       <div className="mx-auto max-w-7xl">
         {/* Section header */}
         <div className="mb-12 max-w-3xl md:mb-16">

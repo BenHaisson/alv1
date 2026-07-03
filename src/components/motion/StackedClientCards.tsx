@@ -7,6 +7,7 @@ import {
   type PanInfo
 } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "../MotionProvider";
+import { scrollWindowTo } from "../../lib/smoothScroll";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -80,9 +81,13 @@ export default function StackedClientCards({
       setActive(clamped);
       return;
     }
+    // offsetTop is relative to the nearest positioned ancestor — under the
+    // stacked-chapter z-wrappers that's no longer the page, so measure in
+    // document space instead.
+    const sectionTop = el.getBoundingClientRect().top + window.scrollY;
     const scrollable = el.offsetHeight - window.innerHeight;
-    const target = el.offsetTop + (clamped / (count - 1)) * scrollable;
-    window.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
+    const target = sectionTop + (clamped / (count - 1)) * scrollable;
+    scrollWindowTo(target, { immediate: reduced });
   };
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
