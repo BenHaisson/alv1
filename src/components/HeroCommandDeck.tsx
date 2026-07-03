@@ -1,14 +1,13 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import MagneticButton from "./MagneticButton";
-import { imageAssets } from "../assets";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
+import CinematicVideoBackground from "./motion/CinematicVideoBackground";
+import { HERO_VIDEO } from "../data/visualJourney";
 
 interface HeroCommandDeckProps {
   onRequestScroll: () => void;
 }
-
-const HERO_IMAGE = imageAssets.alairNoirHero;
 
 function FloatingCard({
   progress,
@@ -86,17 +85,17 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
   return (
     <section ref={heroRef} className="relative h-[260vh] border-b border-brand-cream/10 bg-brand-black">
       <div className="sticky top-0 min-h-screen overflow-hidden luxury-noise">
+        {/* Poster-first video slot: /videos/bmw-i7-hero.mp4 cross-fades in when
+            present; poster serves mobile, reduced-motion, and missing-file cases.
+            The scroll-linked opacity/scale/x treatment wraps both media. */}
         <motion.div
           className="absolute inset-0 z-0"
           style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
         >
-          <img
-            src={HERO_IMAGE}
-            alt="Black BMW i7 in a dark cinematic studio for Alair Noir"
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            className="h-full w-full object-cover object-[62%_50%] grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
+          <CinematicVideoBackground
+            slot={HERO_VIDEO}
+            overlay={false}
+            mediaClassName="object-[62%_50%] grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
           />
         </motion.div>
 

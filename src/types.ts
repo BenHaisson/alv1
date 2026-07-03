@@ -56,6 +56,8 @@ export interface AccessClass {
   number: string;
   title: string;
   description: string;
+  tagline?: string;
+  image?: string;
 }
 
 export interface ServiceMatrixItem {

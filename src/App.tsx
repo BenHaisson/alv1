@@ -6,8 +6,12 @@ import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import PrivateAccessScene from "./components/PrivateAccessScene";
 import WhatWeAre from "./components/WhatWeAre";
+import NotForEveryone from "./components/NotForEveryone";
 import ServiceMatrix from "./components/ServiceMatrix";
 import FleetControlSlider from "./components/FleetControlSlider";
+import FleetRevealMotion from "./components/motion/FleetRevealMotion";
+import DestinationStackMotion from "./components/motion/DestinationStackMotion";
+import SectionTransition from "./components/motion/SectionTransition";
 import StandardsSection from "./components/StandardsSection";
 import JourneyCardRail from "./components/JourneyCardRail";
 import SwissRouteIntelligence from "./components/SwissRouteIntelligence";
@@ -36,21 +40,6 @@ function ChapterReveal({ children }: { children: ReactNode }) {
     >
       {children}
     </motion.div>
-  );
-}
-
-function SectionBridge() {
-  return (
-    <div className="relative h-16 overflow-hidden bg-brand-black md:h-24" aria-hidden="true">
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-black via-brand-deep-forest/45 to-brand-black" />
-      <motion.div
-        initial={{ scaleY: 0, opacity: 0 }}
-        whileInView={{ scaleY: 1, opacity: 1 }}
-        viewport={{ amount: 0.7, once: false }}
-        transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute bottom-3 left-1/2 top-3 w-px origin-top bg-brand-gold/25"
-      />
-    </div>
   );
 }
 
@@ -246,17 +235,23 @@ export default function App() {
             <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <PrivateAccessScene />
 
-          <SectionBridge />
+          <SectionTransition />
 
           <ChapterReveal>
             <WhatWeAre />
           </ChapterReveal>
 
-          <SectionBridge />
+          <SectionTransition />
+
+          {/* Section 02 — "NOT FOR EVERYONE. FOR YOU." scroll-pinned identity stack.
+              Not wrapped in ChapterReveal: its transform would break the sticky pin. */}
+          <NotForEveryone />
+
+          <SectionTransition />
 
           <div id="services-section" className="scroll-mt-20">
             <ChapterReveal>
@@ -264,13 +259,18 @@ export default function App() {
             </ChapterReveal>
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
+
+          {/* Section 04 — Fleet: product reveal first (scroll-driven separation),
+              detailed slider below it. FleetRevealMotion drives its own scroll
+              progress, so it stays outside ChapterReveal. */}
+          <FleetRevealMotion onRequestScroll={handleFleetRequest} />
 
           <ChapterReveal>
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </ChapterReveal>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <div id="standards-section" className="scroll-mt-20">
             <ChapterReveal>
@@ -278,21 +278,28 @@ export default function App() {
             </ChapterReveal>
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <div id="journey-section" className="relative scroll-mt-20">
             <JourneyCardRail />
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <div id="routes-section" className="scroll-mt-20">
+            {/* Section 05 — "Zürich to wherever": 3D destination stack over an
+                animated SVG route line (sticky pin — no ChapterReveal), followed
+                by the detailed route intelligence map. */}
+            <DestinationStackMotion />
+
+            <SectionTransition />
+
             <ChapterReveal>
               <SwissRouteIntelligence onRequestScroll={() => scrollToSection("request")} />
             </ChapterReveal>
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <div id="protocol-section" className="scroll-mt-20">
             <ChapterReveal>
@@ -301,7 +308,7 @@ export default function App() {
             </ChapterReveal>
           </div>
 
-          <SectionBridge />
+          <SectionTransition />
 
           <ChapterReveal>
             <RequestDispatchConsole prefilledVehicle={selectedVehicle} />

@@ -9,11 +9,11 @@ interface OccasionCardsProps {
 
 const SERVICE_IMAGES: Record<string, string> = {
   "01": imageAssets.luxuryAirportWelcome,
-  "02": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600",
+  "02": imageAssets.bmwI7Departure,
   "03": imageAssets.luxuryVipCabin,
   "04": imageAssets.luxuryBmwI7,
   "05": imageAssets.luxuryVClass,
-  "06": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600"
+  "06": imageAssets.zurichLuxuryArrival
 };
 
 function ServiceCard({ occasion, idx, key }: { occasion: typeof OCCASIONS[0]; idx: number; key?: string | number }) {

@@ -21,10 +21,10 @@ export const IMAGES = {
   vclass_interior: imageAssets.luxuryVClass,
   zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
   zurich_luxury_arrival: imageAssets.luxuryVipCabin,
-  // Standard premium placeholders or dark vignettes for minor slides
+  // Approved local assets only — no external/stock URLs (see SKILL.md asset rules)
   cabin_1: imageAssets.luxuryVipCabin, // Sleek leather
-  cabin_2: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=1200", // Night drive
-  cabin_3: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200", // Clean console
+  cabin_2: imageAssets.bmwI7CockpitNight, // Night drive
+  cabin_3: imageAssets.bmwI7RearWorkspace, // Clean console
 };
 
 export const ALAIR_STANDARDS: Pillar[] = [
@@ -134,7 +134,10 @@ export const VEHICLES: Vehicle[] = [
       { label: "Roof Style", value: "Sky Lounge Panoramic" }
     ],
     image: imageAssets.luxuryBmwI7,
-    interiorImage: imageAssets.bmwI7RearWorkspace,
+    // Fleet interiors are black — the rear-workspace shot shows a cream cabin,
+    // so the black i7 cockpit serves until the corrected black rear-cabin
+    // still (OpenArt i2i) is approved and dropped in.
+    interiorImage: imageAssets.bmwI7CockpitNight,
     numericalSpecs: [
       { label: "Power output", value: 544, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },
@@ -379,36 +382,46 @@ export const ACCESS_CLASSES: AccessClass[] = [
     id: "ceo-founders",
     number: "01",
     title: "CEO & Founders",
+    tagline: "A calm cabin between decisions",
     description:
-      "Moving between decisions, boardrooms, investors, and airports — days that cannot feel improvised."
+      "Moving between decisions, boardrooms, investors, and airports — days that cannot feel improvised.",
+    image: imageAssets.identityCeoFounders
   },
   {
     id: "family-offices",
     number: "02",
     title: "Family Offices",
+    tagline: "Movement without exposure",
     description:
-      "Principals, relatives, guests, recurring schedules, and luggage-heavy arrivals handled quietly."
+      "Principals, relatives, guests, recurring schedules, and luggage-heavy arrivals handled quietly.",
+    image: imageAssets.identityFamilyOffices
   },
   {
     id: "diplomatic-guests",
     number: "03",
     title: "Diplomatic Guests",
+    tagline: "Protocol-grade discretion",
     description:
-      "Protocol-sensitive movement, delegation logistics, and discreet professional conduct throughout."
+      "Protocol-sensitive movement, delegation logistics, and discreet professional conduct throughout.",
+    image: imageAssets.identityDiplomaticGuests
   },
   {
     id: "premium-hospitality",
     number: "04",
     title: "Premium Hospitality",
+    tagline: "Five-star, beyond the lobby",
     description:
-      "Hotel and concierge partners extending a five-star standard beyond the lobby doors."
+      "Hotel and concierge partners extending a five-star standard beyond the lobby doors.",
+    image: imageAssets.identityPremiumHospitality
   },
   {
     id: "private-clients",
     number: "05",
     title: "Private Clients",
+    tagline: "Personal, never intrusive",
     description:
-      "Residences, hotels, appointments, private dinners, and weekend escapes without exposure."
+      "Residences, hotels, appointments, private dinners, and weekend escapes without exposure.",
+    image: imageAssets.identityPrivateClients
   }
 ];
 
@@ -518,7 +531,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
     tag: "DIRECT LINE",
     description:
       "Booking begins with a direct message — no portals, no call centers, no exposure.",
-    image: imageAssets.bmwI7RearWorkspace
+    image: imageAssets.bmwI7CockpitNight
   },
   {
     id: "confirm",
