@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CABIN_VIDEO } from "../../data/visualJourney";
+import { HERO_STILL } from "../../data/visualJourney";
 import { useReducedMotionPref, CornerMarkers } from "../MotionProvider";
 import CinematicVideoBackground from "./CinematicVideoBackground";
 
@@ -20,7 +20,13 @@ export default function PrivateIntervalMotion() {
       aria-label="The private interval inside the cabin"
     >
       <div className="relative h-[70vh] min-h-[520px] w-full">
-        <CinematicVideoBackground slot={CABIN_VIDEO} />
+        {/* Still-only since the media swap: the black i7 plate holds this
+            frame while the cabin video runs behind the hero. Portrait crops
+            bias right/down to keep the car in frame. */}
+        <CinematicVideoBackground
+          slot={HERO_STILL}
+          mediaClassName="object-[68%_55%] md:object-[62%_50%]"
+        />
         <CornerMarkers tone="cream" />
 
         <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-14 pt-24 md:px-12 md:pb-20 lg:px-24">

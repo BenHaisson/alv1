@@ -1,6 +1,8 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
 import { MotionProvider } from "./components/MotionProvider";
+import SmoothScroll from "./components/SmoothScroll";
+import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
@@ -12,6 +14,7 @@ import FleetRevealMotion from "./components/motion/FleetRevealMotion";
 import DestinationStackMotion from "./components/motion/DestinationStackMotion";
 import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
 import SectionTransition from "./components/motion/SectionTransition";
+import StackedChapter from "./components/motion/StackedChapter";
 import StandardsSection from "./components/StandardsSection";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
@@ -25,20 +28,6 @@ const SECTIONS = [
   { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
   { key: "request", id: "request-section", label: "06 // BOOKING", navLabel: "Booking" }
 ];
-
-function ChapterReveal({ children }: { children: ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0.82, y: 34, scale: 0.992 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ amount: 0.18, once: false }}
-      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-      style={{ willChange: "transform, opacity" }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 function JourneyRail({
   activeKey,
@@ -139,7 +128,7 @@ export default function App() {
       const element = document.getElementById(targetId);
       if (element) {
         const top = element.getBoundingClientRect().top + window.scrollY - 76;
-        window.scrollTo({ top, behavior: "auto" });
+        scrollWindowTo(top, { immediate: true });
       }
     }, 360);
 
@@ -159,6 +148,7 @@ export default function App() {
 
   return (
     <MotionProvider>
+      <SmoothScroll>
       <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-cream/35 selection:text-brand-black">
         {isIntroComplete && (
           <motion.div
@@ -175,7 +165,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => scrollWindowTo(0)}
               className="fixed bottom-8 right-8 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-brand-gold/30 bg-brand-black/90 text-brand-gold shadow-xl transition-all duration-300 hover:border-brand-gold hover:bg-brand-gold-muted hover:shadow-[0_0_15px_rgba(205,162,80,0.2)] focus:outline-none"
               aria-label="Back to Top"
             >
@@ -228,86 +218,78 @@ export default function App() {
 
           {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-          <div id="hero-section">
+          {/* 02 — Hero: slides over the pinned opening portal (stage z-0),
+              first sheet of the stack. Self-pinning, so plain flow + z wrapper. */}
+          <div id="hero-section" className="relative z-[1]">
             <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
+            <SectionTransition />
           </div>
 
-          <SectionTransition />
+          {/* From here down each chapter is a sheet in the card stack: it pins
+              and scales down/dims as the next chapter slides over it
+              (StackedChapter). Self-pinning sections (NotForEveryone,
+              DestinationStackMotion) stay in plain flow — an ancestor transform
+              would break their internal sticky pins — inside relative z-index
+              wrappers so they cover previously pinned sheets. z ascends down
+              the page. */}
 
           {/* 03 — What ALAIR NOIR is: company clarity directly after the hero. */}
-          <ChapterReveal>
+          <StackedChapter zIndex={2}>
             <WhatWeAre />
-          </ChapterReveal>
+          </StackedChapter>
 
-          <SectionTransition />
-
-          {/* 04 — "NOT FOR EVERYONE. FOR YOU." — the single manifesto section.
-              Scroll-pinned identity stack; not wrapped in ChapterReveal because
-              its transform would break the sticky pin. */}
-          <NotForEveryone />
-
-          <SectionTransition />
-
-          <div id="services-section" className="scroll-mt-20">
-            <ChapterReveal>
-              <ServiceMatrix />
-            </ChapterReveal>
+          {/* 04 — "NOT FOR EVERYONE. FOR YOU." — the single manifesto section. */}
+          <div className="relative z-[3]">
+            <NotForEveryone />
+            <SectionTransition />
           </div>
 
-          <SectionTransition />
+          <StackedChapter zIndex={4} id="services-section">
+            <ServiceMatrix />
+          </StackedChapter>
 
           {/* 06 — Fleet: one chapter, two beats. Cinematic reveal first, compact
-              selector below it. FleetRevealMotion drives its own scroll progress,
-              so it stays outside ChapterReveal. */}
-          <div id="fleet-section" className="scroll-mt-20">
+              selector below it. FleetRevealMotion drives its own scroll progress
+              but has no internal sticky, so it survives the stacked wrapper. */}
+          <StackedChapter zIndex={5} id="fleet-section">
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
-
-            <ChapterReveal>
-              <FleetControlSlider onRequestScroll={handleFleetRequest} />
-            </ChapterReveal>
-          </div>
-
-          <SectionTransition />
+            <FleetControlSlider onRequestScroll={handleFleetRequest} />
+          </StackedChapter>
 
           {/* 07 — The ALAIR Standard, with the trust strip merged in below. */}
-          <div id="standards-section" className="scroll-mt-20">
-            <ChapterReveal>
-              <StandardsSection />
-            </ChapterReveal>
-          </div>
+          <StackedChapter zIndex={6} id="standards-section">
+            <StandardsSection />
+          </StackedChapter>
 
           {/* Private Interval: the approved cabin video moment — the Composure
               standard made visible. */}
-          <ChapterReveal>
+          <StackedChapter zIndex={7}>
             <PrivateIntervalMotion />
-          </ChapterReveal>
+          </StackedChapter>
 
-          <SectionTransition />
-
-          <div id="routes-section" className="scroll-mt-20">
-            {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
-                (sticky pin — no ChapterReveal). */}
+          {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
+              (sticky pin — stays in plain flow). */}
+          <div id="routes-section" className="relative z-[8] scroll-mt-20">
             <DestinationStackMotion />
+            <SectionTransition />
           </div>
 
-          <SectionTransition />
-
           {/* 09 — How booking works + request, one conversion section. */}
-          <ChapterReveal>
+          <StackedChapter zIndex={9} id="request-section">
             <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
-          </ChapterReveal>
+          </StackedChapter>
 
-          <SectionTransition />
-
-          <ChapterReveal>
+          {/* Final covering sheet — not stacked: the footer is shorter than a
+              viewport, so a pinned FAQ would rest half-scaled at max scroll. */}
+          <div className="relative z-[10]">
             <BeforeRequestFAQ />
-          </ChapterReveal>
-
-          <LuxuryFooter onNavClick={scrollToSection} />
+            <LuxuryFooter onNavClick={scrollToSection} />
+          </div>
         </motion.div>
 
         <div className="fixed inset-0 z-30 pointer-events-none luxury-noise opacity-30" />
       </div>
+      </SmoothScroll>
     </MotionProvider>
   );
 }

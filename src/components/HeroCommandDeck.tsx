@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
 import MagneticButton from "./MagneticButton";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
-import { HERO_VIDEO } from "../data/visualJourney";
+import { CABIN_VIDEO } from "../data/visualJourney";
 
 interface HeroCommandDeckProps {
   onRequestScroll: () => void;
@@ -84,7 +84,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
 
   return (
     <section ref={heroRef} className="relative h-[260vh] border-b border-brand-cream/10 bg-brand-black">
-      <div className="sticky top-0 min-h-screen overflow-hidden luxury-noise">
+      <div className="sticky top-0 min-h-[100svh] overflow-hidden luxury-noise">
         {/* Poster-first video slot: /videos/bmw-i7-hero.mp4 cross-fades in when
             present; poster serves mobile, reduced-motion, and missing-file cases.
             The scroll-linked opacity/scale/x treatment wraps both media. */}
@@ -92,10 +92,14 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           className="absolute inset-0 z-0"
           style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
         >
+          {/* The cabin video runs behind the hero since the media swap with
+              the Private Interval section; minVideoWidth 0 keeps it playing
+              on mobile too (poster covers reduced-motion and load failures). */}
           <CinematicVideoBackground
-            slot={HERO_VIDEO}
+            slot={CABIN_VIDEO}
             overlay={false}
-            mediaClassName="object-[62%_50%] grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
+            minVideoWidth={0}
+            mediaClassName="object-center grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
           />
         </motion.div>
 
@@ -131,7 +135,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           isReduced={isReduced}
         />
 
-        <div className="relative z-20 flex min-h-screen flex-col justify-end px-6 pb-10 pt-28 md:px-12 lg:px-24">
+        <div className="relative z-20 flex min-h-[100svh] flex-col justify-end px-6 pb-10 pt-28 md:px-12 lg:px-24">
           <div className="max-w-4xl">
             <motion.div
               style={isReduced ? undefined : { opacity: eyebrowOpacity, y: eyebrowY }}

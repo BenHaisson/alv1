@@ -11,8 +11,9 @@ import { imageAssets } from "../assets";
  */
 
 export interface VideoSlot {
-  /** Public path to the mp4, e.g. "/videos/bmw-i7-hero.mp4". */
-  src: string;
+  /** Public path to the mp4, e.g. "/videos/bmw-i7-hero.mp4". Omit for a
+   *  still-only slot — the poster then renders permanently. */
+  src?: string;
   /** Poster / fallback still (imported asset). Always required. */
   poster: string;
   alt: string;
@@ -22,6 +23,14 @@ export const HERO_VIDEO: VideoSlot = {
   src: "/videos/bmw-i7-hero.mp4",
   poster: imageAssets.alairNoirHero,
   alt: "Black BMW i7 arriving through Zürich at night for Alair Noir"
+};
+
+/** Still-only slot: the black i7 studio plate. Shown in the Private Interval
+ *  section since the hero/interval media swap (the cabin video moved up to
+ *  the hero; HERO_VIDEO above is kept for a future hero cut). */
+export const HERO_STILL: VideoSlot = {
+  poster: imageAssets.alairNoirHero,
+  alt: "Black BMW i7 studio still for Alair Noir"
 };
 
 export const CABIN_VIDEO: VideoSlot = {
