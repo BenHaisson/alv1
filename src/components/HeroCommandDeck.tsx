@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
 import MagneticButton from "./MagneticButton";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
-import { HERO_VIDEO } from "../data/visualJourney";
+import { CABIN_VIDEO } from "../data/visualJourney";
 
 interface HeroCommandDeckProps {
   onRequestScroll: () => void;
@@ -92,13 +92,14 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           className="absolute inset-0 z-0"
           style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
         >
-          {/* Art direction per breakpoint: the i7 sits in the right two-thirds
-              of the plate, so portrait crops bias further right/down to keep
-              the car in frame; desktop keeps the original composition. */}
+          {/* The cabin video runs behind the hero since the media swap with
+              the Private Interval section; minVideoWidth 0 keeps it playing
+              on mobile too (poster covers reduced-motion and load failures). */}
           <CinematicVideoBackground
-            slot={HERO_VIDEO}
+            slot={CABIN_VIDEO}
             overlay={false}
-            mediaClassName="object-[68%_55%] md:object-[62%_50%] grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
+            minVideoWidth={0}
+            mediaClassName="object-center grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
           />
         </motion.div>
 

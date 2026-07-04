@@ -36,7 +36,7 @@ export default function CinematicVideoBackground({
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
 
-  const wantsVideo = !isReduced && isWide && !videoFailed;
+  const wantsVideo = !!slot.src && !isReduced && isWide && !videoFailed;
 
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
