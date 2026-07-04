@@ -20,13 +20,11 @@ import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
 
-// Rail/nav entries in page order — the chauffeur hero now sits between the
-// Standard and the Routes chapters (swapped with the Private Interval video).
 const SECTIONS = [
-  { key: "services", id: "services-section", label: "01 // SERVICES", navLabel: "Services" },
-  { key: "fleet", id: "fleet-section", label: "02 // THE FLEET", navLabel: "Fleet" },
-  { key: "standards", id: "standards-section", label: "03 // THE STANDARD", navLabel: "Standard" },
-  { key: "hero", id: "hero-section", label: "04 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
+  { key: "hero", id: "hero-section", label: "01 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
+  { key: "services", id: "services-section", label: "02 // SERVICES", navLabel: "Services" },
+  { key: "fleet", id: "fleet-section", label: "03 // THE FLEET", navLabel: "Fleet" },
+  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" },
   { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
   { key: "request", id: "request-section", label: "06 // BOOKING", navLabel: "Booking" }
 ];
@@ -82,7 +80,7 @@ export default function App() {
   const [selectedVehicle, setSelectedVehicle] = useState("bmw-i7");
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [activeKey, setActiveKey] = useState(SECTIONS[0].key);
+  const [activeKey, setActiveKey] = useState("hero");
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -220,12 +218,12 @@ export default function App() {
 
           {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-          {/* 02 — Private Interval: the cabin video moment opens the journey,
-              sliding over the pinned opening portal (stage z-0) as the first
-              sheet of the stack. */}
-          <StackedChapter zIndex={1}>
-            <PrivateIntervalMotion />
-          </StackedChapter>
+          {/* 02 — Hero: slides over the pinned opening portal (stage z-0),
+              first sheet of the stack. Self-pinning, so plain flow + z wrapper. */}
+          <div id="hero-section" className="relative z-[1]">
+            <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
+            <SectionTransition />
+          </div>
 
           {/* From here down each chapter is a sheet in the card stack: it pins
               and scales down/dims as the next chapter slides over it
@@ -235,7 +233,7 @@ export default function App() {
               wrappers so they cover previously pinned sheets. z ascends down
               the page. */}
 
-          {/* 03 — What ALAIR NOIR is: company clarity after the opening video. */}
+          {/* 03 — What ALAIR NOIR is: company clarity directly after the hero. */}
           <StackedChapter zIndex={2}>
             <WhatWeAre />
           </StackedChapter>
@@ -263,13 +261,11 @@ export default function App() {
             <StandardsSection />
           </StackedChapter>
 
-          {/* Hero command deck: the chauffeur chapter, swapped into the old
-              Private Interval slot. Self-pinning (260vh), so plain flow +
-              z wrapper; the bridge stays inside so paint order holds. */}
-          <div id="hero-section" className="relative z-[7]">
-            <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
-            <SectionTransition />
-          </div>
+          {/* Private Interval: the approved cabin video moment — the Composure
+              standard made visible. */}
+          <StackedChapter zIndex={7}>
+            <PrivateIntervalMotion />
+          </StackedChapter>
 
           {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
               (sticky pin — stays in plain flow). */}

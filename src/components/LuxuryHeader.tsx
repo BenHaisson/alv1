@@ -6,13 +6,11 @@ interface LuxuryHeaderProps {
   activeSection?: string;
 }
 
-// Page order: the chauffeur hero sits between Standard and Routes now that it
-// swapped places with the Private Interval opening video.
 const links = [
+  { label: "Chauffeur", target: "hero" },
   { label: "Services", target: "services" },
   { label: "Fleet", target: "fleet" },
   { label: "Standard", target: "standards" },
-  { label: "Chauffeur", target: "hero" },
   { label: "Routes", target: "routes" },
   { label: "Booking", target: "request" }
 ];
