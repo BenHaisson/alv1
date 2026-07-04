@@ -218,11 +218,12 @@ export default function App() {
 
           {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-          <div id="hero-section">
+          {/* 02 — Hero: slides over the pinned opening portal (stage z-0),
+              first sheet of the stack. Self-pinning, so plain flow + z wrapper. */}
+          <div id="hero-section" className="relative z-[1]">
             <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
+            <SectionTransition />
           </div>
-
-          <SectionTransition />
 
           {/* From here down each chapter is a sheet in the card stack: it pins
               and scales down/dims as the next chapter slides over it
@@ -233,54 +234,54 @@ export default function App() {
               the page. */}
 
           {/* 03 — What ALAIR NOIR is: company clarity directly after the hero. */}
-          <StackedChapter zIndex={1}>
+          <StackedChapter zIndex={2}>
             <WhatWeAre />
           </StackedChapter>
 
           {/* 04 — "NOT FOR EVERYONE. FOR YOU." — the single manifesto section. */}
-          <div className="relative z-[2]">
+          <div className="relative z-[3]">
             <NotForEveryone />
             <SectionTransition />
           </div>
 
-          <StackedChapter zIndex={3} id="services-section">
+          <StackedChapter zIndex={4} id="services-section">
             <ServiceMatrix />
           </StackedChapter>
 
           {/* 06 — Fleet: one chapter, two beats. Cinematic reveal first, compact
               selector below it. FleetRevealMotion drives its own scroll progress
               but has no internal sticky, so it survives the stacked wrapper. */}
-          <StackedChapter zIndex={4} id="fleet-section">
+          <StackedChapter zIndex={5} id="fleet-section">
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </StackedChapter>
 
           {/* 07 — The ALAIR Standard, with the trust strip merged in below. */}
-          <StackedChapter zIndex={5} id="standards-section">
+          <StackedChapter zIndex={6} id="standards-section">
             <StandardsSection />
           </StackedChapter>
 
           {/* Private Interval: the approved cabin video moment — the Composure
               standard made visible. */}
-          <StackedChapter zIndex={6}>
+          <StackedChapter zIndex={7}>
             <PrivateIntervalMotion />
           </StackedChapter>
 
           {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
               (sticky pin — stays in plain flow). */}
-          <div id="routes-section" className="relative z-[7] scroll-mt-20">
+          <div id="routes-section" className="relative z-[8] scroll-mt-20">
             <DestinationStackMotion />
             <SectionTransition />
           </div>
 
           {/* 09 — How booking works + request, one conversion section. */}
-          <StackedChapter zIndex={8} id="request-section">
+          <StackedChapter zIndex={9} id="request-section">
             <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
           </StackedChapter>
 
           {/* Final covering sheet — not stacked: the footer is shorter than a
               viewport, so a pinned FAQ would rest half-scaled at max scroll. */}
-          <div className="relative z-[9]">
+          <div className="relative z-[10]">
             <BeforeRequestFAQ />
             <LuxuryFooter onNavClick={scrollToSection} />
           </div>

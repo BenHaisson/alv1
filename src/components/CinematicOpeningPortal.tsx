@@ -14,28 +14,41 @@ const BOOT_LINES = [
 ];
 
 export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningPortalProps) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const hasReportedComplete = useRef(false);
   const isReduced = useReducedMotionPref();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
+
+  // The stage is a page-level sticky sheet (StackedChapter shape), so both
+  // progresses target the flow spacer instead — never a sticky element, whose
+  // measured offsets are unreliable while pinned.
+  //
+  // Boot phase: spacer top travels viewport bottom -> top (scroll 0 -> 100vh).
+  const { scrollYProgress: bootProgress } = useScroll({
+    target: spacerRef,
+    offset: ["start end", "start start"]
+  });
+  // Cover phase: spacer end == the hero's flow top, traveling viewport
+  // bottom -> top — exactly the window in which the hero slides over the
+  // pinned stage.
+  const { scrollYProgress: coverProgress } = useScroll({
+    target: spacerRef,
+    offset: ["end end", "end start"]
   });
 
-  // Fade tied to the section physically exiting (start->end at viewport top),
-  // NOT to "end end" — that progress saturates at the unpin point and would
-  // leave a full viewport of faded-out, empty black before the hero rises.
-  const { scrollYProgress: exitProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  });
-  const portalOpacity = useTransform(exitProgress, [0, 0.72, 1], [1, 1, 0]);
-  const portalScale = useTransform(scrollYProgress, [0, 1], [1, 1.04]);
-  const promptOpacity = useTransform(scrollYProgress, [0, 0.16, 1], [1, 0, 0]);
-  const scanY = useTransform(scrollYProgress, [0, 1], ["-6%", "106%"]);
+  const portalOpacity = useTransform(coverProgress, [0, 0.35, 0.9], [1, 1, 0]);
+  const portalScale = useTransform(bootProgress, [0, 0.5], [1, 1.04]);
+  const promptOpacity = useTransform(bootProgress, [0, 0.08, 1], [1, 0, 0]);
+  const scanY = useTransform(bootProgress, [0, 0.5], ["-6%", "106%"]);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const isComplete = latest > 0.86;
+  // Same cover treatment as StackedChapter: recede, dim, then stop painting.
+  const stageScale = useTransform(coverProgress, [0, 1], [1, 0.955]);
+  const stageDim = useTransform(coverProgress, [0, 1], [0, 0.42]);
+  const stageVisibility = useTransform(coverProgress, (v) =>
+    v >= 0.999 ? ("hidden" as const) : ("visible" as const)
+  );
+
+  useMotionValueEvent(bootProgress, "change", (latest) => {
+    const isComplete = latest > 0.43;
     if (hasReportedComplete.current !== isComplete) {
       hasReportedComplete.current = isComplete;
       onComplete(isComplete);
@@ -52,8 +65,20 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
         };
 
   return (
-    <section ref={sectionRef} className="relative h-[150vh] bg-brand-black">
-      <div className="sticky top-0 h-screen overflow-hidden luxury-noise">
+    <>
+      <motion.div
+        className="sticky top-0 z-0 h-screen overflow-hidden bg-brand-black luxury-noise"
+        style={
+          isReduced
+            ? undefined
+            : {
+                scale: stageScale,
+                visibility: stageVisibility,
+                transformOrigin: "50% 0%",
+                willChange: "transform"
+              }
+        }
+      >
         {/* Scroll-linked digital scan sweep */}
         {!isReduced && (
           <motion.div
@@ -170,7 +195,20 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
             )}
           </motion.div>
         </motion.div>
-      </div>
-    </section>
+
+        {/* Cover dim — deepens as the hero sheet slides over the stage. */}
+        {!isReduced && (
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-40 bg-brand-black"
+            style={{ opacity: stageDim }}
+          />
+        )}
+      </motion.div>
+
+      {/* Boot runway: keeps the original 150vh of intro scroll; both scroll
+          progresses are measured against this in-flow element. */}
+      <div ref={spacerRef} aria-hidden="true" className="relative h-[50vh]" />
+    </>
   );
 }
