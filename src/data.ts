@@ -168,8 +168,10 @@ export const VEHICLES: Vehicle[] = [
       { label: "Infotainment", value: "Dynamic MBUX" },
       { label: "Seating", value: "8-Seat Luxury Configuration" }
     ],
-    image: imageAssets.luxuryVClass,
-    interiorImage: imageAssets.vclassInterior,
+    // Branded V-Class arrival (ALAIR NOIR plate) + black rear cabin —
+    // client uploads, Jul 2026.
+    image: imageAssets.vclassAlairNoirArrival,
+    interiorImage: imageAssets.vclassRearCabinNight,
     numericalSpecs: [
       { label: "Wheelbase length", value: 4.9, suffix: " m" },
       { label: "Max seating capacity", value: 8, suffix: " seats" },

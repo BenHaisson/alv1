@@ -44,7 +44,8 @@ export const CABIN_VIDEO: VideoSlot = {
 
 export const VCLASS_ARRIVAL_VIDEO: VideoSlot = {
   src: "/videos/mercedes-vclass-arrival.mp4",
-  poster: imageAssets.luxuryVClass,
+  // Branded arrival still (ALAIR NOIR plate) — client upload, Jul 2026.
+  poster: imageAssets.vclassAlairNoirArrival,
   alt: "Mercedes-Benz V-Class arriving at a Zürich hotel entrance"
 };
 
@@ -71,7 +72,7 @@ export const FLEET_REVEAL: FleetRevealCard[] = [
     name: "Mercedes-Benz V-Class",
     role: "The Private Shuttle",
     line: "Space for families, guests, and luggage — without losing the standard.",
-    image: imageAssets.luxuryVClass,
+    image: imageAssets.vclassAlairNoirArrival,
     video: VCLASS_ARRIVAL_VIDEO
   }
 ];
