@@ -17,6 +17,9 @@ export interface VideoSlot {
   /** Poster / fallback still (imported asset). Always required. */
   poster: string;
   alt: string;
+  /** Per-slot override of the width below which only the poster is served.
+   *  Set 0 for clips light enough to play on mobile. */
+  minVideoWidth?: number;
 }
 
 export const HERO_VIDEO: VideoSlot = {
@@ -42,6 +45,16 @@ export const CABIN_VIDEO: VideoSlot = {
   alt: "Private rear cabin of the BMW i7 at night"
 };
 
+export const BMW_I7_RUNWAY_VIDEO: VideoSlot = {
+  src: "/videos/bmw-i7-terminal.mp4",
+  // First frame of the clip (extracted at encode time) so the poster→video
+  // cross-fade is seamless. Client OpenArt i2v clip, slowed to 0.5× in the
+  // file itself for the cinematic pace (Jul 2026 upload).
+  poster: imageAssets.bmwI7RunwaySunset,
+  alt: "Black BMW i7 crossing an airport taxiway at sunset",
+  minVideoWidth: 0
+};
+
 export const VCLASS_ARRIVAL_VIDEO: VideoSlot = {
   src: "/videos/mercedes-vclass-arrival.mp4",
   // Branded arrival still (ALAIR NOIR plate) — client upload, Jul 2026.
@@ -65,7 +78,8 @@ export const FLEET_REVEAL: FleetRevealCard[] = [
     name: "BMW i7 xDrive60",
     role: "The Executive Cabin",
     line: "Silent, electric, composed — for single-principal movement.",
-    image: imageAssets.luxuryBmwI7
+    image: imageAssets.bmwI7RunwaySunset,
+    video: BMW_I7_RUNWAY_VIDEO
   },
   {
     id: "v-class",

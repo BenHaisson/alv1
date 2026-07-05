@@ -32,7 +32,7 @@ export default function CinematicVideoBackground({
   minVideoWidth = 768
 }: CinematicVideoBackgroundProps) {
   const isReduced = useReducedMotionPref();
-  const isWide = useMediaQuery(`(min-width: ${minVideoWidth}px)`);
+  const isWide = useMediaQuery(`(min-width: ${slot.minVideoWidth ?? minVideoWidth}px)`);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
 
