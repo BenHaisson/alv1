@@ -14,6 +14,12 @@ const RECOMMENDED: Record<string, string> = {
   "v-class": "Groups, delegations & luggage"
 };
 
+/** Short labels for the pinned vehicle switch on the gallery frame. */
+const SWITCH_LABELS: Record<string, string> = {
+  "bmw-i7": "BMW i7",
+  "v-class": "V-Class"
+};
+
 function AnimatedCounter({ value, suffix, isReduced }: { value: number; suffix: string; isReduced: boolean }) {
   const [count, setCount] = useState(isReduced ? value : 0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -56,17 +62,22 @@ function AnimatedCounter({ value, suffix, isReduced }: { value: number; suffix: 
 
 export default function FleetControlSlider({ onRequestScroll }: FleetControlSliderProps) {
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const [viewMode, setViewMode] = useState<"exterior" | "interior">("exterior");
+  const [frameIdx, setFrameIdx] = useState(0);
   const isReduced = useReducedMotionPref();
   const detailScrollRef = useRef<HTMLDivElement>(null);
   const activeVehicle = VEHICLES[selectedIdx];
 
+  const frames = activeVehicle.gallery ?? [
+    { image: activeVehicle.image, title: activeVehicle.name, caption: activeVehicle.subTitle }
+  ];
+  const activeFrame = frames[Math.min(frameIdx, frames.length - 1)];
+
   useEffect(() => {
-    setViewMode("exterior");
+    setFrameIdx(0);
   }, [selectedIdx]);
 
-  const handleStep = (direction: 1 | -1) => {
-    setSelectedIdx((prev) => (prev + direction + VEHICLES.length) % VEHICLES.length);
+  const stepFrame = (direction: 1 | -1) => {
+    setFrameIdx((prev) => (prev + direction + frames.length) % frames.length);
   };
 
   const scrollDetails = (direction: "left" | "right") => {
@@ -76,8 +87,10 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     });
   };
 
-  const currentImage =
-    viewMode === "exterior" ? activeVehicle.image : activeVehicle.interiorImage ?? activeVehicle.image;
+  // Site-wide reveal language: media rises from below and settles.
+  const frameInitial = isReduced ? { opacity: 0 } : { opacity: 0, y: 90, scale: 1.04 };
+  const frameAnimate = isReduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 };
+  const frameExit = isReduced ? { opacity: 0 } : { opacity: 0, y: -60 };
 
   return (
     <motion.section
@@ -86,71 +99,43 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >
       <div className="mx-auto max-w-7xl">
-        {/* Compact selector header + vehicle tabs — the chapter title lives in
-            FleetRevealMotion directly above; no second fleet headline here. */}
-        <div className="mb-12 flex flex-col justify-between md:mb-16 md:flex-row md:items-end">
-          <div>
-            <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-              Vehicle Selection
-            </span>
-            <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
-              Compare the two cabins <span className="italic text-brand-stone">and choose yours.</span>
-            </p>
-          </div>
-
-          <div className="mt-8 flex space-x-1 border-b border-brand-cream/10 pb-1 md:mt-0">
-            {VEHICLES.map((vehicle, idx) => {
-              const isActive = selectedIdx === idx;
-              return (
-                <button
-                  key={vehicle.id}
-                  type="button"
-                  onClick={() => setSelectedIdx(idx)}
-                  className={`relative cursor-pointer px-4 py-3 text-[10px] font-mono uppercase tracking-[0.2em] transition-all duration-300 focus:outline-none focus-visible:text-brand-gold md:px-6 md:text-xs ${
-                    isActive ? "text-brand-cream" : "text-brand-stone hover:text-brand-cream"
-                  }`}
-                >
-                  <span>{vehicle.name}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeFleetTabLine"
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-gold"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+        {/* Compact selector header — the vehicle switch is pinned on the
+            gallery frame itself; the chapter title lives in FleetRevealMotion
+            directly above. */}
+        <div className="mb-12 md:mb-16">
+          <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
+            Vehicle Selection · Gallery
+          </span>
+          <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
+            Walk through both cabins <span className="italic text-brand-stone">frame by frame.</span>
+          </p>
         </div>
 
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
-          {/* Left: vehicle stage */}
-          <div className="lg:col-span-7">
+          {/* Left: gallery stage */}
+          <motion.div
+            className="lg:col-span-7"
+            initial={isReduced ? undefined : { opacity: 0, y: 60 }}
+            whileInView={isReduced ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 1, ease: EASE_OUT }}
+          >
             <div className="relative overflow-hidden border border-brand-gold/25 bg-brand-black shadow-[0_0_60px_rgba(205,162,80,0.07)]">
               <CornerMarkers />
 
               <div className="relative aspect-[16/10] w-full overflow-hidden">
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.img
-                    key={`${activeVehicle.id}-${viewMode}`}
-                    src={currentImage}
-                    alt={`${activeVehicle.name} — ${viewMode === "exterior" ? "exterior" : "interior cabin"}`}
+                    key={`${activeVehicle.id}-${frameIdx}`}
+                    src={activeFrame.image}
+                    alt={`${activeVehicle.name} — ${activeFrame.title}`}
                     loading="lazy"
                     decoding="async"
                     referrerPolicy="no-referrer"
-                    initial={
-                      isReduced
-                        ? { opacity: 0 }
-                        : { opacity: 0.4, x: 40, clipPath: "inset(0 0 0 100%)" }
-                    }
-                    animate={
-                      isReduced
-                        ? { opacity: 1 }
-                        : { opacity: 1, x: 0, clipPath: "inset(0 0 0 0%)" }
-                    }
-                    exit={isReduced ? { opacity: 0 } : { opacity: 0, x: -40 }}
-                    transition={{ duration: 0.9, ease: EASE_OUT }}
+                    initial={frameInitial}
+                    animate={frameAnimate}
+                    exit={frameExit}
+                    transition={{ duration: 1, ease: EASE_OUT }}
                     className="absolute inset-0 h-full w-full object-cover brightness-[0.9]"
                   />
                 </AnimatePresence>
@@ -158,7 +143,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/15 to-transparent" />
 
                 {/* Recommended badge */}
-                <div className="absolute left-5 top-5 border border-brand-gold/40 bg-brand-black/85 px-3 py-2">
+                <div className="absolute left-5 top-5 hidden border border-brand-gold/40 bg-brand-black/85 px-3 py-2 sm:block">
                   <span className="block text-[8px] font-mono uppercase tracking-[0.26em] text-brand-stone">
                     Recommended for
                   </span>
@@ -167,68 +152,85 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                   </span>
                 </div>
 
-                {/* Vehicle nameplate */}
-                <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5 md:p-7">
-                  <div>
-                    <span className="mb-1 block text-[10px] font-mono uppercase tracking-widest text-brand-stone">
-                      {viewMode === "exterior" ? "EXTERIOR" : "INTERIOR"} // 0{selectedIdx + 1}
-                    </span>
-                    <h3 className="font-serif text-xl font-light tracking-wide text-white md:text-3xl">
-                      {activeVehicle.name}
-                    </h3>
-                    <p className="mt-1 text-xs font-mono italic text-brand-gold md:text-sm">
-                      {activeVehicle.subTitle}
-                    </p>
-                  </div>
+                {/* Pinned vehicle switch — top right of the frame */}
+                <div className="absolute right-4 top-4 z-20 flex border border-brand-gold/35 bg-brand-black/75 p-1 backdrop-blur-sm md:right-5 md:top-5">
+                  {VEHICLES.map((vehicle, idx) => {
+                    const isActive = selectedIdx === idx;
+                    return (
+                      <button
+                        key={vehicle.id}
+                        type="button"
+                        onClick={() => setSelectedIdx(idx)}
+                        aria-pressed={isActive}
+                        className={`relative cursor-pointer px-3 py-2 text-[9px] font-mono uppercase tracking-[0.2em] transition-colors duration-300 focus:outline-none focus-visible:text-brand-gold md:px-4 md:text-[10px] ${
+                          isActive ? "text-brand-black" : "text-brand-stone hover:text-brand-cream"
+                        }`}
+                      >
+                        {isActive && (
+                          <motion.span
+                            layoutId="fleetSwitchPill"
+                            className="absolute inset-0 bg-brand-gold"
+                            transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                          />
+                        )}
+                        <span className="relative z-10">{SWITCH_LABELS[vehicle.id] ?? vehicle.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Frame caption — the content travels with the image */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={`${activeVehicle.id}-${frameIdx}-caption`}
+                      initial={isReduced ? { opacity: 0 } : { opacity: 0, y: 26 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={isReduced ? { opacity: 0 } : { opacity: 0, y: -16 }}
+                      transition={{ duration: 0.7, ease: EASE_OUT }}
+                    >
+                      <span className="mb-1 block text-[10px] font-mono uppercase tracking-widest text-brand-stone">
+                        Gallery // 0{frameIdx + 1} — 0{frames.length} · {activeVehicle.name}
+                      </span>
+                      <h3 className="font-serif text-xl font-light tracking-wide text-white md:text-3xl">
+                        {activeFrame.title}
+                      </h3>
+                      <p className="mt-1 max-w-lg text-xs font-light leading-relaxed text-brand-ivory/80 md:text-sm">
+                        {activeFrame.caption}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
 
-            {/* Stage controls */}
+            {/* Gallery controls */}
             <div className="mt-6 flex flex-wrap items-center justify-between gap-6">
-              <div className="inline-flex rounded-full border border-brand-cream/10 bg-brand-black p-1">
-                {(["exterior", "interior"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setViewMode(mode)}
-                    aria-pressed={viewMode === mode}
-                    className={`cursor-pointer rounded-full px-5 py-2 text-[10px] font-mono uppercase tracking-widest transition-all duration-300 focus:outline-none focus-visible:text-brand-gold ${
-                      viewMode === mode
-                        ? "bg-brand-gold font-semibold text-brand-black shadow-md"
-                        : "text-brand-stone hover:text-brand-cream"
-                    }`}
-                  >
-                    {mode === "exterior" ? "Exterior" : "Interior"}
-                  </button>
-                ))}
+              <div className="flex items-center space-x-2 font-mono text-xs">
+                <span className="text-brand-gold">0{frameIdx + 1}</span>
+                <span className="text-brand-stone/40">/</span>
+                <span className="text-brand-stone">0{frames.length}</span>
+              </div>
+
+              <div className="relative h-[1px] max-w-xs flex-1 bg-brand-cream/15">
+                <div
+                  className="absolute left-0 top-0 h-full bg-brand-gold transition-all duration-500 ease-out"
+                  style={{ width: `${((frameIdx + 1) / frames.length) * 100}%` }}
+                />
               </div>
 
               <div className="flex items-center space-x-8">
                 <button
                   type="button"
-                  onClick={() => handleStep(-1)}
+                  onClick={() => stepFrame(-1)}
                   className="group flex cursor-pointer items-center space-x-3 text-xs font-mono tracking-[0.2em] text-brand-stone transition-colors duration-300 hover:text-brand-cream focus:outline-none focus-visible:text-brand-gold"
                 >
                   <span className="text-[10px] transition-transform duration-300 group-hover:-translate-x-1">←</span>
                   <span>PREV</span>
                 </button>
-                <div className="flex items-center space-x-2">
-                  {VEHICLES.map((vehicle, idx) => (
-                    <button
-                      key={vehicle.id}
-                      type="button"
-                      onClick={() => setSelectedIdx(idx)}
-                      aria-label={`Select ${vehicle.name}`}
-                      className={`h-1 cursor-pointer transition-all duration-300 focus:outline-none ${
-                        selectedIdx === idx ? "w-8 bg-brand-gold" : "w-2 bg-brand-stone/40"
-                      }`}
-                    />
-                  ))}
-                </div>
                 <button
                   type="button"
-                  onClick={() => handleStep(1)}
+                  onClick={() => stepFrame(1)}
                   className="group flex cursor-pointer items-center space-x-3 text-xs font-mono tracking-[0.2em] text-brand-stone transition-colors duration-300 hover:text-brand-cream focus:outline-none focus-visible:text-brand-gold"
                 >
                   <span>NEXT</span>
@@ -236,7 +238,52 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                 </button>
               </div>
             </div>
-          </div>
+
+            {/* Filmstrip — every frame of the active vehicle */}
+            <div
+              className="mt-6 flex snap-x snap-mandatory space-x-3 overflow-x-auto pb-2"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {frames.map((frame, idx) => {
+                const isActive = frameIdx === idx;
+                return (
+                  <button
+                    key={`${activeVehicle.id}-thumb-${idx}`}
+                    type="button"
+                    onClick={() => setFrameIdx(idx)}
+                    aria-label={`Show frame ${idx + 1}: ${frame.title}`}
+                    className="group w-24 flex-shrink-0 cursor-pointer snap-start text-left focus:outline-none md:w-28"
+                  >
+                    <div
+                      className={`relative aspect-[16/10] w-full overflow-hidden border transition-all duration-500 ${
+                        isActive
+                          ? "border-brand-gold"
+                          : "border-brand-cream/10 group-hover:border-brand-cream/30"
+                      }`}
+                    >
+                      <img
+                        src={frame.image}
+                        alt={frame.title}
+                        loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
+                        className={`h-full w-full object-cover transition-all duration-700 ${
+                          isActive ? "opacity-100" : "opacity-45 grayscale group-hover:opacity-75"
+                        }`}
+                      />
+                    </div>
+                    <span
+                      className={`mt-1.5 block text-[8px] font-mono uppercase tracking-[0.15em] transition-colors duration-300 ${
+                        isActive ? "text-brand-gold" : "text-brand-stone group-hover:text-brand-ivory"
+                      }`}
+                    >
+                      0{idx + 1}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
 
           {/* Right: control panel */}
           <div className="lg:col-span-5">
