@@ -50,7 +50,7 @@ const PROTOCOLS: ProtocolRow[] = [
     title: "Composure",
     paragraph: "The cabin is your private interval between obligations. Work. Call. Think. Read. Rest. Or remain in silence.",
     statusLabel: "CABIN SANCTUARY",
-    image: imageAssets.bmwI7RearWorkspace,
+    image: imageAssets.bmwI7RearCabin,
     location: "TRANSIT CALM",
     meta: "ACOUSTIC DECOUPLING"
   },

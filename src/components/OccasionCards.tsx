@@ -10,10 +10,10 @@ interface OccasionCardsProps {
 const SERVICE_IMAGES: Record<string, string> = {
   "01": imageAssets.luxuryAirportWelcome,
   "02": imageAssets.bmwI7Departure,
-  "03": imageAssets.luxuryVipCabin,
+  "03": imageAssets.bmwI7DoorsOpenNight,
   "04": imageAssets.luxuryBmwI7,
   "05": imageAssets.luxuryVClass,
-  "06": imageAssets.zurichLuxuryArrival
+  "06": imageAssets.vclassRearCabinNight
 };
 
 function ServiceCard({ occasion, idx, key }: { occasion: typeof OCCASIONS[0]; idx: number; key?: string | number }) {

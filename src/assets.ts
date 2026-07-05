@@ -4,8 +4,11 @@ import bmwI7CockpitDay from "./assets/images/bmw_i7_cockpit_day.jpg";
 import bmwI7CockpitNight from "./assets/images/bmw_i7_cockpit_night_1782861804665.jpg";
 import bmwI7Departure from "./assets/images/bmw_i7_departure_1782861743795.jpg";
 import bmwI7DoorAmbience from "./assets/images/bmw_i7_door_ambience.jpg";
+import bmwI7DoorsOpenNight from "./assets/images/bmw_i7_doors_open_night.jpg";
+import bmwI7NightPlate from "./assets/images/bmw_i7_night_plate.jpg";
 import bmwI7RearCabin from "./assets/images/bmw_i7_rear_cabin.jpg";
 import bmwI7RearConsole from "./assets/images/bmw_i7_rear_console.jpg";
+import bmwI7TheatreNight from "./assets/images/bmw_i7_theatre_night.jpg";
 import bmwI7TheatreScreen from "./assets/images/bmw_i7_theatre_screen.jpg";
 import bmwI7Exterior from "./assets/images/bmw_i7_exterior_1782843633996.jpg";
 import bmwI7RearWorkspace from "./assets/images/bmw_i7_rear_workspace_1782861794303.jpg";
@@ -53,11 +56,14 @@ export const imageAssets = {
   bmwI7CockpitNight,
   bmwI7Departure,
   bmwI7DoorAmbience,
+  bmwI7DoorsOpenNight,
   bmwI7Exterior,
+  bmwI7NightPlate,
   bmwI7RearCabin,
   bmwI7RearConsole,
   bmwI7RearWorkspace,
   bmwI7RunwaySunset,
+  bmwI7TheatreNight,
   bmwI7TheatreScreen,
   bmwI7StMoritzDusk,
   bmwI7TarmacMeet,

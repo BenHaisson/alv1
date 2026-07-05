@@ -71,3 +71,22 @@ body {
     animation: none !important;
   }
 }
+
+/* ── Fleet conveyor — continuous cinematic drift ─────────────────────────
+   The track holds two identical copies of the frame run and is moved by a
+   JS animation-frame loop (transform only, wrapped at exactly half the track)
+   so the loop never jumps and the strip can be dragged by hand. Right→left
+   on desktop, bottom→top on mobile. */
+.fleet-conveyor-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  will-change: transform;
+}
+@media (min-width: 768px) {
+  .fleet-conveyor-track {
+    flex-direction: row;
+    width: max-content;
+    height: 100%;
+  }
+}

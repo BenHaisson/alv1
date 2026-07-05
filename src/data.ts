@@ -16,9 +16,11 @@ import { imageAssets } from "./assets";
 
 export const IMAGES = {
   bmw_i7_exterior: imageAssets.luxuryBmwI7,
-  vclass_interior: imageAssets.luxuryVClass,
+  vclass_interior: imageAssets.vclassRearCabinNight,
   zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
-  zurich_luxury_arrival: imageAssets.luxuryVipCabin,
+  // Dark chauffeur-at-the-door still — the cream VIP cabin is off-brand
+  // (fleet interiors are black; see SKILL.md visual style).
+  zurich_luxury_arrival: imageAssets.chauffeurDoorHotelNight,
   // Approved local assets only — no external/stock URLs (see SKILL.md asset rules)
   // Cabin frames are client-shot i7 interior stills (Jul 2026 upload).
   cabin_1: imageAssets.bmwI7RearCabin, // Rear lounge seats
@@ -138,6 +140,54 @@ export const VEHICLES: Vehicle[] = [
     // Client-shot i7 rear cabin (Jul 2026 upload) — replaces the interim
     // cockpit still that stood in while the cream rear-workspace shot was off-brand.
     interiorImage: imageAssets.bmwI7RearCabin,
+    // Ordered exterior→cabin story for the vehicle-selection gallery.
+    gallery: [
+      {
+        image: imageAssets.luxuryBmwI7,
+        title: "Private terminal arrival",
+        caption: "Positioned on the ExecuJet apron before the jet doors open — the day begins composed."
+      },
+      {
+        image: imageAssets.bmwI7NightPlate,
+        title: "Presence after dark",
+        caption: "Lit, plated, and waiting exactly where it should be — never searched for."
+      },
+      {
+        image: imageAssets.bmwI7DoorsOpenNight,
+        title: "Doors open on a private room",
+        caption: "Every door prepared, the cabin already glowing before you cross the sidewalk."
+      },
+      {
+        image: imageAssets.bmwI7TheatreNight,
+        title: "The theatre, after hours",
+        caption: "The panoramic screen lowers for the ride home; the city stays outside."
+      },
+      {
+        image: imageAssets.bmwI7RearCabin,
+        title: "The executive lounge",
+        caption: "Quilted rest seat, ambient light, and a floor of quiet between obligations."
+      },
+      {
+        image: imageAssets.bmwI7DoorAmbience,
+        title: "Sound as architecture",
+        caption: "The Bowers & Wilkins surface etched into the door — audio tuned to a whisper."
+      },
+      {
+        image: imageAssets.bmwI7RearConsole,
+        title: "Climate, held steady",
+        caption: "Four zones set to your temperature before pickup — nothing left to adjust."
+      },
+      {
+        image: imageAssets.bmwI7TheatreScreen,
+        title: "Cinema, en route",
+        caption: "31 inches of 8K theatre unfolds from the roof for the longer routes."
+      },
+      {
+        image: imageAssets.bmwI7CockpitDay,
+        title: "The chauffeur's stage",
+        caption: "Curved glass display and crystal controls — precision you never have to touch."
+      }
+    ],
     numericalSpecs: [
       { label: "Power output", value: 544, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },
@@ -174,6 +224,23 @@ export const VEHICLES: Vehicle[] = [
     // client uploads, Jul 2026.
     image: imageAssets.vclassAlairNoirArrival,
     interiorImage: imageAssets.vclassRearCabinNight,
+    gallery: [
+      {
+        image: imageAssets.vclassAlairNoirArrival,
+        title: "Hotel arrival, choreographed",
+        caption: "Under the canopy, aligned with the entrance — guests step straight into the lobby."
+      },
+      {
+        image: imageAssets.luxuryVClass,
+        title: "VIP terminal pickup",
+        caption: "Space for delegations and luggage at the Zürich VIP terminal, without losing the standard."
+      },
+      {
+        image: imageAssets.vclassRearCabinNight,
+        title: "The private shuttle lounge",
+        caption: "Six leather seats in conference layout — a quiet room for families and teams."
+      }
+    ],
     numericalSpecs: [
       { label: "Wheelbase length", value: 4.9, suffix: " m" },
       { label: "Max seating capacity", value: 8, suffix: " seats" },

@@ -1,3 +1,9 @@
+export interface VehicleGalleryFrame {
+  image: string;
+  title: string;
+  caption: string;
+}
+
 export interface Vehicle {
   id: string;
   name: string;
@@ -8,6 +14,8 @@ export interface Vehicle {
   specs: { label: string; value: string }[];
   image: string;
   interiorImage?: string;
+  /** Ordered frames for the vehicle-selection gallery (FleetControlSlider). */
+  gallery?: VehicleGalleryFrame[];
   numericalSpecs?: { label: string; value: number; suffix: string }[];
 }
 
