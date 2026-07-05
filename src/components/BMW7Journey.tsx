@@ -49,7 +49,7 @@ const BMW_I7_JOURNEY_STAGES: JourneyStage[] = [
     title: "The Rear Executive Workspace",
     subtitle: "Mobile Focus",
     description: "Inside the rear lounge, the focus shifts to business. An integrated luxury wooden folding desk supports critical notes and a high-end notebook, while deep-pile carpets and ultra-plush merino-and-leather seats provide executive comfort.",
-    image: imageAssets.bmwI7RearWorkspace,
+    image: imageAssets.bmwI7TheatreNight,
     location: "Transit via Schwyz"
   },
   {

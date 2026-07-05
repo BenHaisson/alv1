@@ -6,11 +6,11 @@ const CARDS = [
   { id: 1, title: "BMW i7 2026", subtitle: "Sleek Electric Sedan", image: imageAssets.luxuryBmwI7, text: "Silent, fully electric performance with Merino leather and Sky Lounge panoramic roof." },
   { id: 2, title: "Mercedes V-Class 2026", subtitle: "VIP Luxury Cabin", image: imageAssets.luxuryVClass, text: "Premium 4.9m wheelbase van with MBUX, AMG Line, and individual luxury seats." },
   { id: 3, title: "Zurich Airport Arrival", subtitle: "Tarmac to Destination", image: imageAssets.luxuryAirportWelcome, text: "Seamless transition from private aviation to the road with utmost discretion." },
-  { id: 4, title: "Executive Schedule", subtitle: "As Directed", image: imageAssets.bmwI7RearWorkspace, text: "A dedicated mobile office for high-stakes days. We wait while you work." },
-  { id: 5, title: "Private Client Movement", subtitle: "Discreet Transit", image: imageAssets.luxuryVipCabin, text: "Absolute privacy for high-net-worth individuals and their families." },
+  { id: 4, title: "Executive Schedule", subtitle: "As Directed", image: imageAssets.bmwI7TheatreNight, text: "A dedicated mobile office for high-stakes days. We wait while you work." },
+  { id: 5, title: "Private Client Movement", subtitle: "Discreet Transit", image: imageAssets.bmwI7RearCabin, text: "Absolute privacy for high-net-worth individuals and their families." },
   { id: 6, title: "Long-Distance Route", subtitle: "Inter-City Excellence", image: imageAssets.bmwI7AlpineCruise, text: "First-class travel between European hubs. St. Moritz, Geneva, Milan, Munich." },
   { id: 7, title: "Event Week Mobility", subtitle: "WEF & Summits", image: imageAssets.bmwI7Departure, text: "Coordinated logistics for global events. Flawless execution under pressure." },
-  { id: 8, title: "Booking Request", subtitle: "Secure Your Journey", image: imageAssets.zurichLuxuryArrival, text: "Reserve your vehicle with our private office. Experience Alair Noir." },
+  { id: 8, title: "Booking Request", subtitle: "Secure Your Journey", image: imageAssets.chauffeurDoorHotelNight, text: "Reserve your vehicle with our private office. Experience Alair Noir." },
 ];
 
 function CarouselCard({

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView } from "motion/react";
+import { AnimatePresence, motion, useAnimationFrame, useInView } from "motion/react";
 import { VEHICLES } from "../data";
-import { useReducedMotionPref } from "./MotionProvider";
+import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import type { VehicleGalleryFrame } from "../types";
 
 interface FleetControlSliderProps {
@@ -10,8 +10,8 @@ interface FleetControlSliderProps {
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-/** Seconds of drift per frame — the pace of a slow walk past the fleet. */
-const DRIFT_SECONDS_PER_FRAME = 9;
+/** Auto-drift pace in px/s — the pace of a slow walk past the fleet. */
+const DRIFT_PX_PER_SECOND = 45;
 
 const RECOMMENDED: Record<string, string> = {
   "bmw-i7": "Executive arrivals & private clients",
@@ -85,10 +85,13 @@ function ConveyorFrame({
       <img
         src={frame.image}
         alt={ariaHidden ? "" : `${vehicleName} — ${frame.title}`}
-        loading="lazy"
+        // The visible copy loads eagerly so frames never collapse to hairlines
+        // while the strip drifts; the aria-hidden duplicate can lazy-load.
+        loading={ariaHidden ? "lazy" : "eager"}
         decoding="async"
+        draggable={false}
         referrerPolicy="no-referrer"
-        className="h-full w-full object-cover brightness-[0.94] md:w-auto md:max-w-none"
+        className="h-full w-full select-none object-cover brightness-[0.94] md:w-auto md:max-w-none"
       />
 
       {/* Frame index — etched, top left */}
@@ -111,22 +114,87 @@ function ConveyorFrame({
 
 /**
  * The fleet as a continuous cinematic conveyor: frames drift right→left on
- * desktop and bottom→top on mobile in a seamless, compositor-only loop
- * (two identical track copies, linear translate to -50%). Hover pauses the
- * drift; prefers-reduced-motion stills it entirely. All copy travels on the
- * frames themselves — below the band sits a single ledger line per vehicle.
+ * desktop and bottom→top on mobile in a seamless loop (two identical track
+ * copies, transform wrapped at exactly half the track). The strip is a hand
+ * instrument too: drag to scrub on desktop (drift resumes on release), tap
+ * to hold on mobile, hover pauses. prefers-reduced-motion stills the loop
+ * into a manually scrollable strip. All copy travels on the frames — below
+ * the band sits a single ledger line per vehicle.
  */
 export default function FleetControlSlider({ onRequestScroll }: FleetControlSliderProps) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const isReduced = useReducedMotionPref();
+  const isWide = useMediaQuery("(min-width: 768px)");
   const activeVehicle = VEHICLES[selectedIdx];
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const hoverPauseRef = useRef(false);
+  const heldRef = useRef(false);
+  const dragRef = useRef<{ pointerId: number | null; last: number; moved: number }>({
+    pointerId: null,
+    last: 0,
+    moved: 0
+  });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isHeld, setIsHeld] = useState(false);
 
   const frames = activeVehicle.gallery ?? [
     { image: activeVehicle.image, title: activeVehicle.name, caption: activeVehicle.subTitle }
   ];
-  const driftDuration = frames.length * DRIFT_SECONDS_PER_FRAME;
   // Reduced motion: a single, manually scrollable run instead of the loop.
   const copies = isReduced ? [0] : [0, 1];
+
+  // Restart the strip cleanly when the vehicle changes.
+  useEffect(() => {
+    offsetRef.current = 0;
+    heldRef.current = false;
+    setIsHeld(false);
+  }, [selectedIdx]);
+
+  // The drift engine: advance unless held, hovered, or being dragged; wrap
+  // at half the track so the duplicated run hands off invisibly.
+  useAnimationFrame((_, delta) => {
+    if (isReduced) return;
+    const track = trackRef.current;
+    if (!track) return;
+    const half = isWide ? track.scrollWidth / 2 : track.scrollHeight / 2;
+    if (!half) return;
+    const paused = hoverPauseRef.current || heldRef.current || dragRef.current.pointerId !== null;
+    if (!paused) offsetRef.current += (DRIFT_PX_PER_SECOND * Math.min(delta, 64)) / 1000;
+    offsetRef.current = ((offsetRef.current % half) + half) % half;
+    track.style.transform = isWide
+      ? `translate3d(${-offsetRef.current}px, 0, 0)`
+      : `translate3d(0, ${-offsetRef.current}px, 0)`;
+  });
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (isReduced || !isWide) return;
+    dragRef.current = { pointerId: event.pointerId, last: event.clientX, moved: 0 };
+    setIsDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragRef.current.pointerId !== event.pointerId) return;
+    const delta = event.clientX - dragRef.current.last;
+    dragRef.current.last = event.clientX;
+    dragRef.current.moved += Math.abs(delta);
+    offsetRef.current -= delta;
+  };
+
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragRef.current.pointerId !== event.pointerId) return;
+    dragRef.current.pointerId = null;
+    setIsDragging(false);
+  };
+
+  // Mobile: a tap holds the strip; another releases it.
+  const handleTap = () => {
+    if (isReduced || isWide) return;
+    heldRef.current = !heldRef.current;
+    setIsHeld(heldRef.current);
+  };
 
   return (
     <motion.section
@@ -135,7 +203,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >
       {/* Compact header — the chapter title lives in FleetRevealMotion above */}
-      <div className="mx-auto mb-10 flex max-w-7xl items-end justify-between md:mb-12">
+      <div className="mx-auto mb-10 flex max-w-7xl flex-col gap-5 md:mb-12 md:flex-row md:items-end md:justify-between">
         <div>
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
             The Fleet · In Motion
@@ -145,7 +213,10 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
           </p>
         </div>
         <span className="hidden text-[10px] font-mono uppercase tracking-[0.25em] text-brand-muted-stone md:block">
-          Hover to hold a frame
+          Drag to explore · release to resume
+        </span>
+        <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-muted-stone md:hidden">
+          Tap the strip to hold a frame
         </span>
       </div>
 
@@ -187,14 +258,21 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
             transition={{ duration: 0.9, ease: EASE_OUT }}
           >
             <div
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerEnd}
+              onPointerCancel={handlePointerEnd}
+              onClick={handleTap}
+              onMouseEnter={() => (hoverPauseRef.current = true)}
+              onMouseLeave={() => (hoverPauseRef.current = false)}
+              style={{ touchAction: "pan-y" }}
               className={`fleet-conveyor relative border-y border-brand-cream/10 max-md:h-[68vh] md:h-[52vh] md:min-h-[400px] ${
-                isReduced ? "overflow-x-auto overflow-y-auto" : "overflow-hidden"
+                isReduced
+                  ? "overflow-x-auto overflow-y-auto"
+                  : `overflow-hidden ${isWide ? (isDragging ? "cursor-grabbing" : "cursor-grab") : ""}`
               }`}
             >
-              <div
-                className="fleet-conveyor-track max-md:px-6 md:py-0"
-                style={{ animationDuration: `${driftDuration}s` }}
-              >
+              <div ref={trackRef} className="fleet-conveyor-track max-md:px-6 md:py-0">
                 {copies.map((copy) =>
                   frames.map((frame, idx) => (
                     <ConveyorFrame
@@ -214,6 +292,12 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-24 bg-gradient-to-l from-brand-black to-transparent md:block lg:w-36" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-brand-black to-transparent md:hidden" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-black to-transparent md:hidden" />
+
+              {isHeld && (
+                <span className="pointer-events-none absolute bottom-5 right-5 z-30 border border-brand-gold/40 bg-brand-black/80 px-3 py-1.5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-gold md:hidden">
+                  Held — tap to resume
+                </span>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>

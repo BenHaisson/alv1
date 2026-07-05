@@ -16,9 +16,11 @@ import { imageAssets } from "./assets";
 
 export const IMAGES = {
   bmw_i7_exterior: imageAssets.luxuryBmwI7,
-  vclass_interior: imageAssets.luxuryVClass,
+  vclass_interior: imageAssets.vclassRearCabinNight,
   zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
-  zurich_luxury_arrival: imageAssets.luxuryVipCabin,
+  // Dark chauffeur-at-the-door still — the cream VIP cabin is off-brand
+  // (fleet interiors are black; see SKILL.md visual style).
+  zurich_luxury_arrival: imageAssets.chauffeurDoorHotelNight,
   // Approved local assets only — no external/stock URLs (see SKILL.md asset rules)
   // Cabin frames are client-shot i7 interior stills (Jul 2026 upload).
   cabin_1: imageAssets.bmwI7RearCabin, // Rear lounge seats

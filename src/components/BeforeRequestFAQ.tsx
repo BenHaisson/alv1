@@ -47,7 +47,7 @@ export default function BeforeRequestFAQ() {
                   </span>
                   
                   {/* Subtle luxury index line toggle */}
-                  <span className="text-xs font-mono text-brand-stone transition-transform duration-300">
+                  <span className="ml-4 flex-shrink-0 whitespace-nowrap text-xs font-mono text-brand-stone transition-transform duration-300">
                     {isOpen ? "[ CLOSE ]" : "[ OPEN ]"}
                   </span>
                 </button>

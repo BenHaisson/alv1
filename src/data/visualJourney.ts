@@ -120,7 +120,7 @@ export const DESTINATIONS: DestinationCard[] = [
     tagline: "The operations base",
     description:
       "Hotel arrivals, corporate schedules, private appointments, and quiet city movement.",
-    image: imageAssets.zurichLuxuryArrival,
+    image: imageAssets.bmwI7NightPlate,
     routeStop: 22
   },
   {
