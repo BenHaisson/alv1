@@ -20,9 +20,12 @@ export const IMAGES = {
   zurich_airport_arrival: imageAssets.luxuryAirportWelcome,
   zurich_luxury_arrival: imageAssets.luxuryVipCabin,
   // Approved local assets only — no external/stock URLs (see SKILL.md asset rules)
-  cabin_1: imageAssets.luxuryVipCabin, // Sleek leather
-  cabin_2: imageAssets.bmwI7CockpitNight, // Night drive
-  cabin_3: imageAssets.bmwI7RearWorkspace, // Clean console
+  // Cabin frames are client-shot i7 interior stills (Jul 2026 upload).
+  cabin_1: imageAssets.bmwI7RearCabin, // Rear lounge seats
+  cabin_2: imageAssets.bmwI7DoorAmbience, // Door speaker + touch panel
+  cabin_3: imageAssets.bmwI7RearConsole, // Rear climate console
+  cabin_4: imageAssets.bmwI7TheatreScreen, // Theatre screen
+  cabin_5: imageAssets.bmwI7CockpitDay, // Front cockpit
 };
 
 export const ALAIR_STANDARDS: Pillar[] = [
@@ -132,10 +135,9 @@ export const VEHICLES: Vehicle[] = [
       { label: "Roof Style", value: "Sky Lounge Panoramic" }
     ],
     image: imageAssets.luxuryBmwI7,
-    // Fleet interiors are black — the rear-workspace shot shows a cream cabin,
-    // so the black i7 cockpit serves until the corrected black rear-cabin
-    // still (OpenArt i2i) is approved and dropped in.
-    interiorImage: imageAssets.bmwI7CockpitNight,
+    // Client-shot i7 rear cabin (Jul 2026 upload) — replaces the interim
+    // cockpit still that stood in while the cream rear-workspace shot was off-brand.
+    interiorImage: imageAssets.bmwI7RearCabin,
     numericalSpecs: [
       { label: "Power output", value: 544, suffix: " hp" },
       { label: "Electric range", value: 625, suffix: " km" },

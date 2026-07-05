@@ -1,16 +1,17 @@
 # ALAIR NOIR video slots
 
-All three approved video moments are installed here. Files in `public/` are
+The approved video moments are installed here. Files in `public/` are
 served at the site root, so `public/videos/bmw-i7-hero.mp4` is loaded as
 `/videos/bmw-i7-hero.mp4` (paths configured in `src/data/visualJourney.ts`).
 
 | File | Used by | Scene |
 |---|---|---|
 | `bmw-i7-hero.mp4` | Hero background (`HeroCommandDeck` via `CinematicVideoBackground`) | BMW i7 arriving through Zürich at night, slow forward tracking |
+| `bmw-i7-terminal.mp4` | Fleet reveal, BMW i7 card (`FleetRevealMotion`) | Aerial of the i7 crossing an airport taxiway at sunset — client OpenArt i2v clip (Jul 2026), slowed to 0.5× in the file for the cinematic pace, plays on mobile too (`minVideoWidth: 0`) |
 | `mercedes-vclass-arrival.mp4` | Fleet reveal, V-Class card (`FleetRevealMotion`) | V-Class arriving at a hotel-style terminal entrance |
 | `bmw-i7-cabin.mp4` | Private Interval section (`PrivateIntervalMotion`, section 06) | Rear cabin, city lights drifting, tablet glow, near-static |
 
-All three were produced image-to-video from approved still frames of the real
+These were produced image-to-video from approved still frames of the real
 vehicles (`wan2-7`, 1080p, ~7s), per the vehicle-reference rules in
 `.claude/skills/alair-noir-visual-journey/SKILL.md` — never text-only
 generation for the BMW i7 or Mercedes V-Class.

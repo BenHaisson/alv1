@@ -7,27 +7,27 @@ export default function CabinExperience() {
     {
       title: "Executive lounge",
       desc: "A spacious environment engineered for physical ease and quiet, allowing you to settle and regain momentum.",
-      image: IMAGES.vclass_interior
+      image: IMAGES.cabin_1
     },
     {
       title: "Ambient privacy",
       desc: "Insulated from public exposure and external noise, ensuring your phone calls and conversations stay yours alone.",
-      image: IMAGES.cabin_1
+      image: IMAGES.cabin_2
     },
     {
       title: "Rear cabin focus",
       desc: "Perfect workstation geometry with soft task lighting designed for busy executives preparing critical reviews.",
-      image: IMAGES.cabin_2
+      image: IMAGES.cabin_3
     },
     {
       title: "Business preparation",
       desc: "A calm, clutter-free space where thoughts align and the focus shifts seamlessly to the upcoming boardroom agenda.",
-      image: IMAGES.cabin_3
+      image: IMAGES.cabin_4
     },
     {
       title: "Passenger silence",
       desc: "The ultimate luxury of absolute quietude. No unsolicited conversation, just undisturbed transition time.",
-      image: IMAGES.zurich_luxury_arrival
+      image: IMAGES.cabin_5
     }
   ];
 
