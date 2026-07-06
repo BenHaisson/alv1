@@ -35,7 +35,7 @@ function FloatingCard({
   return (
     <motion.aside
       style={isReduced ? undefined : { opacity, x, y }}
-      className={`glass-panel pointer-events-none absolute z-30 hidden px-5 py-4 lg:block ${className}`}
+      className={`glass-panel pointer-events-none absolute z-30 hidden px-5 py-4 xl:block ${className}`}
     >
       <CornerMarkers />
       <span className="mb-2 flex items-center gap-2">
@@ -83,7 +83,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
   const detailY = useTransform(scrollYProgress, [0.52, 0.66, 1], [22, 0, 0]);
 
   return (
-    <section ref={heroRef} className="relative h-[260vh] border-b border-brand-cream/10 bg-brand-black">
+    <section ref={heroRef} className="relative h-[200vh] border-b border-brand-cream/10 bg-brand-black">
       <div className="sticky top-0 min-h-[100svh] overflow-hidden luxury-noise">
         {/* Poster-first video slot: /videos/bmw-i7-hero.mp4 cross-fades in when
             present; poster serves mobile, reduced-motion, and missing-file cases.
@@ -107,30 +107,23 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-brand-black/82 via-brand-black/34 to-transparent" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-black/88 via-transparent to-brand-black/46" />
 
-        {/* Floating command-deck interface cards */}
+        {/* Floating detail cards — kept in the right-hand negative space (xl+
+            only, where there is room beside the left-anchored headline) so they
+            never overlap the title at any viewport height. */}
         <FloatingCard
           progress={scrollYProgress}
-          range={[0.3, 0.42]}
-          from={{ x: -44 }}
-          className="left-10 top-32 xl:left-16"
-          label="Service Status"
-          lines={["Private chauffeur service", "Zürich based", "Switzerland ready"]}
-          isReduced={isReduced}
-        />
-        <FloatingCard
-          progress={scrollYProgress}
-          range={[0.38, 0.5]}
+          range={[0.34, 0.46]}
           from={{ x: 44 }}
-          className="right-10 top-40 xl:right-16"
+          className="right-10 top-32 xl:right-16"
           label="Primary Cabin"
           lines={["BMW i7 xDrive60", "Silent executive cabin", "Electric luxury sedan"]}
           isReduced={isReduced}
         />
         <FloatingCard
           progress={scrollYProgress}
-          range={[0.46, 0.58]}
+          range={[0.44, 0.56]}
           from={{ y: 30 }}
-          className="bottom-[38%] right-10 xl:right-16"
+          className="bottom-[36%] right-10 xl:right-16"
           label="Service Classes"
           lines={["Airport · Executive · Private", "Family Office · Hotel · Long-Distance"]}
           isReduced={isReduced}
@@ -149,7 +142,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
               </span>
             </motion.div>
 
-            <h1 className="mb-8 font-serif text-3xl font-light leading-[1.08] text-brand-ivory md:text-5xl lg:text-7xl">
+            <h1 className="mb-8 font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory">
               <motion.span
                 style={isReduced ? undefined : { opacity: titleOneOpacity, y: titleOneY }}
                 className="block"
@@ -166,7 +159,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
 
             <motion.p
               style={isReduced ? undefined : { opacity: copyOpacity, y: copyY }}
-              className="mb-10 max-w-2xl text-sm font-light leading-relaxed text-brand-ivory/80 md:text-base lg:text-lg"
+              className="mb-10 max-w-2xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
             >
               ALAIR NOIR GmbH provides private chauffeur service in Zürich and across Switzerland
               for executives, founders, private clients, family offices, diplomatic guests, hotels,
@@ -180,7 +173,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
             >
               <MagneticButton
                 onClick={onRequestScroll}
-                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-all duration-300 hover:bg-brand-ivory hover:text-brand-deep-forest"
+                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-colors duration-150 ease-in-out hover:bg-brand-ivory hover:text-brand-deep-forest"
               >
                 Request Private Chauffeur
               </MagneticButton>
@@ -189,7 +182,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
                 href="https://wa.me/41772870956"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-gold transition-colors duration-300 hover:text-white"
+                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-colors duration-150 ease-in-out hover:text-white"
               >
                 <span>Book by WhatsApp</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>

@@ -15,6 +15,7 @@ export default function DestinationStackMotion() {
       sectionId="destination-section"
       ariaLabel="Destinations served from Zürich"
       sectionClassName="bg-brand-black"
+      heightPerCardVh={44}
       aside={(active, goTo) => (
         <div className="max-w-xl">
           <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
@@ -25,7 +26,7 @@ export default function DestinationStackMotion() {
             <br />
             <span className="italic text-brand-stone">to wherever.</span>
           </h2>
-          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-stone">
+          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body">
             The base is Zürich. The range is the day&apos;s requirement — airport,
             city, alps, or the other end of the country.
           </p>
@@ -66,7 +67,7 @@ export default function DestinationStackMotion() {
                       className={`font-serif text-lg font-light transition-colors duration-300 ${
                         isActive
                           ? "text-brand-ivory"
-                          : "text-brand-stone/60 group-hover:text-brand-stone"
+                          : "text-brand-stone group-hover:text-brand-cream"
                       }`}
                     >
                       {card.title}

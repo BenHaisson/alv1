@@ -25,7 +25,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 h-20 border-b border-brand-cream/10 bg-brand-black/88 backdrop-blur-[2px] transition-all duration-300 luxury-noise">
+      <header className="fixed left-0 right-0 top-0 z-40 h-20 border-b border-brand-cream/10 bg-brand-black/95 backdrop-blur-lg transition-all duration-300 supports-[backdrop-filter]:bg-brand-black/80 luxury-noise">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 md:px-12 lg:px-24">
           <div
             onClick={() => handleLinkClick("hero")}
@@ -68,7 +68,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             <button
               type="button"
               onClick={() => handleLinkClick("request")}
-              className={`cursor-pointer border px-5 py-2.5 text-[10px] font-mono uppercase tracking-[0.2em] transition-all duration-300 ${
+              className={`cursor-pointer border px-5 py-2.5 text-[10px] font-mono uppercase tracking-[0.2em] transition-colors duration-150 ease-in-out ${
                 activeSection === "request"
                   ? "border-brand-gold bg-brand-gold-muted text-brand-cream"
                   : "border-brand-gold/30 text-brand-gold hover:border-brand-gold hover:bg-brand-gold-muted"
@@ -125,7 +125,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
               <button
                 type="button"
                 onClick={() => handleLinkClick("request")}
-                className="w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.2em] text-brand-black transition-colors duration-300 hover:bg-brand-ivory"
+                className="w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.2em] text-brand-black transition-colors duration-150 ease-in-out hover:bg-brand-ivory"
               >
                 Request Chauffeur
               </button>

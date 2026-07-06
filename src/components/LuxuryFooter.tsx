@@ -40,13 +40,13 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
   ];
 
   return (
-    <footer className="relative bg-brand-black pt-24 pb-12 px-6 md:px-12 lg:px-24 border-t border-brand-cream/10 luxury-noise">
+    <footer className="relative bg-brand-black pt-24 pb-28 px-6 md:px-12 lg:px-24 border-t border-brand-cream/10 luxury-noise">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-3">
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-brand-gold tracking-[0.2em] mb-4">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-brand-cream tracking-[0.15em] mb-4">
               ALAIR NOIR
             </h2>
             <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-brand-stone block mb-6">
@@ -121,25 +121,25 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
         <div className="grid grid-cols-1 gap-6 border-t border-brand-cream/10 pt-10 mb-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Email</span>
-            <a href="mailto:booking@alairnoir.ch" className="text-xs font-mono text-brand-cream hover:text-brand-gold transition-colors">
+            <a href="mailto:booking@alairnoir.ch" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
               booking@alairnoir.ch
             </a>
           </div>
           <div>
             <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Phone</span>
-            <a href="tel:+41772870956" className="text-xs font-mono text-brand-cream hover:text-brand-gold transition-colors">
+            <a href="tel:+41772870956" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
               +41 77 287 09 56
             </a>
           </div>
           <div>
             <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">WhatsApp</span>
-            <a href="https://wa.me/41772870956" target="_blank" rel="noopener noreferrer" className="text-xs font-mono font-medium text-brand-gold hover:text-white transition-colors">
+            <a href="https://wa.me/41772870956" target="_blank" rel="noopener noreferrer" className="text-xs font-mono font-medium text-brand-cream hover:text-white transition-colors">
               +41 77 287 09 56
             </a>
           </div>
           <div>
             <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Instagram</span>
-            <a href="https://instagram.com/alairnoir" target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-brand-cream hover:text-brand-gold transition-colors">
+            <a href="https://instagram.com/alairnoir" target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
               @alairnoir
             </a>
           </div>

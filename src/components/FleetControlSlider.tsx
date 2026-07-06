@@ -42,7 +42,8 @@ function AnimatedCounter({ value, suffix, isReduced }: { value: number; suffix: 
 
     const updateCount = (currentTime: number) => {
       const progress = Math.min((currentTime - startTime) / duration, 1);
-      const easeProgress = progress * (2 - progress);
+      // easeOutExpo — a fast, premium settle rather than a linear/quad ramp.
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       setCount(easeProgress * value);
       if (progress < 1) frame = requestAnimationFrame(updateCount);
       else setCount(value);
@@ -80,7 +81,7 @@ function ConveyorFrame({
   return (
     <figure
       aria-hidden={ariaHidden}
-      className="group/frame relative flex-none overflow-hidden border border-brand-cream/12 bg-brand-black max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
+      className="group/frame relative flex-none overflow-hidden border border-brand-cream/12 bg-brand-black transition-[border-color] duration-200 ease-out hover:border-brand-gold/70 max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
     >
       <img
         src={frame.image}
@@ -91,12 +92,12 @@ function ConveyorFrame({
         decoding="async"
         draggable={false}
         referrerPolicy="no-referrer"
-        className="h-full w-full select-none object-cover brightness-[0.94] md:w-auto md:max-w-none"
+        className="h-full w-full select-none object-cover brightness-[0.94] transition-transform duration-200 ease-out group-hover/frame:scale-[1.03] md:w-auto md:max-w-none"
       />
 
       {/* Frame index — etched, top left */}
-      <span className="absolute left-4 top-4 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-ivory/60">
-        0{index + 1} <span className="text-brand-ivory/30">/ 0{total}</span>
+      <span className="absolute left-4 top-4 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-ivory/85">
+        0{index + 1} <span className="text-brand-ivory/50">/ 0{total}</span>
       </span>
 
       {/* Caption etched into the lower edge of the frame */}

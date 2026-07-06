@@ -21,7 +21,7 @@ export default function ServiceMatrix() {
             <h2 className="font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
               Private chauffeur <span className="font-light italic text-brand-stone">services.</span>
             </h2>
-            <p className="mt-6 text-sm font-light leading-relaxed text-brand-stone md:text-base">
+            <p className="mt-6 text-base font-light leading-relaxed text-brand-body">
               Discreet, punctual chauffeur service for premium personal and professional
               schedules. Select a service to view its scope.
             </p>
@@ -96,7 +96,7 @@ export default function ServiceMatrix() {
                       <h3 className="font-serif text-base font-light leading-snug text-brand-ivory/85 transition-colors duration-300 group-hover:text-brand-ivory lg:text-lg">
                         {item.title}
                       </h3>
-                      <span className="mt-3 block text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/60">
+                      <span className="mt-3 block text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/80">
                         {item.tagline}
                       </span>
                     </div>

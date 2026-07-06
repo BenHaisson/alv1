@@ -17,10 +17,10 @@ export default function WhatWeAre() {
               Private Mobility. Precisely Delivered.
             </span>
             <h2 className="mb-8 font-serif text-3xl font-light leading-[1.1] tracking-tight text-brand-ivory md:text-4xl lg:text-5xl">
-              A private chauffeur service for Zürich, Switzerland, and selected cross-border
-              journeys.
+              A private chauffeur service for Zürich, Switzerland,{" "}
+              <span className="font-light italic text-brand-stone">and selected cross-border journeys.</span>
             </h2>
-            <div className="space-y-5 text-sm font-light leading-relaxed text-brand-stone md:text-base">
+            <div className="space-y-5 text-base font-light leading-relaxed text-brand-body">
               <p>
                 ALAIR NOIR GmbH offers premium chauffeur service for clients who require more than
                 transportation. The route, timing, pickup posture, cabin condition, communication,
@@ -43,7 +43,7 @@ export default function WhatWeAre() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
                 transition={{ duration: 0.7, delay: isReduced ? 0 : index * 0.1, ease: EASE_OUT }}
-                className="group relative flex items-start gap-5 border border-brand-cream/10 bg-brand-deep-forest/25 p-6 transition-colors duration-500 hover:border-brand-gold/40"
+                className="group relative flex items-start gap-5 border border-brand-cream/10 bg-brand-deep-forest/25 p-6 transition-colors duration-200 ease-out hover:border-brand-gold hover:bg-brand-forest-lift/40"
               >
                 <CornerMarkers />
                 <span className="font-serif text-2xl font-light text-brand-gold/80">

@@ -9,7 +9,7 @@ interface CinematicOpeningPortalProps {
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const BOOT_LINES = [
-  { text: "PRIVATE MOBILITY INTERFACE", delay: 1.5 },
+  { text: "PRIVATE CHAUFFEUR SERVICE", delay: 1.5 },
   { text: "ZÜRICH / SWITZERLAND", delay: 1.75 }
 ];
 
@@ -92,19 +92,19 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
         <div aria-hidden="true" className="pointer-events-none absolute inset-5 z-20 hidden md:block">
           <motion.span
             {...reveal(2.2)}
-            className="absolute left-0 top-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/50"
+            className="absolute left-0 top-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/70"
           >
-            AN / MOBILITY OS
+            ALAIR NOIR
           </motion.span>
           <motion.span
             {...reveal(2.35)}
-            className="absolute right-0 top-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/50"
+            className="absolute right-0 top-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/70"
           >
-            SECURE CHANNEL
+            EST. ZÜRICH
           </motion.span>
           <motion.span
             {...reveal(2.5)}
-            className="absolute bottom-0 left-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/50"
+            className="absolute bottom-0 left-0 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone/70"
           >
             47.3769° N / 8.5417° E
           </motion.span>
@@ -168,7 +168,7 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
             >
               <span className={`h-1.5 w-1.5 rounded-full bg-brand-gold ${isReduced ? "" : "animate-pulse"}`} />
               <span className="text-[10px] font-mono uppercase tracking-[0.34em] text-brand-gold">
-                Access Reserved
+                By Arrangement
               </span>
             </motion.div>
           </div>

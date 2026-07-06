@@ -89,8 +89,11 @@ export default function StackedChapter({
           visibility,
           // Keeps the visible window's top edge stationary while scaling
           // (equals origin-top for chapters shorter than the viewport).
-          transformOrigin: `50% ${-stickyTop}px`,
-          willChange: "transform"
+          transformOrigin: `50% ${-stickyTop}px`
+          // No persistent will-change: promoting every chapter's sticky sheet
+          // to its own layer for the whole page multiplied compositor memory
+          // and was a prime suspect for the scroll stutter. Motion still hints
+          // the layer for the duration of the transform, which is enough.
         }}
       >
         {children}

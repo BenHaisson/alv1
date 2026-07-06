@@ -184,8 +184,7 @@ export default function StackedClientCards({
                       y: target.y,
                       scale: target.scale,
                       opacity: target.opacity,
-                      rotateY: target.rotateY,
-                      filter: `blur(${target.blur}px)`
+                      rotateY: target.rotateY
                     }}
                     transition={{ duration: 0.9, ease: EASE }}
                     aria-hidden={!isActive}
@@ -207,7 +206,7 @@ export default function StackedClientCards({
                         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/80">
                           {card.number}
                         </span>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/40">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/60">
                           ALAIR · SPEC
                         </span>
                       </div>
@@ -259,10 +258,13 @@ export default function StackedClientCards({
   );
 }
 
-/** Per-card 3D state as a function of its distance from the active card. */
+/** Per-card 3D state as a function of its distance from the active card.
+ *  Depth is carried by scale + opacity + offset only — the previous
+ *  filter: blur() was animating on every frame and was expensive to
+ *  composite across the stack, so it has been removed. */
 function cardTransform(offset: number) {
   if (offset === 0) {
-    return { x: "0%", y: 0, scale: 1, opacity: 1, rotateY: 0, blur: 0, zIndex: 50 };
+    return { x: "0%", y: 0, scale: 1, opacity: 1, rotateY: 0, zIndex: 50 };
   }
   if (offset > 0) {
     // Upcoming cards stacked behind and slightly lower/right.
@@ -272,19 +274,19 @@ function cardTransform(offset: number) {
       scale: 1 - offset * 0.05,
       opacity: offset > 3 ? 0 : 1 - offset * 0.2,
       rotateY: -5,
-      blur: Math.min(offset * 0.6, 2),
       zIndex: 40 - offset
     };
   }
-  // Past cards slide left and fade; only the immediate previous stays faintly.
+  // Past cards slide left and fade fully out — no residual text is left
+  // peeking behind the active card. The slide + fade still animates on exit,
+  // it just resolves to invisible instead of a lingering 25% ghost.
   const distance = -offset;
   return {
-    x: `${-72 - (distance - 1) * 16}%`,
+    x: `${-78 - (distance - 1) * 16}%`,
     y: 0,
     scale: 0.97,
-    opacity: distance === 1 ? 0.25 : 0,
+    opacity: 0,
     rotateY: 8,
-    blur: 1.4,
     zIndex: 10 - distance
   };
 }

@@ -26,7 +26,7 @@ export default function StandardsSection() {
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
             Five principles <span className="font-light italic text-brand-stone">behind every journey.</span>
           </h2>
-          <p className="text-base font-light leading-relaxed text-brand-stone">
+          <p className="text-base font-light leading-relaxed text-brand-body">
             The difference is not only the vehicle. It is the preparation, discretion, and
             consistency around it.
           </p>
@@ -40,7 +40,7 @@ export default function StandardsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.7, delay: isReduced ? 0 : index * 0.08, ease: EASE_OUT }}
-              className={`group relative flex min-h-[220px] flex-col justify-between border border-brand-cream/10 bg-brand-deep-forest/20 p-7 transition-colors duration-500 hover:border-brand-gold/40 ${
+              className={`group relative flex min-h-[220px] flex-col justify-between border border-brand-cream/10 bg-brand-deep-forest/20 p-7 transition-colors duration-200 ease-out hover:border-brand-gold hover:bg-brand-forest-lift/40 ${
                 index === 3 ? "lg:col-start-1" : ""
               }`}
             >
@@ -55,7 +55,7 @@ export default function StandardsSection() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: isReduced ? 0 : 0.25 + index * 0.08, ease: EASE_OUT }}
-                  className="mt-4 h-px w-12 origin-right bg-brand-gold/40"
+                  className="mt-4 h-px w-12 origin-right bg-brand-cream/25"
                 />
               </div>
               <div>
@@ -82,7 +82,7 @@ export default function StandardsSection() {
                 transition={{ duration: 0.5, delay: isReduced ? 0 : index * 0.06, ease: EASE_OUT }}
                 className="flex items-center gap-2.5"
               >
-                <span className="h-1 w-1 rounded-full bg-brand-gold" />
+                <span className="h-1 w-1 rounded-full bg-brand-cream/45" />
                 <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-brand-ivory/80">
                   {item}
                 </span>
@@ -93,11 +93,11 @@ export default function StandardsSection() {
           {/* Registry proof line */}
           <div className="mt-8 flex flex-col gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone/70 md:flex-row md:gap-8">
             <span>UID CHE-411.952.415</span>
-            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-gold/50 md:block" />
+            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-cream/25 md:block" />
             <span>Limousine Permit / Kanton Zürich</span>
-            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-gold/50 md:block" />
+            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-cream/25 md:block" />
             <span>Certified Tachograph</span>
-            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-gold/50 md:block" />
+            <span className="hidden h-1 w-1 self-center rounded-full bg-brand-cream/25 md:block" />
             <span>Swiss Federal Passenger Compliance</span>
           </div>
         </div>
