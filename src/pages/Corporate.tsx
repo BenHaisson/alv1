@@ -1,4 +1,5 @@
 import { PageIntro, Container, Eyebrow } from "../components/site/primitives";
+import { Reveal } from "../components/site/motion";
 import FinalCTA from "../components/site/FinalCTA";
 
 const AUDIENCES = [
@@ -39,7 +40,7 @@ export default function Corporate() {
 
       <section className="bg-black py-16 md:py-24">
         <Container>
-          <div className="grid gap-px overflow-hidden border border-hairline bg-hairline md:grid-cols-2 lg:grid-cols-3">
+          <Reveal className="grid gap-px overflow-hidden border border-hairline bg-hairline md:grid-cols-2 lg:grid-cols-3">
             {AUDIENCES.map((a) => (
               <div key={a.title} className="bg-deep-black p-8">
                 <h2 className="font-serif text-[24px] font-medium text-ivory">{a.title}</h2>
@@ -48,9 +49,9 @@ export default function Corporate() {
                 </p>
               </div>
             ))}
-          </div>
+          </Reveal>
 
-          <div className="mt-14 border border-hairline bg-forest p-8 md:p-12">
+          <Reveal className="mt-14 border border-hairline bg-forest p-8 md:p-12">
             <Eyebrow>Account arrangements</Eyebrow>
             <p className="mt-5 max-w-3xl font-sans text-[15px] leading-relaxed text-stone-cream/85">
               For companies and family offices with recurring requirements, ALAIR NOIR can
@@ -58,7 +59,7 @@ export default function Corporate() {
               instructions so every transfer is handled the same way. Reach out to discuss an
               ongoing arrangement.
             </p>
-          </div>
+          </Reveal>
         </Container>
       </section>
 

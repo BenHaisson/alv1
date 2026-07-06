@@ -1,4 +1,5 @@
 import { PageIntro, Container, Eyebrow } from "../components/site/primitives";
+import { Reveal } from "../components/site/motion";
 import RequestModule from "../components/site/RequestModule";
 import { CONTACT } from "../lib/contact";
 
@@ -20,7 +21,7 @@ export default function Contact() {
 
       <section className="bg-black py-16 md:py-24">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-[1fr_420px] lg:items-start">
+          <Reveal className="grid gap-12 lg:grid-cols-[1fr_420px] lg:items-start">
             {/* Direct channels + response expectation */}
             <div>
               <Eyebrow>Direct</Eyebrow>
@@ -61,7 +62,7 @@ export default function Contact() {
 
             {/* Request module */}
             <RequestModule />
-          </div>
+          </Reveal>
         </Container>
       </section>
     </>

@@ -1,4 +1,5 @@
 import { PageIntro, Container, Eyebrow } from "../components/site/primitives";
+import { Reveal } from "../components/site/motion";
 import FinalCTA from "../components/site/FinalCTA";
 import { imageAssets } from "../assets";
 
@@ -50,7 +51,7 @@ export default function Fleet() {
           className={`border-b border-hairline py-16 md:py-24 ${idx % 2 === 0 ? "bg-black" : "bg-deep-black"}`}
         >
           <Container>
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <Reveal className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <div className={idx % 2 === 1 ? "lg:order-2" : ""}>
                 <div className="overflow-hidden border border-hairline">
                   <img src={v.image} alt={v.name} className="aspect-[16/11] w-full object-cover" />
@@ -78,7 +79,7 @@ export default function Fleet() {
                   ))}
                 </dl>
               </div>
-            </div>
+            </Reveal>
           </Container>
         </section>
       ))}

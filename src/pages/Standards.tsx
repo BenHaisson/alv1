@@ -1,4 +1,5 @@
 import { PageIntro, Container } from "../components/site/primitives";
+import { Reveal } from "../components/site/motion";
 import FinalCTA from "../components/site/FinalCTA";
 
 const PILLARS = [
@@ -37,7 +38,7 @@ export default function Standards() {
         <Container>
           <div className="space-y-px overflow-hidden border border-hairline bg-hairline">
             {PILLARS.map((p, i) => (
-              <div key={p.title} className="grid gap-6 bg-deep-black p-8 md:grid-cols-[1fr_2fr] md:p-10">
+              <Reveal key={p.title} className="grid gap-6 bg-deep-black p-8 md:grid-cols-[1fr_2fr] md:p-10">
                 <div className="flex items-baseline gap-4">
                   <span className="font-sans text-[12px] tracking-[0.22em] text-muted-stone">
                     0{i + 1}
@@ -45,7 +46,7 @@ export default function Standards() {
                   <h2 className="font-serif text-[30px] font-medium text-ivory">{p.title}</h2>
                 </div>
                 <p className="font-sans text-[14.5px] leading-relaxed text-muted-stone">{p.body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Container>

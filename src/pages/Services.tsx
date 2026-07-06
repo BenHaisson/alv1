@@ -1,4 +1,5 @@
 import { PageIntro, Container, Eyebrow } from "../components/site/primitives";
+import { Reveal } from "../components/site/motion";
 import FinalCTA from "../components/site/FinalCTA";
 
 const SERVICES = [
@@ -39,7 +40,7 @@ export default function Services() {
 
       <section className="bg-black py-16 md:py-24">
         <Container>
-          <div className="grid gap-px overflow-hidden border border-hairline bg-hairline md:grid-cols-2">
+          <Reveal className="grid gap-px overflow-hidden border border-hairline bg-hairline md:grid-cols-2">
             {SERVICES.map((s, i) => (
               <div key={s.title} className="bg-deep-black p-8 md:p-10">
                 <Eyebrow>{`0${i + 1}`}</Eyebrow>
@@ -49,7 +50,7 @@ export default function Services() {
                 </p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </Container>
       </section>
 
