@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
 import MagneticButton from "./MagneticButton";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
-import { CABIN_VIDEO } from "../data/visualJourney";
+import { HERO_VIDEO } from "../data/visualJourney";
 
 interface HeroCommandDeckProps {
   onRequestScroll: () => void;
@@ -39,8 +39,8 @@ function FloatingCard({
     >
       <CornerMarkers />
       <span className="mb-2 flex items-center gap-2">
-        <span className="h-1 w-1 rounded-full bg-brand-gold" />
-        <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-gold/90">{label}</span>
+        <span className="h-1 w-1 rounded-full bg-brand-cream/45" />
+        <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone">{label}</span>
       </span>
       {lines.map((line) => (
         <span
@@ -92,13 +92,14 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           className="absolute inset-0 z-0"
           style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
         >
-          {/* The cabin video runs behind the hero since the media swap with
-              the Private Interval section; minVideoWidth 0 keeps it playing
-              on mobile too (poster covers reduced-motion and load failures). */}
+          {/* Exterior arrival video: the hero introduces presence and arrival
+              authority; the cabin video lives in the Private Interval section.
+              Mobile serves the poster (default minVideoWidth) to protect
+              initial load. */}
           <CinematicVideoBackground
-            slot={CABIN_VIDEO}
+            slot={HERO_VIDEO}
             overlay={false}
-            minVideoWidth={0}
+            priority
             mediaClassName="object-center grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
           />
         </motion.div>
@@ -142,7 +143,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
               className="mb-5 flex flex-wrap items-center gap-4"
             >
               <span className="font-mono text-sm tracking-widest text-brand-gold">Private Chauffeur Service Zürich</span>
-              <span className="h-px w-10 bg-brand-gold/35" />
+              <span className="h-px w-10 bg-brand-cream/25" />
               <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
                 Zürich-based · Switzerland-wide · Directly arranged
               </span>
@@ -179,7 +180,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
             >
               <MagneticButton
                 onClick={onRequestScroll}
-                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-brand-gold/5 transition-all duration-300 hover:bg-brand-ivory hover:text-brand-deep-forest"
+                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-all duration-300 hover:bg-brand-ivory hover:text-brand-deep-forest"
               >
                 Request Private Chauffeur
               </MagneticButton>
@@ -203,7 +204,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
             {["Airport Transfers", "Executive Travel", "Private Clients", "Hotel & Concierge", "Long-Distance Routes"].map(
               (label) => (
                 <span key={label} className="flex items-center gap-2">
-                  <span className="h-1 w-1 rounded-full bg-brand-gold" />
+                  <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
                   <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/85">
                     {label}
                   </span>
@@ -213,13 +214,14 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
           </motion.div>
         </div>
 
-        {/* Gold progress hairline */}
+        {/* Chapter progress hairline — cream, so the fixed gold bar at the top
+            of the page stays the one gold progress indicator. */}
         <motion.div
           style={isReduced ? undefined : { opacity: detailOpacity }}
-          className="absolute bottom-0 left-0 right-0 z-40 h-[3px] bg-brand-cream/10"
+          className="absolute bottom-0 left-0 right-0 z-40 h-[2px] bg-brand-cream/10"
         >
           <motion.div
-            className="h-full bg-brand-gold"
+            className="h-full bg-brand-cream/50"
             style={{ scaleX: scrollYProgress, transformOrigin: "0% 50%" }}
           />
         </motion.div>

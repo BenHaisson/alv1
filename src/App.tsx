@@ -56,7 +56,7 @@ function JourneyRail({
               className={`h-px transition-all duration-300 ${
                 isActive
                   ? "w-8 bg-brand-gold"
-                  : "w-4 bg-brand-cream/18 group-hover:w-6 group-hover:bg-brand-gold/60"
+                  : "w-4 bg-brand-cream/18 group-hover:w-6 group-hover:bg-brand-cream/45"
               }`}
             />
             <span
@@ -150,6 +150,12 @@ export default function App() {
     <MotionProvider>
       <SmoothScroll>
       <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-cream/35 selection:text-brand-black">
+        <a
+          href="#hero-section"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:border focus:border-brand-gold focus:bg-brand-black focus:px-4 focus:py-2 focus:text-xs focus:font-mono focus:uppercase focus:tracking-widest focus:text-brand-cream"
+        >
+          Skip to content
+        </a>
         {isIntroComplete && (
           <motion.div
             className="fixed left-0 right-0 top-0 z-[100] h-[2px] origin-left bg-brand-gold"
@@ -166,7 +172,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               onClick={() => scrollWindowTo(0)}
-              className="fixed bottom-8 right-8 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-brand-gold/30 bg-brand-black/90 text-brand-gold shadow-xl transition-all duration-300 hover:border-brand-gold hover:bg-brand-gold-muted hover:shadow-[0_0_15px_rgba(205,162,80,0.2)] focus:outline-none"
+              className="fixed bottom-8 right-8 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-brand-cream/25 bg-brand-black/90 text-brand-cream shadow-xl transition-all duration-300 hover:border-brand-cream/60 hover:bg-brand-cream/10 focus:outline-none"
               aria-label="Back to Top"
             >
               <span className="text-[10px] font-mono font-medium tracking-widest">UP</span>
@@ -181,7 +187,7 @@ export default function App() {
               animate={{ x: "0%" }}
               exit={{ x: "100%" }}
               transition={{ duration: 0.72, ease: [0.76, 0, 0.24, 1] }}
-              className="fixed inset-0 z-[9999] flex flex-col items-center justify-center border-r border-brand-gold bg-brand-deep-forest shadow-[15px_0_40px_rgba(205,162,80,0.18)] luxury-noise"
+              className="fixed inset-0 z-[9999] flex flex-col items-center justify-center border-r border-brand-gold/50 bg-brand-deep-forest shadow-[15px_0_40px_rgba(0,0,0,0.55)] luxury-noise"
             >
               <motion.div
                 initial={{ scaleX: 0, opacity: 0 }}

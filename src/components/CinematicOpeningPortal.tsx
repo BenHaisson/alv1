@@ -126,7 +126,7 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
               initial={isReduced ? false : { scaleY: 0 }}
               animate={{ scaleY: 1 }}
               transition={{ duration: 1.2, delay: 0.15, ease: EASE_OUT }}
-              className="h-16 w-px origin-top bg-brand-gold shadow-[0_0_24px_rgba(205,162,80,0.45)] md:h-24"
+              className="h-16 w-px origin-top bg-brand-gold shadow-[0_0_12px_rgba(205,162,80,0.18)] md:h-24"
             />
             <motion.span
               {...reveal(0.55)}

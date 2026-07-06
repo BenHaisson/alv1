@@ -22,20 +22,15 @@ export interface VideoSlot {
   minVideoWidth?: number;
 }
 
+/** The hero moment: exterior presence and arrival authority. Runs behind
+ *  HeroCommandDeck; the cabin belongs to the Private Interval section. */
 export const HERO_VIDEO: VideoSlot = {
   src: "/videos/bmw-i7-hero.mp4",
   poster: imageAssets.alairNoirHero,
   alt: "Black BMW i7 arriving through Zürich at night for Alair Noir"
 };
 
-/** Still-only slot: the black i7 studio plate. Shown in the Private Interval
- *  section since the hero/interval media swap (the cabin video moved up to
- *  the hero; HERO_VIDEO above is kept for a future hero cut). */
-export const HERO_STILL: VideoSlot = {
-  poster: imageAssets.alairNoirHero,
-  alt: "Black BMW i7 studio still for Alair Noir"
-};
-
+/** The Private Interval moment: the quiet rear cabin (PrivateIntervalMotion). */
 export const CABIN_VIDEO: VideoSlot = {
   src: "/videos/bmw-i7-cabin.mp4",
   // Fleet interiors are black — poster uses the black i7 cockpit until the

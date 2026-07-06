@@ -60,7 +60,7 @@ export default function ServiceMatrix() {
                 }
                 className={`group relative cursor-pointer overflow-hidden border text-left transition-colors duration-500 focus:outline-none focus-visible:border-brand-gold ${
                   isActive
-                    ? "border-brand-gold/50 bg-gradient-to-b from-brand-deep-forest/80 to-brand-black shadow-[0_0_40px_rgba(205,162,80,0.06)]"
+                    ? "border-brand-gold/40 bg-gradient-to-b from-brand-deep-forest/80 to-brand-black"
                     : "border-brand-cream/10 bg-brand-deep-forest/30 hover:border-brand-cream/25"
                 } ${isDesktop ? "min-w-0" : ""}`}
               >
@@ -79,28 +79,27 @@ export default function ServiceMatrix() {
                 />
 
                 <div className="flex h-full flex-col justify-between p-5 md:p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <span
-                      className={`text-[10px] font-mono tracking-[0.26em] ${
-                        isActive ? "text-brand-gold" : "text-brand-stone/70"
-                      }`}
-                    >
-                      {item.number}
-                    </span>
-                    <span
-                      className={`hidden text-[9px] font-mono uppercase tracking-[0.22em] md:block ${
-                        isActive ? "text-brand-gold/80" : "text-brand-stone/40"
-                      }`}
-                    >
-                      {isActive ? "SELECTED" : "AVAILABLE"}
-                    </span>
-                  </div>
+                  <span
+                    className={`text-[10px] font-mono tracking-[0.26em] ${
+                      isActive ? "text-brand-gold" : "text-brand-stone/70"
+                    }`}
+                  >
+                    {item.number}
+                  </span>
 
-                  {/* Collapsed label (desktop, inactive): rotated title */}
+                  {/* Collapsed label (desktop, inactive): horizontal title that
+                      scans without rotating your head — number above, thin
+                      divider, short title, category tag. */}
                   {isDesktop && !isActive && (
-                    <h3 className="origin-bottom-left -rotate-90 translate-y-2 whitespace-nowrap font-serif text-xl font-light uppercase tracking-[0.12em] text-brand-ivory/80">
-                      {item.title}
-                    </h3>
+                    <div className="min-w-0">
+                      <span className="mb-4 block h-px w-6 bg-brand-cream/20" aria-hidden="true" />
+                      <h3 className="font-serif text-base font-light leading-snug text-brand-ivory/85 transition-colors duration-300 group-hover:text-brand-ivory lg:text-lg">
+                        {item.title}
+                      </h3>
+                      <span className="mt-3 block text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/60">
+                        {item.tagline}
+                      </span>
+                    </div>
                   )}
 
                   {/* Expanded content */}
@@ -125,7 +124,7 @@ export default function ServiceMatrix() {
                             <p className="mt-4 max-w-md text-xs font-light leading-relaxed text-brand-ivory/75 md:text-sm">
                               {item.description}
                             </p>
-                            <span className="mt-5 block text-[9px] font-mono uppercase tracking-[0.24em] text-brand-gold/80">
+                            <span className="mt-5 block text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone">
                               Best for
                             </span>
                             <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -141,7 +140,7 @@ export default function ServiceMatrix() {
                                 }}
                                 className="flex items-center gap-3 text-xs font-light text-brand-ivory/80"
                               >
-                                <span className="h-px w-4 shrink-0 bg-brand-gold/50" />
+                                <span className="h-px w-4 shrink-0 bg-brand-cream/30" />
                                 <span>{detail}</span>
                               </motion.li>
                             ))}
