@@ -50,7 +50,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                   onClick={() => handleLinkClick(link.target)}
                   aria-current={isActive ? "page" : undefined}
                   className={`group relative cursor-pointer py-2 text-[10px] font-mono uppercase tracking-widest transition-colors duration-300 ${
-                    isActive ? "text-brand-cream" : "text-brand-stone hover:text-brand-gold"
+                    isActive ? "text-brand-cream" : "text-brand-stone hover:text-brand-cream"
                   }`}
                 >
                   <span>{link.label}</span>

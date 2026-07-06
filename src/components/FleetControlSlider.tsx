@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { AnimatePresence, motion, useAnimationFrame, useInView } from "motion/react";
 import { VEHICLES } from "../data";
 import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
@@ -55,7 +55,7 @@ function AnimatedCounter({ value, suffix, isReduced }: { value: number; suffix: 
   const displayValue = Number.isInteger(value) ? Math.floor(count) : count.toFixed(1);
 
   return (
-    <span ref={ref} className="font-serif text-2xl font-light tracking-tight text-brand-gold md:text-3xl">
+    <span ref={ref} className="font-serif text-2xl font-light tracking-tight text-brand-cream md:text-3xl">
       {displayValue}
       <span className="ml-1 text-[10px] font-sans font-normal uppercase tracking-normal text-brand-stone">
         {suffix}
@@ -127,6 +127,10 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   const isWide = useMediaQuery("(min-width: 768px)");
   const activeVehicle = VEHICLES[selectedIdx];
 
+  const sectionRef = useRef<HTMLElement>(null);
+  // The drift loop only advances while the band is on screen — the
+  // animation-frame work stops as soon as the section scrolls away.
+  const isConveyorInView = useInView(sectionRef, { margin: "20% 0px 20% 0px" });
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const hoverPauseRef = useRef(false);
@@ -155,7 +159,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   // The drift engine: advance unless held, hovered, or being dragged; wrap
   // at half the track so the duplicated run hands off invisibly.
   useAnimationFrame((_, delta) => {
-    if (isReduced) return;
+    if (isReduced || !isConveyorInView) return;
     const track = trackRef.current;
     if (!track) return;
     const half = isWide ? track.scrollWidth / 2 : track.scrollHeight / 2;
@@ -168,14 +172,14 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       : `translate3d(0, ${-offsetRef.current}px, 0)`;
   });
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (isReduced || !isWide) return;
     dragRef.current = { pointerId: event.pointerId, last: event.clientX, moved: 0 };
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (dragRef.current.pointerId !== event.pointerId) return;
     const delta = event.clientX - dragRef.current.last;
     dragRef.current.last = event.clientX;
@@ -183,7 +187,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     offsetRef.current -= delta;
   };
 
-  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (dragRef.current.pointerId !== event.pointerId) return;
     dragRef.current.pointerId = null;
     setIsDragging(false);
@@ -198,6 +202,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
 
   return (
     <motion.section
+      ref={sectionRef}
       animate={{ backgroundColor: selectedIdx === 0 ? "#0A0A0A" : "#08130D" }}
       transition={{ duration: isReduced ? 0 : 1.1, ease: "easeInOut" }}
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
@@ -223,7 +228,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       {/* Full-bleed conveyor band */}
       <div className="relative -mx-6 md:-mx-12 lg:-mx-24">
         {/* Pinned vehicle switch — top right of the band, above the drift */}
-        <div className="absolute right-5 top-5 z-30 flex border border-brand-gold/35 bg-brand-black/75 p-1 backdrop-blur-sm md:right-10 md:top-8 lg:right-16">
+        <div className="absolute right-5 top-5 z-30 flex border border-brand-cream/20 bg-brand-black/75 p-1 backdrop-blur-sm md:right-10 md:top-8 lg:right-16">
           {VEHICLES.map((vehicle, idx) => {
             const isActive = selectedIdx === idx;
             return (
@@ -294,7 +299,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-black to-transparent md:hidden" />
 
               {isHeld && (
-                <span className="pointer-events-none absolute bottom-5 right-5 z-30 border border-brand-gold/40 bg-brand-black/80 px-3 py-1.5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-gold md:hidden">
+                <span className="pointer-events-none absolute bottom-5 right-5 z-30 border border-brand-cream/30 bg-brand-black/80 px-3 py-1.5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-cream md:hidden">
                   Held — tap to resume
                 </span>
               )}
@@ -342,7 +347,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
             <button
               type="button"
               onClick={() => onRequestScroll(activeVehicle.name)}
-              className="group flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream transition-all duration-300 hover:border-brand-gold hover:text-brand-gold focus:outline-none focus-visible:border-brand-gold"
+              className="group flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
             >
               <span>Request {SWITCH_LABELS[activeVehicle.id] ?? activeVehicle.name}</span>
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>

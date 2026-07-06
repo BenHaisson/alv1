@@ -69,7 +69,7 @@ export default function RequestDispatchConsole({ prefilledVehicle = "" }: Reques
 --------------------------------------------------
 Origin / Destination : ${route || "To be specified"}
 Date                 : ${date || "To be specified"}
-Time (CET)           : ${time || "To be specified"}
+Time (Zürich local)  : ${time || "To be specified"}
 Passenger Count      : ${passengers} Passenger(s)
 Luggage Count        : ${luggage} Large Bag(s)
 Preferred Vehicle    : ${vehicleMeta.label} (${vehicleMeta.caption})
@@ -88,14 +88,25 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
   const whatsappLink = `https://wa.me/41772870956?text=${encodeURIComponent(getSpecificationText())}`;
   const mailtoLink = `mailto:booking@alairnoir.ch?subject=Private Chauffeur Request Zürich&body=${encodeURIComponent(getSpecificationText())}`;
 
+  // Fast Request: the short path for clients who want speed — route, timing,
+  // contact, straight to WhatsApp. Shares state with the full console below,
+  // so anything typed here is already filled in there.
+  const fastReady = route.trim() !== "" && contact.trim() !== "";
+  const fastRequestText = `ALAIR NOIR — FAST CHAUFFEUR REQUEST
+Route   : ${route || "To be specified"}
+Date    : ${date || "To be specified"}
+Time    : ${time ? `${time} (Zürich local time)` : "To be specified"}
+Contact : ${contact || "To be specified"}`;
+  const fastWhatsappLink = `https://wa.me/41772870956?text=${encodeURIComponent(fastRequestText)}`;
+
   const groupClass = (step: StepId) =>
     `flex flex-col border p-5 transition-all duration-500 ${
       activeStep === step
-        ? "border-brand-gold/50 bg-brand-deep-forest/40 shadow-[0_0_34px_rgba(205,162,80,0.07)]"
+        ? "border-brand-gold/40 bg-brand-deep-forest/40"
         : "border-brand-cream/10 bg-brand-deep-forest/20"
     }`;
 
-  const labelClass = "mb-2 text-[10px] font-mono uppercase tracking-widest text-brand-gold";
+  const labelClass = "mb-2 text-[10px] font-mono uppercase tracking-widest text-brand-stone";
   const inputClass =
     "w-full border border-brand-cream/10 bg-brand-black/60 p-4 text-sm font-light font-sans text-brand-ivory transition-all placeholder:text-brand-stone/40 focus:border-brand-gold/60 focus:outline-none";
 
@@ -135,7 +146,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                 className="relative"
               >
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="font-serif text-2xl font-light text-brand-gold/80">{step.number}</span>
+                  <span className="font-serif text-2xl font-light text-brand-cream/70">{step.number}</span>
                   <span className="h-px flex-1 bg-brand-cream/10" />
                 </div>
                 <h3 className="mb-2 font-serif text-base font-light tracking-wide text-brand-ivory">
@@ -148,6 +159,94 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
             ))}
           </ol>
         </div>
+
+        {/* Fast Request — the short path before the full console. */}
+        <div className="relative mb-14 border border-brand-cream/12 bg-brand-deep-forest/25 p-6 md:mb-16 md:p-8">
+          <CornerMarkers />
+          <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
+            <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-gold">
+              Fast Request
+            </span>
+            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
+              Route, timing, contact — sent in one message
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.6fr_auto] lg:items-end">
+            <div className="flex flex-col">
+              <label htmlFor="fast-route" className={labelClass}>
+                Pickup / Destination
+              </label>
+              <input
+                id="fast-route"
+                type="text"
+                placeholder="Zürich Airport to Baur au Lac"
+                value={route}
+                onChange={(e) => setRoute(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="fast-date" className={labelClass}>
+                Date
+              </label>
+              <input
+                id="fast-date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="fast-time" className={labelClass}>
+                Zürich local time
+              </label>
+              <input
+                id="fast-time"
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="fast-contact" className={labelClass}>
+                Contact (Email / Phone)
+              </label>
+              <input
+                id="fast-contact"
+                type="text"
+                placeholder="name@office.com or +41..."
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <a
+              href={fastReady ? fastWhatsappLink : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-disabled={!fastReady}
+              className={`block whitespace-nowrap px-7 py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.15em] transition-all duration-300 ${
+                fastReady
+                  ? "bg-brand-gold text-brand-black hover:bg-brand-ivory"
+                  : "pointer-events-none border border-brand-cream/15 bg-brand-black/40 text-brand-stone/60"
+              }`}
+            >
+              Send by WhatsApp
+            </a>
+          </div>
+          <p className="mt-5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/70">
+            {fastReady
+              ? "Ready to send — or continue below for the full request"
+              : "Add route and contact to send — or prepare the full request below"}
+          </p>
+        </div>
+
+        {/* Full Dispatch — the detailed request console. */}
+        <span className="mb-6 block text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
+          Full Dispatch Console
+        </span>
 
         {/* Private Chauffeur Request — step progress rail */}
         <div className="mb-12 grid grid-cols-3 gap-2 md:grid-cols-6 md:gap-3">
@@ -316,7 +415,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="console-time" className={labelClass}>
-                      Scheduled Time (CET)
+                      Scheduled Time (Zürich local time)
                     </label>
                     <input
                       id="console-time"
@@ -342,7 +441,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                     04 / Vehicle
                   </span>
                   {recommendVClass && (
-                    <span className="text-[8px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
+                    <span className="text-[8px] font-mono uppercase tracking-[0.2em] text-brand-stone">
                       V-Class suggested for this group
                     </span>
                   )}
@@ -357,7 +456,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                       className={`flex cursor-pointer flex-col justify-between border p-4 text-left transition-all duration-300 focus:outline-none focus-visible:border-brand-gold ${
                         vehicle === id
                           ? "border-brand-gold bg-brand-gold-muted"
-                          : "border-brand-cream/10 hover:border-brand-gold/40"
+                          : "border-brand-cream/10 hover:border-brand-cream/30"
                       }`}
                     >
                       <span className="font-serif text-sm text-brand-ivory">{meta.label}</span>
@@ -439,7 +538,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-black/85 to-transparent" />
                 <div className="absolute bottom-2 left-3">
                   <span className="block font-serif text-sm text-brand-ivory">{vehicleMeta.label}</span>
-                  <span className="block text-[8px] font-mono uppercase tracking-[0.2em] text-brand-gold">
+                  <span className="block text-[8px] font-mono uppercase tracking-[0.2em] text-brand-stone">
                     {vehicleMeta.caption}
                   </span>
                 </div>
@@ -469,7 +568,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
               <button
                 type="button"
                 onClick={handleCopy}
-                className="w-full cursor-pointer border border-brand-gold/30 py-4 text-xs font-mono uppercase tracking-[0.2em] text-brand-gold transition-all duration-300 hover:border-brand-gold hover:bg-brand-gold-muted focus:outline-none focus-visible:border-brand-gold"
+                className="w-full cursor-pointer border border-brand-cream/25 py-4 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:bg-brand-cream/5 focus:outline-none focus-visible:border-brand-gold"
               >
                 {isCopied ? "Request Copied to Clipboard" : "Copy Request Draft"}
               </button>
@@ -494,7 +593,7 @@ Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
                     </a>
                     <a
                       href={mailtoLink}
-                      className="block border border-brand-gold py-4 text-center text-xs font-mono uppercase tracking-[0.15em] text-brand-gold transition-all duration-300 hover:bg-brand-gold-muted"
+                      className="block border border-brand-cream/30 py-4 text-center text-xs font-mono uppercase tracking-[0.15em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:bg-brand-cream/5"
                     >
                       Request by Email
                     </a>
