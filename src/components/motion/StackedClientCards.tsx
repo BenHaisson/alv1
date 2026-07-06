@@ -207,7 +207,7 @@ export default function StackedClientCards({
                         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/80">
                           {card.number}
                         </span>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/40">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-cream/60">
                           ALAIR · SPEC
                         </span>
                       </div>
@@ -276,13 +276,15 @@ function cardTransform(offset: number) {
       zIndex: 40 - offset
     };
   }
-  // Past cards slide left and fade; only the immediate previous stays faintly.
+  // Past cards slide left and fade fully out — no residual text is left
+  // peeking behind the active card. The slide + fade still animates on exit,
+  // it just resolves to invisible instead of a lingering 25% ghost.
   const distance = -offset;
   return {
-    x: `${-72 - (distance - 1) * 16}%`,
+    x: `${-78 - (distance - 1) * 16}%`,
     y: 0,
     scale: 0.97,
-    opacity: distance === 1 ? 0.25 : 0,
+    opacity: 0,
     rotateY: 8,
     blur: 1.4,
     zIndex: 10 - distance

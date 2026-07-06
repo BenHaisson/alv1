@@ -25,7 +25,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 h-20 border-b border-brand-cream/10 bg-brand-black/88 backdrop-blur-[2px] transition-all duration-300 luxury-noise">
+      <header className="fixed left-0 right-0 top-0 z-40 h-20 border-b border-brand-cream/10 bg-brand-black/95 backdrop-blur-lg transition-all duration-300 supports-[backdrop-filter]:bg-brand-black/80 luxury-noise">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 md:px-12 lg:px-24">
           <div
             onClick={() => handleLinkClick("hero")}

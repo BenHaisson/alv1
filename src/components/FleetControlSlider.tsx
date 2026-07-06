@@ -95,8 +95,8 @@ function ConveyorFrame({
       />
 
       {/* Frame index — etched, top left */}
-      <span className="absolute left-4 top-4 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-ivory/60">
-        0{index + 1} <span className="text-brand-ivory/30">/ 0{total}</span>
+      <span className="absolute left-4 top-4 text-[9px] font-mono uppercase tracking-[0.3em] text-brand-ivory/85">
+        0{index + 1} <span className="text-brand-ivory/50">/ 0{total}</span>
       </span>
 
       {/* Caption etched into the lower edge of the frame */}

@@ -108,7 +108,7 @@ Contact : ${contact || "To be specified"}`;
 
   const labelClass = "mb-2 text-[10px] font-mono uppercase tracking-widest text-brand-stone";
   const inputClass =
-    "w-full border border-brand-cream/10 bg-brand-black/60 p-4 text-sm font-light font-sans text-brand-ivory transition-all placeholder:text-brand-stone/40 focus:border-brand-gold/60 focus:outline-none";
+    "w-full border border-brand-cream/10 bg-brand-black/60 p-4 text-sm font-light font-sans text-brand-ivory transition-all placeholder:text-brand-stone/55 focus:border-brand-gold/60 focus:outline-none";
 
   // The request-section nav anchor lives on StackedChapter's flow sentinel in
   // App.tsx — a pinned section would mis-report its own position.
@@ -243,9 +243,10 @@ Contact : ${contact || "To be specified"}`;
           </p>
         </div>
 
-        {/* Full Dispatch — the detailed request console. */}
+        {/* The detailed request — for clients who want to specify vehicle and
+            private instructions before sending. */}
         <span className="mb-6 block text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
-          Full Dispatch Console
+          The Detailed Request
         </span>
 
         {/* Private Chauffeur Request — step progress rail */}
@@ -504,7 +505,7 @@ Contact : ${contact || "To be specified"}`;
             <div>
               <div className="mb-6 flex items-center justify-between border-b border-brand-cream/10 pb-3">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-brand-stone">
-                  Live Request Summary
+                  Your Request
                 </span>
                 <span className="flex items-center gap-2">
                   <span
@@ -513,7 +514,7 @@ Contact : ${contact || "To be specified"}`;
                     } ${isReduced ? "" : "animate-pulse"}`}
                   />
                   <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
-                    {readyToDispatch ? "READY" : "STANDBY"}
+                    {readyToDispatch ? "Ready to send" : "Draft"}
                   </span>
                 </span>
               </div>

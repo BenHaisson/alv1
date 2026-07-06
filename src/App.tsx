@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import { MotionProvider } from "./components/MotionProvider";
+import { MotionProvider, useMediaQuery } from "./components/MotionProvider";
 import SmoothScroll from "./components/SmoothScroll";
 import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
@@ -56,14 +56,16 @@ function JourneyRail({
               className={`h-px transition-all duration-300 ${
                 isActive
                   ? "w-8 bg-brand-gold"
-                  : "w-4 bg-brand-cream/18 group-hover:w-6 group-hover:bg-brand-cream/45"
+                  : "w-4 bg-brand-cream/25 group-hover:w-6 group-hover:bg-brand-cream/55"
               }`}
             />
+            {/* Label reveals on hover/focus only. Kept collapsed at rest so the
+                persistent active label never overlaps section body text as the
+                page scrolls under this fixed rail. Active state stays legible
+                through the wider gold tick above. */}
             <span
-              className={`overflow-hidden whitespace-nowrap text-[9px] font-mono uppercase tracking-[0.22em] transition-all duration-300 ${
-                isActive
-                  ? "w-24 text-brand-cream opacity-100"
-                  : "w-0 text-brand-stone/55 opacity-0 group-hover:w-24 group-hover:text-brand-stone group-hover:opacity-100"
+              className={`overflow-hidden whitespace-nowrap text-[9px] font-mono uppercase tracking-[0.22em] opacity-0 transition-all duration-300 w-0 group-hover:w-24 group-hover:opacity-100 group-focus-visible:w-24 group-focus-visible:opacity-100 ${
+                isActive ? "text-brand-cream" : "text-brand-stone"
               }`}
             >
               {String(index + 1).padStart(2, "0")} {section.navLabel}
@@ -81,6 +83,7 @@ export default function App() {
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeKey, setActiveKey] = useState("hero");
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -88,6 +91,44 @@ export default function App() {
     }
     window.scrollTo(0, 0);
   }, []);
+
+  // Auto-advance the opening intro: after a short beat the portal eases itself
+  // into the hero so no action is required to enter. Any wheel / touch / key
+  // input before then cancels it — the visitor always keeps control, and it
+  // stays skippable by simply scrolling. Reduced-motion visitors are exempt.
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    if (window.scrollY > 8) return;
+
+    let done = false;
+    const opts: AddEventListenerOptions = { passive: true };
+
+    const finish = (autoAdvance: boolean) => {
+      if (done) return;
+      done = true;
+      window.clearTimeout(timer);
+      window.removeEventListener("wheel", onUser, opts);
+      window.removeEventListener("touchstart", onUser, opts);
+      window.removeEventListener("keydown", onUser);
+      if (!autoAdvance) return;
+
+      const hero = document.getElementById("hero-section");
+      if (!hero) return;
+      const heroTop = hero.getBoundingClientRect().top + window.scrollY;
+      const heroScroll = Math.max(0, hero.offsetHeight - window.innerHeight);
+      // Land partway into the hero pin, where the headline is fully revealed.
+      scrollWindowTo(heroTop + heroScroll * 0.55);
+    };
+
+    const onUser = () => finish(false);
+    const timer = window.setTimeout(() => finish(true), 2800);
+
+    window.addEventListener("wheel", onUser, opts);
+    window.addEventListener("touchstart", onUser, opts);
+    window.addEventListener("keydown", onUser);
+
+    return () => finish(false);
+  }, [prefersReducedMotion]);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -207,7 +248,7 @@ export default function App() {
                   ALAIR NOIR
                 </h2>
                 <span className="mt-3 block text-[9px] font-mono tracking-[0.25em] text-brand-stone">
-                  NEXT SECTOR
+                  ARRIVING
                 </span>
               </motion.div>
             </motion.div>

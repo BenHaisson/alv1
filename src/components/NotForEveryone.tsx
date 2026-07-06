@@ -12,6 +12,7 @@ export default function NotForEveryone() {
       cards={ACCESS_CLASSES}
       sectionId="selection-section"
       ariaLabel="Who ALAIR NOIR is for"
+      heightPerCardVh={44}
       aside={(active, goTo) => (
         <div className="max-w-xl">
           <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
@@ -57,7 +58,7 @@ export default function NotForEveryone() {
                       className={`font-serif text-lg font-light transition-colors duration-300 ${
                         isActive
                           ? "text-brand-ivory"
-                          : "text-brand-stone/60 group-hover:text-brand-stone"
+                          : "text-brand-stone group-hover:text-brand-cream"
                       }`}
                     >
                       {card.title}
