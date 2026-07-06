@@ -1,107 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Playfair Display", serif;
+  /* Only two families across the entire site. */
+  --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
 
-  --color-brand-black: #0A0A0A;
-  --color-brand-forest: #0E1F16;
-  --color-brand-deep-forest: #08130D;
-  /* Slightly lifted forest for nested cards / hover states on green, so
-     stacked cards don't flatten into each other. */
-  --color-brand-forest-lift: #0F1C15;
-  --color-brand-moss: #2F4A33;
-  --color-brand-cream: #EADECE;
-  --color-brand-ivory: #FAF8F5;
-  /* Warm, slightly dimmed cream reserved for long-form body copy on black;
-     pure cream/ivory stay for headlines and card titles. */
-  --color-brand-body: #D9D2C4;
-  --color-brand-stone: #A39E96;
-  --color-brand-muted-stone: #78736B;
-  --color-brand-gold: #CDA250;
-  --color-brand-gold-muted: rgba(205, 162, 80, 0.15);
-  /* Neutral hairline divider — replaces gold where gold was only a divider. */
-  --color-brand-divider: rgba(234, 222, 206, 0.15);
+  /* Exact ALAIR NOIR palette. */
+  --color-deep-black: #050806;
+  --color-black: #0A0A0A;
+  --color-forest: #0E1F16;
+  --color-forest-line: #1A3326;
+  --color-ivory: #F6F2E9;
+  --color-stone-cream: #D6C7B0;
+  --color-muted-stone: #A89E8B;
+
+  /* Hairline used for borders/dividers on dark surfaces. */
+  --color-hairline: rgba(246, 242, 233, 0.08);
 }
 
-/* General Layout Adjustments */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: #0A0A0A;
+  background-color: #050806;
   color: #F6F2E9;
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Custom premium scrollbar */
+/* Quiet, premium scrollbar. */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #050806;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(214, 199, 176, 0.15);
+  background: rgba(214, 199, 176, 0.18);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(214, 199, 176, 0.35);
+  background: rgba(214, 199, 176, 0.34);
 }
 
-/* Cinematic mask overlay or grain effect */
-.luxury-noise {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.65'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'%20opacity='0.02'/%3E%3C/svg%3E");
-}
-
-/* Sub-pixel hairline divider */
-.hairline-divider {
-  border-color: rgba(214, 199, 176, 0.12);
-}
-
-.glow-subtle {
-  text-shadow: 0 0 40px rgba(214, 199, 176, 0.1);
-}
-
-/* Dark glass command panels for floating interface cards */
-.glass-panel {
-  background: rgba(8, 10, 9, 0.55);
-  border: 1px solid rgba(234, 222, 206, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .motion-safe-pulse {
-    animation: none !important;
-  }
-}
-
-/* Consistent keyboard-focus default. :where() keeps specificity at zero so
-   components that define their own focus-visible treatment still win. */
+/* Consistent keyboard focus. :where() keeps specificity at zero. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 1px solid rgba(205, 162, 80, 0.75);
+  outline: 1px solid rgba(214, 199, 176, 0.7);
   outline-offset: 2px;
 }
 
-/* ── Fleet conveyor — continuous cinematic drift ─────────────────────────
-   The track holds two identical copies of the frame run and is moved by a
-   JS animation-frame loop (transform only, wrapped at exactly half the track)
-   so the loop never jumps and the strip can be dragged by hand. Right→left
-   on desktop, bottom→top on mobile. */
-.fleet-conveyor-track {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  will-change: transform;
+/* Utility: uppercase Inter label used for eyebrows and small labels. */
+.eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-stone-cream);
 }
-@media (min-width: 768px) {
-  .fleet-conveyor-track {
-    flex-direction: row;
-    width: max-content;
-    height: 100%;
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
