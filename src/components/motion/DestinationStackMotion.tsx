@@ -26,7 +26,7 @@ export default function DestinationStackMotion() {
             <br />
             <span className="italic text-brand-stone">to wherever.</span>
           </h2>
-          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-stone">
+          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body">
             The base is Zürich. The range is the day&apos;s requirement — airport,
             city, alps, or the other end of the country.
           </p>

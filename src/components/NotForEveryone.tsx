@@ -23,7 +23,7 @@ export default function NotForEveryone() {
             <br />
             <span className="italic text-brand-stone">For you.</span>
           </h2>
-          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-stone">
+          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body">
             ALAIR NOIR is shaped around a small set of clients whose movement is
             measured by timing, discretion, and how the arrival feels — not by
             distance.

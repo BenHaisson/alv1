@@ -50,7 +50,7 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
             Two vehicles.
             <span className="italic text-brand-stone"> One standard.</span>
           </h2>
-          <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-brand-stone md:text-base">
+          <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body">
             BMW i7 for silent executive travel. Mercedes-Benz V-Class for space, guests,
             and luggage.
           </p>
@@ -105,9 +105,9 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                     <button
                       type="button"
                       onClick={() => onRequestScroll(vehicle.name)}
-                      className="mt-3 flex w-fit cursor-pointer items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream/80 transition-colors duration-300 hover:text-brand-gold focus:outline-none"
+                      className="mt-3 flex w-fit cursor-pointer items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream/80 transition-colors duration-200 ease-out hover:text-brand-ivory focus:outline-none"
                     >
-                      <span className="h-px w-8 bg-brand-gold/50" />
+                      <span className="h-px w-8 bg-brand-cream/30" />
                       Request this cabin
                     </button>
                   )}

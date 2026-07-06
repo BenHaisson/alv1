@@ -19,6 +19,7 @@ import StandardsSection from "./components/StandardsSection";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 
 const SECTIONS = [
   { key: "hero", id: "hero-section", label: "01 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
@@ -205,6 +206,8 @@ export default function App() {
         )}
 
         {isIntroComplete && <JourneyRail activeKey={activeKey} onSelect={scrollToSection} />}
+
+        {isIntroComplete && <FloatingWhatsApp collapsed={activeKey !== "hero"} />}
 
         <AnimatePresence>
           {isIntroComplete && showBackToTop && (

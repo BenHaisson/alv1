@@ -63,6 +63,7 @@ export default function RequestDispatchConsole({ prefilledVehicle = "" }: Reques
 
   const readyToDispatch = steps[5].complete;
   const requiredComplete = [steps[0], steps[1], steps[2]].filter((step) => step.complete).length;
+  const percentReady = Math.round((requiredComplete / 3) * 100);
 
   const getSpecificationText = () => {
     return `ALAIR NOIR PRIVATE CHAUFFEUR REQUEST
@@ -123,7 +124,7 @@ Contact : ${contact || "To be specified"}`;
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
             Begin with the route. <span className="font-light italic text-brand-stone">We will prepare the rest.</span>
           </h2>
-          <p className="text-sm font-light leading-relaxed text-brand-stone md:text-base">
+          <p className="text-base font-light leading-relaxed text-brand-body">
             Send your pickup point, destination, date, time, passenger count, luggage details, and
             preferred vehicle. ALAIR NOIR will confirm availability, route suitability, and the
             chauffeur arrangement directly.
@@ -245,9 +246,14 @@ Contact : ${contact || "To be specified"}`;
 
         {/* The detailed request — for clients who want to specify vehicle and
             private instructions before sending. */}
-        <span className="mb-6 block text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
-          The Detailed Request
-        </span>
+        <div className="mb-6 flex items-baseline justify-between gap-4">
+          <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
+            The Detailed Request
+          </span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
+            {percentReady}% ready
+          </span>
+        </div>
 
         {/* Private Chauffeur Request — step progress rail */}
         <div className="mb-12 grid grid-cols-3 gap-2 md:grid-cols-6 md:gap-3">
@@ -548,7 +554,7 @@ Contact : ${contact || "To be specified"}`;
               {/* Required-field progress */}
               <div className="mb-6">
                 <div className="mb-2 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                  <span>Booking request</span>
+                  <span>Booking request · {percentReady}%</span>
                   <span>{requiredComplete} / 3 required</span>
                 </div>
                 <div className="h-[2px] w-full bg-brand-cream/10">

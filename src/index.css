@@ -9,13 +9,21 @@
   --color-brand-black: #0A0A0A;
   --color-brand-forest: #0E1F16;
   --color-brand-deep-forest: #08130D;
+  /* Slightly lifted forest for nested cards / hover states on green, so
+     stacked cards don't flatten into each other. */
+  --color-brand-forest-lift: #0F1C15;
   --color-brand-moss: #2F4A33;
   --color-brand-cream: #EADECE;
   --color-brand-ivory: #FAF8F5;
+  /* Warm, slightly dimmed cream reserved for long-form body copy on black;
+     pure cream/ivory stay for headlines and card titles. */
+  --color-brand-body: #D9D2C4;
   --color-brand-stone: #A39E96;
   --color-brand-muted-stone: #78736B;
   --color-brand-gold: #CDA250;
   --color-brand-gold-muted: rgba(205, 162, 80, 0.15);
+  /* Neutral hairline divider — replaces gold where gold was only a divider. */
+  --color-brand-divider: rgba(234, 222, 206, 0.15);
 }
 
 /* General Layout Adjustments */

@@ -142,7 +142,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
               </span>
             </motion.div>
 
-            <h1 className="mb-8 font-serif text-3xl font-light leading-[1.08] text-brand-ivory md:text-5xl lg:text-7xl">
+            <h1 className="mb-8 font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory">
               <motion.span
                 style={isReduced ? undefined : { opacity: titleOneOpacity, y: titleOneY }}
                 className="block"
@@ -159,7 +159,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
 
             <motion.p
               style={isReduced ? undefined : { opacity: copyOpacity, y: copyY }}
-              className="mb-10 max-w-2xl text-sm font-light leading-relaxed text-brand-ivory/80 md:text-base lg:text-lg"
+              className="mb-10 max-w-2xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
             >
               ALAIR NOIR GmbH provides private chauffeur service in Zürich and across Switzerland
               for executives, founders, private clients, family offices, diplomatic guests, hotels,
@@ -173,7 +173,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
             >
               <MagneticButton
                 onClick={onRequestScroll}
-                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-all duration-300 hover:bg-brand-ivory hover:text-brand-deep-forest"
+                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-colors duration-150 ease-in-out hover:bg-brand-ivory hover:text-brand-deep-forest"
               >
                 Request Private Chauffeur
               </MagneticButton>
@@ -182,7 +182,7 @@ export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProp
                 href="https://wa.me/41772870956"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-gold transition-colors duration-300 hover:text-white"
+                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-colors duration-150 ease-in-out hover:text-white"
               >
                 <span>Book by WhatsApp</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>
