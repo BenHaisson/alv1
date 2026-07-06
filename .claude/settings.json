@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "ibrahim-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "Ibrahim-3d/nano-banana-claude-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "nano-banana@ibrahim-plugins": true
+  }
+}
