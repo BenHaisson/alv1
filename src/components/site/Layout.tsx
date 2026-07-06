@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
+import IntroPortal from "./IntroPortal";
+import PageTransition from "./PageTransition";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -15,6 +17,8 @@ export default function Layout() {
   return (
     <div className="relative min-h-screen bg-deep-black text-ivory">
       <ScrollToTop />
+      <IntroPortal onDone={() => {}} />
+      <PageTransition />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ivory focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-widest focus:text-deep-black"

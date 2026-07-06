@@ -5,8 +5,9 @@ import { Container, Eyebrow, gutter } from "../components/site/primitives";
 import RequestModule from "../components/site/RequestModule";
 import { CTALink, CTAAnchor } from "../components/site/cta";
 import { Reveal, Magnetic, EASE } from "../components/site/motion";
+import VideoBackground from "../components/site/VideoBackground";
 import { CONTACT } from "../lib/contact";
-import { imageAssets } from "../assets";
+import { imageAssets, videoAssets } from "../assets";
 
 const SERVICES = [
   {
@@ -66,21 +67,15 @@ export default function Home() {
     <>
       {/* ── SECTION 1 — Hero + request module ─────────────────────────── */}
       <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-[82px] md:pt-[88px]">
-        <motion.div
-          className="absolute inset-0"
-          initial={{ scale: 1.08, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.6, ease: EASE }}
-        >
-          <img
-            src={imageAssets.bmwI7Exterior}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover opacity-40"
+        <div className="absolute inset-0">
+          <VideoBackground
+            video={videoAssets.bmwI7Hero}
+            poster={imageAssets.bmwI7Exterior}
+            className="opacity-45"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-deep-black via-deep-black/90 to-deep-black/55" />
           <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black/40" />
-        </motion.div>
+        </div>
 
         <div className="relative w-full py-16 md:py-20" style={gutter}>
           <div className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1fr_380px]">

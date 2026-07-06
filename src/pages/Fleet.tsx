@@ -1,14 +1,16 @@
 import { PageIntro, Container, Eyebrow } from "../components/site/primitives";
 import { Reveal } from "../components/site/motion";
+import VideoBackground from "../components/site/VideoBackground";
+import Gallery, { type Frame } from "../components/site/Gallery";
 import FinalCTA from "../components/site/FinalCTA";
-import { imageAssets } from "../assets";
+import { imageAssets, videoAssets } from "../assets";
 
 const VEHICLES = [
   {
     name: "BMW i7 xDrive",
     tagline: "Silent executive travel",
-    image: imageAssets.luxuryBmwI7,
-    interior: imageAssets.bmwI7RearCabin,
+    video: videoAssets.bmwI7Cabin,
+    poster: imageAssets.bmwI7RearCabin,
     intro:
       "A fully electric flagship built for quiet, composed movement. The i7 carries a refined presence without display — ideal for executive transfers, airport arrivals, and the calm interval between obligations.",
     features: [
@@ -22,8 +24,8 @@ const VEHICLES = [
   {
     name: "Mercedes-Benz V-Class",
     tagline: "Space, flexibility, group comfort",
-    image: imageAssets.vclassAlairNoirArrival,
-    interior: imageAssets.vclassRearCabinNight,
+    video: videoAssets.vclassArrival,
+    poster: imageAssets.vclassAlairNoirArrival,
     intro:
       "A spacious private cabin for families, groups, and journeys with luggage. The V-Class offers flexible seating and generous room without compromising discretion or comfort.",
     features: [
@@ -34,6 +36,15 @@ const VEHICLES = [
       ["Private travel", "Family comfort and group movement handled with the same discretion as executive transfers."]
     ]
   }
+];
+
+const GALLERY: Frame[] = [
+  { image: imageAssets.bmwI7RearCabin, title: "Executive rear cabin", caption: "Individual rear seating with climate and calm." },
+  { image: imageAssets.bmwI7RearConsole, title: "Rear console", caption: "Climate, media, and shades within reach." },
+  { image: imageAssets.bmwI7DoorAmbience, title: "Ambient detailing", caption: "Soft ambient light across the door and cabin." },
+  { image: imageAssets.bmwI7TheatreNight, title: "Theatre screen", caption: "Rear entertainment for longer journeys." },
+  { image: imageAssets.vclassRearCabinNight, title: "V-Class cabin", caption: "Spacious group seating for evening movement." },
+  { image: imageAssets.vclassInterior, title: "V-Class interior", caption: "Flexible seating and generous room." }
 ];
 
 export default function Fleet() {
@@ -53,8 +64,8 @@ export default function Fleet() {
           <Container>
             <Reveal className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <div className={idx % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="overflow-hidden border border-hairline">
-                  <img src={v.image} alt={v.name} className="aspect-[16/11] w-full object-cover" />
+                <div className="relative aspect-[16/11] overflow-hidden border border-hairline">
+                  <VideoBackground video={v.video} poster={v.poster} alt={v.name} />
                 </div>
               </div>
               <div className={idx % 2 === 1 ? "lg:order-1" : ""}>
@@ -83,6 +94,24 @@ export default function Fleet() {
           </Container>
         </section>
       ))}
+
+      {/* Cabin gallery */}
+      <section className="bg-black py-16 md:py-24">
+        <Container>
+          <Reveal>
+            <Eyebrow>Inside the cabin</Eyebrow>
+            <h2 className="mt-4 max-w-2xl font-serif text-[clamp(28px,3.5vw,40px)] font-medium leading-[1.05] text-ivory">
+              A private room between obligations.
+            </h2>
+            <p className="mt-4 max-w-xl font-sans text-[14.5px] leading-relaxed text-muted-stone">
+              Every cabin is prepared before you arrive — quiet, clean, and composed.
+            </p>
+          </Reveal>
+          <Reveal className="mt-10">
+            <Gallery frames={GALLERY} />
+          </Reveal>
+        </Container>
+      </section>
 
       <FinalCTA />
     </>
