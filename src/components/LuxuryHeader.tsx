@@ -7,12 +7,11 @@ interface LuxuryHeaderProps {
 }
 
 const links = [
-  { label: "Chauffeur", target: "hero" },
-  { label: "Services", target: "services" },
+  { label: "Book", target: "hero" },
   { label: "Fleet", target: "fleet" },
-  { label: "Standard", target: "standards" },
   { label: "Routes", target: "routes" },
-  { label: "Booking", target: "request" }
+  { label: "Standard", target: "standards" },
+  { label: "Contact", target: "request" }
 ];
 
 export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryHeaderProps) {

@@ -4,11 +4,10 @@ interface LuxuryFooterProps {
 
 export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
   const company = [
-    { label: "Services", target: "services" },
+    { label: "Book", target: "hero" },
     { label: "Fleet", target: "fleet" },
-    { label: "Standards", target: "standards" },
     { label: "Routes", target: "routes" },
-    { label: "Booking", target: "request" },
+    { label: "Standard", target: "standards" },
     { label: "Contact", target: "request" }
   ];
 

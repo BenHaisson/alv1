@@ -1,224 +1,294 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import MagneticButton from "./MagneticButton";
-import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
+import { lazy, Suspense, useState } from "react";
+import { motion } from "motion/react";
+import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
+import PlaceAutocompleteField from "./PlaceAutocompleteField";
+import BookingOptionsSheet from "./BookingOptionsSheet";
 import { HERO_VIDEO } from "../data/visualJourney";
+import { DURATION_OPTIONS, type BookingState, type TripType } from "../lib/bookingRequest";
 
 interface HeroCommandDeckProps {
+  booking: BookingState;
+  onBookingChange: (patch: Partial<BookingState>) => void;
   onRequestScroll: () => void;
 }
 
-function FloatingCard({
-  progress,
-  range,
-  from,
-  className,
-  label,
-  lines,
-  isReduced
-}: {
-  progress: MotionValue<number>;
-  range: [number, number];
-  from: { x?: number; y?: number };
-  className: string;
-  label: string;
-  lines: string[];
-  isReduced: boolean;
-}) {
-  // Hold keyframe at progress 1 so motion's scroll-linked WAAPI keeps the
-  // revealed state instead of fading back out past the input range.
-  const opacity = useTransform(progress, [range[0], range[1], 1], [0, 1, 1]);
-  const x = useTransform(progress, [range[0], range[1], 1], [from.x ?? 0, 0, 0]);
-  const y = useTransform(progress, [range[0], range[1], 1], [from.y ?? 0, 0, -14]);
+type MapTarget = "pickup" | "destination" | null;
 
-  return (
-    <motion.aside
-      style={isReduced ? undefined : { opacity, x, y }}
-      className={`glass-panel pointer-events-none absolute z-30 hidden px-5 py-4 xl:block ${className}`}
-    >
-      <CornerMarkers />
-      <span className="mb-2 flex items-center gap-2">
-        <span className="h-1 w-1 rounded-full bg-brand-cream/45" />
-        <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone">{label}</span>
-      </span>
-      {lines.map((line) => (
-        <span
-          key={line}
-          className="block text-[10px] font-mono uppercase leading-relaxed tracking-[0.22em] text-brand-ivory/85"
-        >
-          {line}
-        </span>
-      ))}
-    </motion.aside>
-  );
-}
+// Leaflet (+ OSM tiles) only downloads once someone actually opens the map
+// picker — a rare interaction — instead of bundling it into the initial load.
+const ChooseOnMapModal = lazy(() => import("./ChooseOnMapModal"));
 
-export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProps) {
-  const heroRef = useRef<HTMLElement>(null);
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const TRUST_LINE = [
+  "Zürich-based",
+  "BMW i7",
+  "Mercedes V-Class",
+  "Private & pre-arranged"
+];
+
+const TRIP_TABS: { id: TripType; label: string }[] = [
+  { id: "one-way", label: "One way" },
+  { id: "hourly", label: "By the hour" }
+];
+
+/**
+ * Section 01 — the Booking Hero. One full-screen cinematic image with a dark
+ * readable overlay behind a centered headline and a compact horizontal booking
+ * bar — the single instrument the client needs to start a request. No
+ * side-panel, no manifesto. The bar shares App-level booking state, so
+ * anything entered here is already prefilled in the final request form.
+ */
+export default function HeroCommandDeck({
+  booking,
+  onBookingChange,
+  onRequestScroll
+}: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end end"]
-  });
+  const [mapTarget, setMapTarget] = useState<MapTarget>(null);
+  const [hasOpenedMap, setHasOpenedMap] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.05, 0.35, 0.7, 1], [0.82, 0.9, 0.85, 0.58, 0.46]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
-  const imageX = useTransform(scrollYProgress, [0, 1], ["2.5%", "0%"]);
+  const openMap = (target: Exclude<MapTarget, null>) => {
+    setHasOpenedMap(true);
+    setMapTarget(target);
+  };
 
-  // Every reveal carries an explicit hold keyframe at progress 1 ([a, b, 1])
-  // so motion's scroll-linked WAAPI keeps the revealed state through the end
-  // of the pinned range instead of fading back to the start value.
-  const eyebrowOpacity = useTransform(scrollYProgress, [0.02, 0.1, 1], [0, 1, 1]);
-  const eyebrowY = useTransform(scrollYProgress, [0.02, 0.1, 1], [18, 0, 0]);
-  const titleOneOpacity = useTransform(scrollYProgress, [0.1, 0.22, 1], [0, 1, 1]);
-  const titleOneY = useTransform(scrollYProgress, [0.1, 0.22, 1], [42, 0, 0]);
-  const titleTwoOpacity = useTransform(scrollYProgress, [0.2, 0.32, 1], [0, 1, 1]);
-  const titleTwoY = useTransform(scrollYProgress, [0.2, 0.32, 1], [42, 0, 0]);
-  const copyOpacity = useTransform(scrollYProgress, [0.3, 0.42, 1], [0, 1, 1]);
-  const copyY = useTransform(scrollYProgress, [0.3, 0.42, 1], [28, 0, 0]);
-  const actionsOpacity = useTransform(scrollYProgress, [0.4, 0.52, 1], [0, 1, 1]);
-  const actionsY = useTransform(scrollYProgress, [0.4, 0.52, 1], [24, 0, 0]);
-  const detailOpacity = useTransform(scrollYProgress, [0.52, 0.66, 1], [0, 1, 1]);
-  const detailY = useTransform(scrollYProgress, [0.52, 0.66, 1], [22, 0, 0]);
+  const reveal = (delay: number) =>
+    isReduced
+      ? {}
+      : {
+          initial: { opacity: 0, y: 22 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.9, delay, ease: EASE }
+        };
+
+  const fieldLabelClass =
+    "text-[9px] font-mono uppercase tracking-[0.22em] text-brand-stone transition-colors duration-200 group-focus-within:text-brand-gold";
+  const fieldInputClass =
+    "w-full bg-transparent text-sm font-light text-brand-ivory placeholder:text-brand-stone/45 focus:outline-none";
 
   return (
-    <section ref={heroRef} className="relative h-[200vh] border-b border-brand-cream/10 bg-brand-black">
-      <div className="sticky top-0 min-h-[100svh] overflow-hidden luxury-noise">
-        {/* Poster-first video slot: /videos/bmw-i7-hero.mp4 cross-fades in when
-            present; poster serves mobile, reduced-motion, and missing-file cases.
-            The scroll-linked opacity/scale/x treatment wraps both media. */}
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
+    <section className="relative min-h-[100svh] overflow-hidden border-b border-brand-cream/10 bg-brand-black luxury-noise">
+      {/* Cinematic background — one full-bleed image/video with a gentle
+          infinite breathe so the frame is never static. Clean by design: car /
+          airport / arrival, no clutter. */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={isReduced ? undefined : { scale: [1.04, 1.12, 1.04] }}
+        transition={
+          isReduced
+            ? undefined
+            : { duration: 22, repeat: Infinity, ease: "easeInOut" }
+        }
+      >
+        <CinematicVideoBackground
+          slot={HERO_VIDEO}
+          overlay={false}
+          priority
+          mediaClassName="object-center grayscale-[0.04] brightness-[0.82] contrast-[1.12]"
+        />
+      </motion.div>
+
+      {/* Dark readable overlay — uniform enough to hold centered text over any
+          part of the frame, deepened toward the edges for the header and bar. */}
+      <div className="absolute inset-0 z-10 bg-black/42" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-brand-black/72 via-transparent to-brand-black/85" />
+
+      <div className="relative z-20 flex min-h-[100svh] flex-col items-center justify-center px-6 pb-14 pt-32 text-center md:px-12">
+        <motion.h1
+          {...reveal(0.1)}
+          className="font-serif text-[clamp(2.6rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory"
         >
-          {/* Exterior arrival video: the hero introduces presence and arrival
-              authority; the cabin video lives in the Private Interval section.
-              Mobile serves the poster (default minVideoWidth) to protect
-              initial load. */}
-          <CinematicVideoBackground
-            slot={HERO_VIDEO}
-            overlay={false}
-            priority
-            mediaClassName="object-center grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
-          />
-        </motion.div>
+          Your chauffeur
+          <br />
+          <span className="italic text-brand-stone">is ready.</span>
+        </motion.h1>
 
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-brand-black/82 via-brand-black/34 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-black/88 via-transparent to-brand-black/46" />
+        <motion.p
+          {...reveal(0.24)}
+          className="mx-auto mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
+        >
+          Private transfers in Zürich, tailored for airport arrivals, business travel, and
+          discreet city movements.
+        </motion.p>
 
-        {/* Floating detail cards — kept in the right-hand negative space (xl+
-            only, where there is room beside the left-anchored headline) so they
-            never overlap the title at any viewport height. */}
-        <FloatingCard
-          progress={scrollYProgress}
-          range={[0.34, 0.46]}
-          from={{ x: 44 }}
-          className="right-10 top-32 xl:right-16"
-          label="Primary Cabin"
-          lines={["BMW i7 xDrive60", "Silent executive cabin", "Electric luxury sedan"]}
-          isReduced={isReduced}
-        />
-        <FloatingCard
-          progress={scrollYProgress}
-          range={[0.44, 0.56]}
-          from={{ y: 30 }}
-          className="bottom-[36%] right-10 xl:right-16"
-          label="Service Classes"
-          lines={["Airport · Executive · Private", "Family Office · Hotel · Long-Distance"]}
-          isReduced={isReduced}
-        />
+        {/* Booking bar — the single compact instrument. Tabs on top, four
+            fields and the primary CTA in one hairline-divided row. */}
+        <motion.div
+          {...reveal(0.42)}
+          className="relative mt-10 w-full max-w-5xl border border-brand-cream/15 bg-brand-deep-forest/60 text-left shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-md"
+          aria-label="Booking request"
+        >
+          <CornerMarkers />
 
-        <div className="relative z-20 flex min-h-[100svh] flex-col justify-end px-6 pb-10 pt-28 md:px-12 lg:px-24">
-          <div className="max-w-4xl">
-            <motion.div
-              style={isReduced ? undefined : { opacity: eyebrowOpacity, y: eyebrowY }}
-              className="mb-5 flex flex-wrap items-center gap-4"
-            >
-              <span className="font-mono text-sm tracking-widest text-brand-gold">Private Chauffeur Service Zürich</span>
-              <span className="h-px w-10 bg-brand-cream/25" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-                Zürich-based · Switzerland-wide · Directly arranged
-              </span>
-            </motion.div>
-
-            <h1 className="mb-8 font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory">
-              <motion.span
-                style={isReduced ? undefined : { opacity: titleOneOpacity, y: titleOneY }}
-                className="block"
-              >
-                Discreet chauffeur service
-              </motion.span>
-              <motion.span
-                style={isReduced ? undefined : { opacity: titleTwoOpacity, y: titleTwoY }}
-                className="block font-light italic text-brand-stone"
-              >
-                for people whose time cannot feel improvised.
-              </motion.span>
-            </h1>
-
-            <motion.p
-              style={isReduced ? undefined : { opacity: copyOpacity, y: copyY }}
-              className="mb-10 max-w-2xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
-            >
-              ALAIR NOIR GmbH provides private chauffeur service in Zürich and across Switzerland
-              for executives, founders, private clients, family offices, diplomatic guests, hotels,
-              and airport arrivals. Every journey is prepared with timing, privacy, presence, and
-              composure before the vehicle reaches the door.
-            </motion.p>
-
-            <motion.div
-              style={isReduced ? undefined : { opacity: actionsOpacity, y: actionsY }}
-              className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-8"
-            >
-              <MagneticButton
-                onClick={onRequestScroll}
-                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-colors duration-150 ease-in-out hover:bg-brand-ivory hover:text-brand-deep-forest"
-              >
-                Request Private Chauffeur
-              </MagneticButton>
-
-              <a
-                href="https://wa.me/41772870956"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-colors duration-150 ease-in-out hover:text-white"
-              >
-                <span>Book by WhatsApp</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>
-              </a>
-            </motion.div>
+          {/* Trip type tabs */}
+          <div className="flex items-center gap-2 px-4 pt-4 md:px-5">
+            {TRIP_TABS.map((tab) => {
+              const isActive = booking.tripType === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => onBookingChange({ tripType: tab.id })}
+                  aria-pressed={isActive}
+                  className={`cursor-pointer px-3.5 py-1.5 text-[10px] font-mono uppercase tracking-[0.18em] transition-colors duration-200 focus:outline-none focus-visible:text-brand-gold ${
+                    isActive
+                      ? "bg-brand-gold text-brand-black"
+                      : "text-brand-stone hover:text-brand-cream"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
-          <motion.div
-            style={isReduced ? undefined : { opacity: detailOpacity, y: detailY }}
-            className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-brand-cream/10 pt-7"
-          >
-            {["Airport Transfers", "Executive Travel", "Private Clients", "Hotel & Concierge", "Long-Distance Routes"].map(
-              (label) => (
-                <span key={label} className="flex items-center gap-2">
-                  <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/85">
-                    {label}
-                  </span>
-                </span>
-              )
-            )}
-          </motion.div>
-        </div>
+          {/* Fields + CTA — one continuous instrument, hairline-divided. The
+              second slot swaps between Destination (one-way) and Duration
+              (hourly) with the trip type tabs above. */}
+          <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.05fr_1.05fr_0.8fr_0.9fr_0.8fr_auto] md:divide-x md:divide-y-0">
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-pickup" className={fieldLabelClass}>
+                Pickup location
+              </label>
+              <div className="mt-1.5">
+                <PlaceAutocompleteField
+                  id="hero-pickup"
+                  placeholder="Zürich Airport (ZRH)"
+                  value={booking.pickup}
+                  onChange={(location) => onBookingChange({ pickup: location })}
+                  onOpenMap={() => openMap("pickup")}
+                  showCurrentLocation
+                  inputClassName={fieldInputClass}
+                />
+              </div>
+            </div>
 
-        {/* Chapter progress hairline — cream, so the fixed gold bar at the top
-            of the page stays the one gold progress indicator. */}
-        <motion.div
-          style={isReduced ? undefined : { opacity: detailOpacity }}
-          className="absolute bottom-0 left-0 right-0 z-40 h-[2px] bg-brand-cream/10"
-        >
-          <motion.div
-            className="h-full bg-brand-cream/50"
-            style={{ scaleX: scrollYProgress, transformOrigin: "0% 50%" }}
-          />
+            {booking.tripType === "hourly" ? (
+              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+                <label htmlFor="hero-duration" className={fieldLabelClass}>
+                  Duration
+                </label>
+                <select
+                  id="hero-duration"
+                  value={booking.duration}
+                  onChange={(e) => onBookingChange({ duration: e.target.value })}
+                  className={`${fieldInputClass} mt-1.5 cursor-pointer`}
+                >
+                  {DURATION_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value} className="bg-brand-deep-forest text-brand-ivory">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+                <label htmlFor="hero-destination" className={fieldLabelClass}>
+                  Destination
+                </label>
+                <div className="mt-1.5">
+                  <PlaceAutocompleteField
+                    id="hero-destination"
+                    placeholder="Hotel, address, or landmark"
+                    value={booking.destination}
+                    onChange={(location) => onBookingChange({ destination: location })}
+                    onOpenMap={() => openMap("destination")}
+                    inputClassName={fieldInputClass}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-date" className={fieldLabelClass}>
+                Date
+              </label>
+              <input
+                id="hero-date"
+                type="date"
+                placeholder="Select date"
+                value={booking.date}
+                onChange={(e) => onBookingChange({ date: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
+            </div>
+
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-flight" className={fieldLabelClass}>
+                Flight number
+              </label>
+              <input
+                id="hero-flight"
+                type="text"
+                placeholder="e.g. LX 225"
+                value={booking.flightNumber}
+                onChange={(e) => onBookingChange({ flightNumber: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
+            </div>
+
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-time" className={fieldLabelClass}>
+                Pickup time
+              </label>
+              <input
+                id="hero-time"
+                type="time"
+                placeholder="Select time"
+                value={booking.time}
+                onChange={(e) => onBookingChange({ time: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
+            </div>
+
+            <div className="flex items-center p-3 md:p-2.5">
+              <button
+                type="button"
+                onClick={() => setIsOptionsOpen(true)}
+                className="flex w-full items-center justify-center whitespace-nowrap bg-brand-gold px-6 py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.16em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory md:w-auto md:py-4"
+              >
+                View options
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div {...reveal(0.68)} className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2.5">
+          {TRUST_LINE.map((item) => (
+            <span key={item} className="flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/80">
+                {item}
+              </span>
+            </span>
+          ))}
         </motion.div>
       </div>
+
+      {hasOpenedMap && (
+        <Suspense fallback={null}>
+          <ChooseOnMapModal
+            isOpen={mapTarget !== null}
+            title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
+            initial={mapTarget === "destination" ? booking.destination : booking.pickup}
+            onConfirm={(location) =>
+              onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
+            }
+            onClose={() => setMapTarget(null)}
+          />
+        </Suspense>
+      )}
+
+      <BookingOptionsSheet
+        isOpen={isOptionsOpen}
+        onClose={() => setIsOptionsOpen(false)}
+        booking={booking}
+        onBookingChange={onBookingChange}
+        onViewFullForm={onRequestScroll}
+      />
     </section>
   );
 }

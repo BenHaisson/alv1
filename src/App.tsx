@@ -6,9 +6,7 @@ import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
-import WhatWeAre from "./components/WhatWeAre";
 import NotForEveryone from "./components/NotForEveryone";
-import ServiceMatrix from "./components/ServiceMatrix";
 import FleetControlSlider from "./components/FleetControlSlider";
 import FleetRevealMotion from "./components/motion/FleetRevealMotion";
 import DestinationStackMotion from "./components/motion/DestinationStackMotion";
@@ -16,18 +14,19 @@ import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
 import SectionTransition from "./components/motion/SectionTransition";
 import StackedChapter from "./components/motion/StackedChapter";
 import StandardsSection from "./components/StandardsSection";
+import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
 const SECTIONS = [
-  { key: "hero", id: "hero-section", label: "01 // PRIVATE CHAUFFEUR", navLabel: "Chauffeur" },
-  { key: "services", id: "services-section", label: "02 // SERVICES", navLabel: "Services" },
-  { key: "fleet", id: "fleet-section", label: "03 // THE FLEET", navLabel: "Fleet" },
+  { key: "hero", id: "hero-section", label: "01 // BOOK", navLabel: "Book" },
+  { key: "fleet", id: "fleet-section", label: "02 // THE FLEET", navLabel: "Fleet" },
+  { key: "routes", id: "routes-section", label: "03 // THE ROUTES", navLabel: "Routes" },
   { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" },
-  { key: "routes", id: "routes-section", label: "05 // THE ROUTES", navLabel: "Routes" },
-  { key: "request", id: "request-section", label: "06 // BOOKING", navLabel: "Booking" }
+  { key: "request", id: "request-section", label: "05 // CONTACT", navLabel: "Contact" }
 ];
 
 function JourneyRail({
@@ -80,7 +79,12 @@ function JourneyRail({
 
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState("bmw-i7");
+  // Booking state lifted here so the hero panel and the final request form share
+  // one source of truth — whatever the client types up top is already prefilled
+  // in the final form, so the order is never lost while scrolling.
+  const [booking, setBooking] = useState<BookingState>(EMPTY_BOOKING);
+  const updateBooking = (patch: Partial<BookingState>) =>
+    setBooking((prev) => ({ ...prev, ...patch }));
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeKey, setActiveKey] = useState("hero");
@@ -116,9 +120,10 @@ export default function App() {
       const hero = document.getElementById("hero-section");
       if (!hero) return;
       const heroTop = hero.getBoundingClientRect().top + window.scrollY;
-      const heroScroll = Math.max(0, hero.offsetHeight - window.innerHeight);
-      // Land partway into the hero pin, where the headline is fully revealed.
-      scrollWindowTo(heroTop + heroScroll * 0.55);
+      // The Booking Hero reveals its content on mount (not scroll-linked), so
+      // land exactly at its top — the headline must be visible immediately,
+      // not scrolled partway past it.
+      scrollWindowTo(heroTop);
     };
 
     const onUser = () => finish(false);
@@ -180,11 +185,7 @@ export default function App() {
   };
 
   const handleFleetRequest = (vehicleName?: string) => {
-    if (vehicleName?.toLowerCase().includes("v-class") || vehicleName?.toLowerCase().includes("mercedes")) {
-      setSelectedVehicle("v-class");
-    } else {
-      setSelectedVehicle("bmw-i7");
-    }
+    updateBooking({ vehicle: vehicleIdFromName(vehicleName) });
     scrollToSection("request");
   };
 
@@ -268,70 +269,69 @@ export default function App() {
 
           {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-          {/* 02 — Hero: slides over the pinned opening portal (stage z-0),
-              first sheet of the stack. Self-pinning, so plain flow + z wrapper. */}
+          {/* 01 — Booking Hero: the first screen exists only for the order. It
+              slides over the pinned opening portal (stage z-0). */}
           <div id="hero-section" className="relative z-[1]">
-            <HeroCommandDeck onRequestScroll={() => scrollToSection("request")} />
+            <HeroCommandDeck
+              booking={booking}
+              onBookingChange={updateBooking}
+              onRequestScroll={() => scrollToSection("request")}
+            />
             <SectionTransition />
           </div>
 
           {/* From here down each chapter is a sheet in the card stack: it pins
               and scales down/dims as the next chapter slides over it
-              (StackedChapter). Self-pinning sections (NotForEveryone,
-              DestinationStackMotion) stay in plain flow — an ancestor transform
-              would break their internal sticky pins — inside relative z-index
-              wrappers so they cover previously pinned sheets. z ascends down
-              the page. */}
+              (StackedChapter). Self-pinning sections (DestinationStackMotion)
+              stay in plain flow — an ancestor transform would break their
+              internal sticky pins — inside relative z-index wrappers so they
+              cover previously pinned sheets. z ascends down the page. */}
 
-          {/* 03 — What ALAIR NOIR is: company clarity directly after the hero. */}
+          {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
           <StackedChapter zIndex={2}>
-            <WhatWeAre />
-          </StackedChapter>
-
-          {/* 04 — "NOT FOR EVERYONE. FOR YOU." — the single manifesto section. */}
-          <div className="relative z-[3]">
             <NotForEveryone />
-            <SectionTransition />
-          </div>
-
-          <StackedChapter zIndex={4} id="services-section">
-            <ServiceMatrix />
           </StackedChapter>
 
-          {/* 06 — Fleet: one chapter, two beats. Cinematic reveal first, compact
-              selector below it. FleetRevealMotion drives its own scroll progress
-              but has no internal sticky, so it survives the stacked wrapper. */}
-          <StackedChapter zIndex={5} id="fleet-section">
+          {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin
+              gallery below. FleetRevealMotion drives its own scroll progress but
+              has no internal sticky, so it survives the stacked wrapper. */}
+          <StackedChapter zIndex={3} id="fleet-section">
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </StackedChapter>
 
-          {/* 07 — The ALAIR Standard, with the trust strip merged in below. */}
+          {/* Private Interval: the approved cabin video moment — cabin visuals
+              preserved. */}
+          <StackedChapter zIndex={4}>
+            <PrivateIntervalMotion />
+          </StackedChapter>
+
+          {/* 04 — Routes: "Where we drive" destination stack + route line
+              (sticky pin — stays in plain flow). */}
+          <div id="routes-section" className="relative z-[5] scroll-mt-20">
+            <DestinationStackMotion onArrange={() => scrollToSection("request")} />
+            <SectionTransition />
+          </div>
+
+          {/* 05 — The ALAIR Standard — premium positioning. */}
           <StackedChapter zIndex={6} id="standards-section">
             <StandardsSection />
           </StackedChapter>
 
-          {/* Private Interval: the approved cabin video moment — the Composure
-              standard made visible. */}
-          <StackedChapter zIndex={7}>
-            <PrivateIntervalMotion />
-          </StackedChapter>
-
-          {/* 08 — Routes: the cinematic "Zürich to wherever" destination stack
-              (sticky pin — stays in plain flow). */}
-          <div id="routes-section" className="relative z-[8] scroll-mt-20">
-            <DestinationStackMotion />
-            <SectionTransition />
+          {/* Compact trust strip — five quiet proof points before the request. */}
+          <div className="relative z-[7]">
+            <TrustStrip />
           </div>
 
-          {/* 09 — How booking works + request, one conversion section. */}
-          <StackedChapter zIndex={9} id="request-section">
-            <RequestDispatchConsole prefilledVehicle={selectedVehicle} />
+          {/* 06 — Final request: "Request Your Chauffeur". */}
+          <StackedChapter zIndex={8} id="request-section">
+            <RequestDispatchConsole booking={booking} onBookingChange={updateBooking} />
           </StackedChapter>
 
           {/* Final covering sheet — not stacked: the footer is shorter than a
-              viewport, so a pinned FAQ would rest half-scaled at max scroll. */}
-          <div className="relative z-[10]">
+              viewport, so a pinned FAQ would rest half-scaled at max scroll. The
+              FAQ stays here, out of the main nav, as a quiet accordion. */}
+          <div className="relative z-[9]">
             <BeforeRequestFAQ />
             <LuxuryFooter onNavClick={scrollToSection} />
           </div>

@@ -47,13 +47,8 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
             Fleet
           </span>
           <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl">
-            Two vehicles.
-            <span className="italic text-brand-stone"> One standard.</span>
+            Choose your cabin.
           </h2>
-          <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body">
-            BMW i7 for silent executive travel. Mercedes-Benz V-Class for space, guests,
-            and luggage.
-          </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
@@ -91,7 +86,7 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                   />
                 )}
 
-                <div className="flex flex-col gap-3 p-6 md:p-8">
+                <div className="flex flex-col gap-4 p-6 md:p-8">
                   <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-gold">
                     {vehicle.role}
                   </span>
@@ -101,14 +96,34 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                   <p className="max-w-md text-sm font-light leading-relaxed text-brand-stone">
                     {vehicle.line}
                   </p>
+
+                  <div className="mt-1">
+                    <span className="mb-3 block text-[9px] font-mono uppercase tracking-[0.24em] text-brand-muted-stone">
+                      Best for
+                    </span>
+                    <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      {vehicle.bestFor.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-center gap-2.5 text-xs font-light text-brand-ivory/80"
+                        >
+                          <span className="h-px w-3.5 shrink-0 bg-brand-cream/30" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
                   {onRequestScroll && (
                     <button
                       type="button"
                       onClick={() => onRequestScroll(vehicle.name)}
-                      className="mt-3 flex w-fit cursor-pointer items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream/80 transition-colors duration-200 ease-out hover:text-brand-ivory focus:outline-none"
+                      className="group/cta mt-4 flex w-fit cursor-pointer items-center gap-3 border border-brand-cream/25 px-6 py-3 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream transition-colors duration-200 ease-out hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
                     >
-                      <span className="h-px w-8 bg-brand-cream/30" />
-                      Request this cabin
+                      <span>{vehicle.cta}</span>
+                      <span className="transition-transform duration-300 group-hover/cta:translate-x-1">
+                        →
+                      </span>
                     </button>
                   )}
                 </div>
@@ -116,10 +131,6 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
             );
           })}
         </div>
-
-        <p className="mt-10 max-w-xl text-sm font-light leading-relaxed text-brand-muted-stone">
-          Full specifications, interiors, and vehicle selection below.
-        </p>
       </div>
     </section>
   );
