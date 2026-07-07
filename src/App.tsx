@@ -120,9 +120,10 @@ export default function App() {
       const hero = document.getElementById("hero-section");
       if (!hero) return;
       const heroTop = hero.getBoundingClientRect().top + window.scrollY;
-      const heroScroll = Math.max(0, hero.offsetHeight - window.innerHeight);
-      // Land partway into the hero pin, where the headline is fully revealed.
-      scrollWindowTo(heroTop + heroScroll * 0.55);
+      // The Booking Hero reveals its content on mount (not scroll-linked), so
+      // land exactly at its top — the headline must be visible immediately,
+      // not scrolled partway past it.
+      scrollWindowTo(heroTop);
     };
 
     const onUser = () => finish(false);

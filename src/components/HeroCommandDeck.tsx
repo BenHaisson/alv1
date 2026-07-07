@@ -2,7 +2,12 @@ import { motion } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import { HERO_VIDEO } from "../data/visualJourney";
-import { VEHICLE_META, whatsappLink, emailLink, type BookingState } from "../lib/bookingRequest";
+import {
+  whatsappLink,
+  emailLink,
+  type BookingState,
+  type TripType
+} from "../lib/bookingRequest";
 
 interface HeroCommandDeckProps {
   booking: BookingState;
@@ -19,13 +24,17 @@ const TRUST_LINE = [
   "Private & pre-arranged"
 ];
 
+const TRIP_TABS: { id: TripType; label: string }[] = [
+  { id: "one-way", label: "One way" },
+  { id: "hourly", label: "By the hour" }
+];
+
 /**
- * Section 01 — the Booking Hero. First screen exists only for the order: a
- * clean cinematic background (slow breathe) behind a booking panel that is the
- * visual focus. No manifesto, no long positioning paragraph — the client lands,
- * understands it is private chauffeur booking in Zürich, and sends the request
- * by WhatsApp or email. The panel shares App-level booking state, so anything
- * entered here is already prefilled in the final request form.
+ * Section 01 — the Booking Hero. One full-screen cinematic image with a dark
+ * readable overlay behind a centered headline and a compact horizontal booking
+ * bar — the single instrument the client needs to start a request. No
+ * side-panel, no manifesto. The bar shares App-level booking state, so
+ * anything entered here is already prefilled in the final request form.
  */
 export default function HeroCommandDeck({
   booking,
@@ -34,25 +43,25 @@ export default function HeroCommandDeck({
 }: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
 
-  const labelClass =
-    "mb-2 block text-[10px] font-mono uppercase tracking-[0.22em] text-brand-stone";
-  const fieldClass =
-    "w-full border border-brand-cream/12 bg-brand-black/60 px-4 py-3.5 text-sm font-light text-brand-ivory transition-colors placeholder:text-brand-stone/50 focus:border-brand-gold/60 focus:outline-none";
-
   const reveal = (delay: number) =>
     isReduced
       ? {}
       : {
-          initial: { opacity: 0, y: 24 },
+          initial: { opacity: 0, y: 22 },
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.9, delay, ease: EASE }
         };
 
+  const fieldLabelClass =
+    "text-[9px] font-mono uppercase tracking-[0.22em] text-brand-stone transition-colors duration-200 group-focus-within:text-brand-gold";
+  const fieldInputClass =
+    "w-full bg-transparent text-sm font-light text-brand-ivory placeholder:text-brand-stone/45 focus:outline-none";
+
   return (
     <section className="relative min-h-[100svh] overflow-hidden border-b border-brand-cream/10 bg-brand-black luxury-noise">
-      {/* Cinematic background — the outer layer holds a gentle infinite breathe
-          so the frame is never static; the inner layer is the poster-first
-          video. Clean by design: car / airport / arrival, no clutter. */}
+      {/* Cinematic background — one full-bleed image/video with a gentle
+          infinite breathe so the frame is never static. Clean by design: car /
+          airport / arrival, no clutter. */}
       <motion.div
         className="absolute inset-0 z-0"
         animate={isReduced ? undefined : { scale: [1.04, 1.12, 1.04] }}
@@ -66,182 +75,162 @@ export default function HeroCommandDeck({
           slot={HERO_VIDEO}
           overlay={false}
           priority
-          mediaClassName="object-center grayscale-[0.04] brightness-[0.92] contrast-[1.12]"
+          mediaClassName="object-center grayscale-[0.04] brightness-[0.82] contrast-[1.12]"
         />
       </motion.div>
 
-      {/* Legibility gradients — anchor the panel in the darker left/bottom. */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-brand-black/88 via-brand-black/45 to-brand-black/10" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-black/92 via-transparent to-brand-black/40" />
+      {/* Dark readable overlay — uniform enough to hold centered text over any
+          part of the frame, deepened toward the edges for the header and bar. */}
+      <div className="absolute inset-0 z-10 bg-black/42" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-brand-black/72 via-transparent to-brand-black/85" />
 
-      <div className="relative z-20 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center gap-12 px-6 pb-16 pt-28 md:px-12 lg:flex-row lg:items-center lg:gap-16 lg:px-24 lg:pt-24">
-        {/* Left — the short headline and supporting line only. */}
-        <div className="max-w-xl lg:flex-1">
-          <motion.span
-            {...reveal(0.05)}
-            className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold"
-          >
-            Private Chauffeur Service · Zürich
-          </motion.span>
+      <div className="relative z-20 flex min-h-[100svh] flex-col items-center justify-center px-6 pb-14 pt-32 text-center md:px-12">
+        <motion.h1
+          {...reveal(0.1)}
+          className="font-serif text-[clamp(2.6rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory"
+        >
+          Your chauffeur
+          <br />
+          <span className="italic text-brand-stone">is ready.</span>
+        </motion.h1>
 
-          <motion.h1
-            {...reveal(0.15)}
-            className="font-serif text-[clamp(2.4rem,5.5vw,4rem)] font-light leading-[1.08] text-brand-ivory"
-          >
-            Book Your Private Chauffeur
-            <br />
-            <span className="italic text-brand-stone">in Zürich.</span>
-          </motion.h1>
+        <motion.p
+          {...reveal(0.24)}
+          className="mx-auto mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
+        >
+          Private transfers in Zürich, tailored for airport arrivals, business travel, and
+          discreet city movements.
+        </motion.p>
 
-          <motion.p
-            {...reveal(0.28)}
-            className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body lg:text-lg"
-          >
-            Discreet transfers for airport arrivals, executive meetings, hotels, events, and
-            selected European routes.
-          </motion.p>
-
-          <motion.div
-            {...reveal(0.4)}
-            className="mt-8 flex flex-wrap gap-x-5 gap-y-2.5"
-          >
-            {TRUST_LINE.map((item) => (
-              <span key={item} className="flex items-center gap-2">
-                <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/80">
-                  {item}
-                </span>
-              </span>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Right — the booking panel, the focus of the screen. Soft upward
-            reveal on load. */}
-        <motion.aside
-          initial={isReduced ? false : { opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: isReduced ? 0 : 0.5, ease: EASE }}
-          className="relative w-full max-w-md self-center border border-brand-cream/15 bg-brand-deep-forest/55 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-md md:p-8 lg:w-[420px]"
+        {/* Booking bar — the single compact instrument. Tabs on top, four
+            fields and the primary CTA in one hairline-divided row. */}
+        <motion.div
+          {...reveal(0.42)}
+          className="relative mt-10 w-full max-w-5xl border border-brand-cream/15 bg-brand-deep-forest/60 text-left shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-md"
           aria-label="Booking request"
         >
           <CornerMarkers />
 
-          <div className="mb-6 flex items-center justify-between border-b border-brand-cream/10 pb-4">
-            <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-cream">
-              Request a Transfer
-            </span>
-            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-              Zürich
-            </span>
+          {/* Trip type tabs */}
+          <div className="flex items-center gap-2 px-4 pt-4 md:px-5">
+            {TRIP_TABS.map((tab) => {
+              const isActive = booking.tripType === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => onBookingChange({ tripType: tab.id })}
+                  aria-pressed={isActive}
+                  className={`cursor-pointer px-3.5 py-1.5 text-[10px] font-mono uppercase tracking-[0.18em] transition-colors duration-200 focus:outline-none focus-visible:text-brand-gold ${
+                    isActive
+                      ? "bg-brand-gold text-brand-black"
+                      : "text-brand-stone hover:text-brand-cream"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="hero-route" className={labelClass}>
+          {/* Fields + CTA — one continuous instrument, hairline-divided. */}
+          <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.4fr_0.85fr_0.95fr_0.85fr_auto] md:divide-x md:divide-y-0">
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-route" className={fieldLabelClass}>
                 Route
               </label>
               <input
                 id="hero-route"
                 type="text"
-                placeholder="Zürich Airport → Baur au Lac"
+                placeholder="Zürich Airport (ZRH) → Destination"
                 value={booking.route}
                 onChange={(e) => onBookingChange({ route: e.target.value })}
-                className={fieldClass}
+                className={`${fieldInputClass} mt-1.5`}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="hero-date" className={labelClass}>
-                  Date
-                </label>
-                <input
-                  id="hero-date"
-                  type="date"
-                  value={booking.date}
-                  onChange={(e) => onBookingChange({ date: e.target.value })}
-                  className={fieldClass}
-                />
-              </div>
-              <div>
-                <label htmlFor="hero-time" className={labelClass}>
-                  Time
-                </label>
-                <input
-                  id="hero-time"
-                  type="time"
-                  value={booking.time}
-                  onChange={(e) => onBookingChange({ time: e.target.value })}
-                  className={fieldClass}
-                />
-              </div>
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-date" className={fieldLabelClass}>
+                Date
+              </label>
+              <input
+                id="hero-date"
+                type="date"
+                placeholder="Select date"
+                value={booking.date}
+                onChange={(e) => onBookingChange({ date: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="hero-passengers" className={labelClass}>
-                  Passengers
-                </label>
-                <select
-                  id="hero-passengers"
-                  value={booking.passengers}
-                  onChange={(e) => onBookingChange({ passengers: e.target.value })}
-                  className={`${fieldClass} cursor-pointer`}
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5+</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="hero-vehicle" className={labelClass}>
-                  Vehicle
-                </label>
-                <select
-                  id="hero-vehicle"
-                  value={booking.vehicle}
-                  onChange={(e) => onBookingChange({ vehicle: e.target.value })}
-                  className={`${fieldClass} cursor-pointer`}
-                >
-                  {Object.entries(VEHICLE_META).map(([id, meta]) => (
-                    <option key={id} value={id}>
-                      {meta.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-flight" className={fieldLabelClass}>
+                Flight number
+              </label>
+              <input
+                id="hero-flight"
+                type="text"
+                placeholder="e.g. LX 225"
+                value={booking.flightNumber}
+                onChange={(e) => onBookingChange({ flightNumber: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
+            </div>
+
+            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <label htmlFor="hero-time" className={fieldLabelClass}>
+                Pickup time
+              </label>
+              <input
+                id="hero-time"
+                type="time"
+                placeholder="Select time"
+                value={booking.time}
+                onChange={(e) => onBookingChange({ time: e.target.value })}
+                className={`${fieldInputClass} mt-1.5`}
+              />
+            </div>
+
+            <div className="flex items-center p-3 md:p-2.5">
+              <a
+                href={whatsappLink(booking)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center whitespace-nowrap bg-brand-gold px-6 py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.16em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory md:w-auto md:py-4"
+              >
+                Request by WhatsApp
+              </a>
             </div>
           </div>
+        </motion.div>
 
-          <div className="mt-7 space-y-3">
-            <a
-              href={whatsappLink(booking)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.18em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory"
-            >
-              Request by WhatsApp
-            </a>
-            <a
-              href={emailLink(booking)}
-              className="block w-full border border-brand-cream/30 py-4 text-center text-xs font-mono uppercase tracking-[0.18em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/5"
-            >
-              Request by Email
-            </a>
-          </div>
-
+        <motion.div {...reveal(0.56)} className="mt-5 flex flex-col items-center gap-3">
+          <a
+            href={emailLink(booking)}
+            className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-cream/85 transition-colors duration-200 hover:text-brand-cream"
+          >
+            Request by Email
+          </a>
           <button
             type="button"
             onClick={onRequestScroll}
-            className="mt-4 flex w-full items-center justify-center gap-2 text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
+            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
           >
-            Add luggage, contact &amp; notes
+            Add passengers, luggage, vehicle &amp; contact
             <span aria-hidden="true">↓</span>
           </button>
-        </motion.aside>
+        </motion.div>
+
+        <motion.div {...reveal(0.68)} className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2.5">
+          {TRUST_LINE.map((item) => (
+            <span key={item} className="flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/80">
+                {item}
+              </span>
+            </span>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

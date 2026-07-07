@@ -7,8 +7,14 @@ import {
   whatsappLink,
   emailLink,
   vehicleMetaFor,
-  type BookingState
+  type BookingState,
+  type TripType
 } from "../lib/bookingRequest";
+
+const TRIP_TABS: { id: TripType; label: string }[] = [
+  { id: "one-way", label: "One way" },
+  { id: "hourly", label: "By the hour" }
+];
 
 interface RequestDispatchConsoleProps {
   booking: BookingState;
@@ -58,8 +64,8 @@ export default function RequestDispatchConsole({
             Request Your Chauffeur
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-body">
-            Send your route, time, passengers, luggage, and preferred vehicle. We confirm
-            availability and rate directly.
+            Send your route, time, flight number, passengers, luggage, and preferred vehicle. We
+            confirm availability and rate directly.
           </p>
         </div>
 
@@ -67,6 +73,30 @@ export default function RequestDispatchConsole({
           {/* Left — the request form */}
           <div className="lg:col-span-7">
             <form onSubmit={(event) => event.preventDefault()} className="space-y-5">
+              <div>
+                <span className={labelClass}>Trip type</span>
+                <div className="flex gap-2">
+                  {TRIP_TABS.map((tab) => {
+                    const isActive = booking.tripType === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => onBookingChange({ tripType: tab.id })}
+                        aria-pressed={isActive}
+                        className={`cursor-pointer border px-4 py-2 text-[10px] font-mono uppercase tracking-[0.18em] transition-colors duration-200 focus:outline-none focus-visible:border-brand-gold ${
+                          isActive
+                            ? "border-brand-gold bg-brand-gold-muted text-brand-cream"
+                            : "border-brand-cream/12 text-brand-stone hover:border-brand-cream/30"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div>
                 <label htmlFor="req-route" className={labelClass}>
                   Route
@@ -106,6 +136,20 @@ export default function RequestDispatchConsole({
                     className={inputClass}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="req-flight" className={labelClass}>
+                  Flight number
+                </label>
+                <input
+                  id="req-flight"
+                  type="text"
+                  placeholder="e.g. LX 225"
+                  value={booking.flightNumber}
+                  onChange={(e) => onBookingChange({ flightNumber: e.target.value })}
+                  className={inputClass}
+                />
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

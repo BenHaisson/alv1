@@ -10,10 +10,14 @@ import { imageAssets } from "../assets";
  * helpers here, so the request always reads identically.
  */
 
+export type TripType = "one-way" | "hourly";
+
 export interface BookingState {
+  tripType: TripType;
   route: string;
   date: string;
   time: string;
+  flightNumber: string;
   passengers: string;
   luggage: string;
   vehicle: string;
@@ -22,9 +26,11 @@ export interface BookingState {
 }
 
 export const EMPTY_BOOKING: BookingState = {
+  tripType: "one-way",
   route: "",
   date: "",
   time: "",
+  flightNumber: "",
   passengers: "1",
   luggage: "2",
   vehicle: "bmw-i7",
@@ -72,13 +78,19 @@ export function buildRequestText(booking: BookingState): string {
   const lines = [
     "ALAIR NOIR — PRIVATE CHAUFFEUR REQUEST",
     "",
+    `Trip type  : ${booking.tripType === "hourly" ? "By the hour" : "One way"}`,
     `Route      : ${booking.route || "To be confirmed"}`,
     `Date       : ${booking.date || "To be confirmed"}`,
-    `Time       : ${booking.time ? `${booking.time} (Zürich local)` : "To be confirmed"}`,
+    `Time       : ${booking.time ? `${booking.time} (Zürich local)` : "To be confirmed"}`
+  ];
+
+  if (booking.flightNumber.trim()) lines.push(`Flight     : ${booking.flightNumber.trim()}`);
+
+  lines.push(
     `Passengers : ${booking.passengers}`,
     `Luggage    : ${booking.luggage}`,
     `Vehicle    : ${vehicle.label}`
-  ];
+  );
 
   if (booking.contact.trim()) lines.push(`Contact    : ${booking.contact.trim()}`);
   if (booking.notes.trim()) lines.push(`Notes      : ${booking.notes.trim()}`);
