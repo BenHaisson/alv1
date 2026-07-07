@@ -14,7 +14,12 @@ export type TripType = "one-way" | "hourly";
 
 export interface BookingState {
   tripType: TripType;
-  route: string;
+  /** Always used — the second slot (destination or duration) depends on tripType. */
+  pickup: string;
+  /** One-way only. */
+  destination: string;
+  /** Hourly only — an hours value from DURATION_OPTIONS, e.g. "3". */
+  duration: string;
   date: string;
   time: string;
   flightNumber: string;
@@ -27,7 +32,9 @@ export interface BookingState {
 
 export const EMPTY_BOOKING: BookingState = {
   tripType: "one-way",
-  route: "",
+  pickup: "",
+  destination: "",
+  duration: "2",
   date: "",
   time: "",
   flightNumber: "",
@@ -37,6 +44,22 @@ export const EMPTY_BOOKING: BookingState = {
   contact: "",
   notes: ""
 };
+
+export interface DurationOption {
+  /** Hours, as a string, e.g. "2". */
+  value: string;
+  label: string;
+}
+
+/** By-the-hour packages — 40 km included per hour. */
+export const DURATION_OPTIONS: DurationOption[] = [2, 3, 4, 5, 6, 7].map((hours) => ({
+  value: String(hours),
+  label: `${hours} hours (${hours * 40} km included)`
+}));
+
+export function durationLabelFor(value: string): string {
+  return DURATION_OPTIONS.find((option) => option.value === value)?.label ?? "To be confirmed";
+}
 
 export const WHATSAPP_NUMBER = "41772870956";
 export const BOOKING_EMAIL = "booking@alairnoir.ch";
@@ -75,25 +98,35 @@ export function vehicleIdFromName(name?: string): string {
 /** The client-facing request message shared by both booking surfaces. */
 export function buildRequestText(booking: BookingState): string {
   const vehicle = vehicleMetaFor(booking.vehicle);
+  const isHourly = booking.tripType === "hourly";
   const lines = [
     "ALAIR NOIR — PRIVATE CHAUFFEUR REQUEST",
     "",
-    `Trip type  : ${booking.tripType === "hourly" ? "By the hour" : "One way"}`,
-    `Route      : ${booking.route || "To be confirmed"}`,
-    `Date       : ${booking.date || "To be confirmed"}`,
-    `Time       : ${booking.time ? `${booking.time} (Zürich local)` : "To be confirmed"}`
+    `Trip type   : ${isHourly ? "By the hour" : "One way"}`,
+    `Pickup      : ${booking.pickup || "To be confirmed"}`
   ];
 
-  if (booking.flightNumber.trim()) lines.push(`Flight     : ${booking.flightNumber.trim()}`);
+  if (isHourly) {
+    lines.push(`Duration    : ${durationLabelFor(booking.duration)}`);
+  } else {
+    lines.push(`Destination : ${booking.destination || "To be confirmed"}`);
+  }
 
   lines.push(
-    `Passengers : ${booking.passengers}`,
-    `Luggage    : ${booking.luggage}`,
-    `Vehicle    : ${vehicle.label}`
+    `Date        : ${booking.date || "To be confirmed"}`,
+    `Time        : ${booking.time ? `${booking.time} (Zürich local)` : "To be confirmed"}`
   );
 
-  if (booking.contact.trim()) lines.push(`Contact    : ${booking.contact.trim()}`);
-  if (booking.notes.trim()) lines.push(`Notes      : ${booking.notes.trim()}`);
+  if (booking.flightNumber.trim()) lines.push(`Flight      : ${booking.flightNumber.trim()}`);
+
+  lines.push(
+    `Passengers  : ${booking.passengers}`,
+    `Luggage     : ${booking.luggage}`,
+    `Vehicle     : ${vehicle.label}`
+  );
+
+  if (booking.contact.trim()) lines.push(`Contact     : ${booking.contact.trim()}`);
+  if (booking.notes.trim()) lines.push(`Notes       : ${booking.notes.trim()}`);
 
   return lines.join("\n");
 }

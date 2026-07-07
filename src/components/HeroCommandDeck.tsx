@@ -5,6 +5,7 @@ import { HERO_VIDEO } from "../data/visualJourney";
 import {
   whatsappLink,
   emailLink,
+  DURATION_OPTIONS,
   type BookingState,
   type TripType
 } from "../lib/bookingRequest";
@@ -133,21 +134,57 @@ export default function HeroCommandDeck({
             })}
           </div>
 
-          {/* Fields + CTA — one continuous instrument, hairline-divided. */}
-          <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.4fr_0.85fr_0.95fr_0.85fr_auto] md:divide-x md:divide-y-0">
+          {/* Fields + CTA — one continuous instrument, hairline-divided. The
+              second slot swaps between Destination (one-way) and Duration
+              (hourly) with the trip type tabs above. */}
+          <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.05fr_1.05fr_0.8fr_0.9fr_0.8fr_auto] md:divide-x md:divide-y-0">
             <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
-              <label htmlFor="hero-route" className={fieldLabelClass}>
-                Route
+              <label htmlFor="hero-pickup" className={fieldLabelClass}>
+                Pickup location
               </label>
               <input
-                id="hero-route"
+                id="hero-pickup"
                 type="text"
-                placeholder="Zürich Airport (ZRH) → Destination"
-                value={booking.route}
-                onChange={(e) => onBookingChange({ route: e.target.value })}
+                placeholder="Zürich Airport (ZRH)"
+                value={booking.pickup}
+                onChange={(e) => onBookingChange({ pickup: e.target.value })}
                 className={`${fieldInputClass} mt-1.5`}
               />
             </div>
+
+            {booking.tripType === "hourly" ? (
+              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+                <label htmlFor="hero-duration" className={fieldLabelClass}>
+                  Duration
+                </label>
+                <select
+                  id="hero-duration"
+                  value={booking.duration}
+                  onChange={(e) => onBookingChange({ duration: e.target.value })}
+                  className={`${fieldInputClass} mt-1.5 cursor-pointer`}
+                >
+                  {DURATION_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value} className="bg-brand-deep-forest text-brand-ivory">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+                <label htmlFor="hero-destination" className={fieldLabelClass}>
+                  Destination
+                </label>
+                <input
+                  id="hero-destination"
+                  type="text"
+                  placeholder="Hotel, address, or landmark"
+                  value={booking.destination}
+                  onChange={(e) => onBookingChange({ destination: e.target.value })}
+                  className={`${fieldInputClass} mt-1.5`}
+                />
+              </div>
+            )}
 
             <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-date" className={fieldLabelClass}>

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import {
   VEHICLE_META,
+  DURATION_OPTIONS,
   buildRequestText,
   whatsappLink,
   emailLink,
@@ -38,7 +39,7 @@ export default function RequestDispatchConsole({
 
   const vehicleMeta = vehicleMetaFor(booking.vehicle);
   const requestText = buildRequestText(booking);
-  const ready = booking.route.trim() !== "" && booking.contact.trim() !== "";
+  const ready = booking.pickup.trim() !== "" && booking.contact.trim() !== "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(requestText);
@@ -64,7 +65,7 @@ export default function RequestDispatchConsole({
             Request Your Chauffeur
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-body">
-            Send your route, time, flight number, passengers, luggage, and preferred vehicle. We
+            Send your pickup, time, flight number, passengers, luggage, and preferred vehicle. We
             confirm availability and rate directly.
           </p>
         </div>
@@ -97,18 +98,53 @@ export default function RequestDispatchConsole({
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="req-route" className={labelClass}>
-                  Route
-                </label>
-                <input
-                  id="req-route"
-                  type="text"
-                  placeholder="Zürich Airport → Davos"
-                  value={booking.route}
-                  onChange={(e) => onBookingChange({ route: e.target.value })}
-                  className={inputClass}
-                />
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="req-pickup" className={labelClass}>
+                    Pickup location
+                  </label>
+                  <input
+                    id="req-pickup"
+                    type="text"
+                    placeholder="Zürich Airport (ZRH)"
+                    value={booking.pickup}
+                    onChange={(e) => onBookingChange({ pickup: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
+                {booking.tripType === "hourly" ? (
+                  <div>
+                    <label htmlFor="req-duration" className={labelClass}>
+                      Duration
+                    </label>
+                    <select
+                      id="req-duration"
+                      value={booking.duration}
+                      onChange={(e) => onBookingChange({ duration: e.target.value })}
+                      className={`${inputClass} cursor-pointer`}
+                    >
+                      {DURATION_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    <label htmlFor="req-destination" className={labelClass}>
+                      Destination
+                    </label>
+                    <input
+                      id="req-destination"
+                      type="text"
+                      placeholder="Hotel, address, or landmark"
+                      value={booking.destination}
+                      onChange={(e) => onBookingChange({ destination: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
