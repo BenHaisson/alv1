@@ -13,20 +13,23 @@ import { imageAssets } from "../assets";
 export type TripType = "one-way" | "hourly";
 
 /**
- * A location field's full value — free-typed text until a Google Places
- * suggestion (or a map pin / current-location fix) is resolved, at which
- * point placeId/coordinates are attached. The booking system always prefers
- * this validated form over plain text.
+ * A location field's full value — free-typed text until a Photon suggestion
+ * (or a map pin / current-location fix) is resolved, at which point
+ * coordinates are attached. The booking system always prefers this validated
+ * form over plain text.
  */
 export interface LocationValue {
   /** What's shown in the input. */
   description: string;
+  /** Provider-specific identifier (e.g. "osm:N:123456") — informational only. */
   placeId: string | null;
   formattedAddress: string | null;
   lat: number | null;
   lng: number | null;
   city: string | null;
   country: string | null;
+  /** Which geocoder resolved this location, e.g. "photon". */
+  provider: string | null;
 }
 
 export const EMPTY_LOCATION: LocationValue = {
@@ -36,7 +39,8 @@ export const EMPTY_LOCATION: LocationValue = {
   lat: null,
   lng: null,
   city: null,
-  country: null
+  country: null,
+  provider: null
 };
 
 /** Coordinates are the real signal of a resolved place — free text alone isn't. */
@@ -48,9 +52,11 @@ export function locationText(location: LocationValue): string {
   return location.formattedAddress || location.description || "";
 }
 
+/** An OpenStreetMap deep link — no API key, no Google dependency. */
 export function locationMapsLink(location: LocationValue): string | null {
   if (location.lat == null || location.lng == null) return null;
-  return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
+  const { lat, lng } = location;
+  return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`;
 }
 
 export interface BookingState {

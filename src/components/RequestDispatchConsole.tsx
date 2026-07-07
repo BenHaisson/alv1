@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
-import ChooseOnMapModal from "./ChooseOnMapModal";
 import {
   VEHICLE_META,
   DURATION_OPTIONS,
@@ -20,6 +19,10 @@ const TRIP_TABS: { id: TripType; label: string }[] = [
 ];
 
 type MapTarget = "pickup" | "destination" | null;
+
+// Leaflet (+ OSM tiles) only downloads once someone actually opens the map
+// picker — a rare interaction — instead of bundling it into the initial load.
+const ChooseOnMapModal = lazy(() => import("./ChooseOnMapModal"));
 
 interface RequestDispatchConsoleProps {
   booking: BookingState;
@@ -40,7 +43,13 @@ export default function RequestDispatchConsole({
 }: RequestDispatchConsoleProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
+  const [hasOpenedMap, setHasOpenedMap] = useState(false);
   const isReduced = useReducedMotionPref();
+
+  const openMap = (target: Exclude<MapTarget, null>) => {
+    setHasOpenedMap(true);
+    setMapTarget(target);
+  };
 
   const vehicleMeta = vehicleMetaFor(booking.vehicle);
   const requestText = buildRequestText(booking);
@@ -113,7 +122,7 @@ export default function RequestDispatchConsole({
                     placeholder="Zürich Airport (ZRH)"
                     value={booking.pickup}
                     onChange={(location) => onBookingChange({ pickup: location })}
-                    onOpenMap={() => setMapTarget("pickup")}
+                    onOpenMap={() => openMap("pickup")}
                     showCurrentLocation
                     warningInFlow
                     inputClassName={inputClass}
@@ -147,7 +156,7 @@ export default function RequestDispatchConsole({
                       placeholder="Hotel, address, or landmark"
                       value={booking.destination}
                       onChange={(location) => onBookingChange({ destination: location })}
-                      onOpenMap={() => setMapTarget("destination")}
+                      onOpenMap={() => openMap("destination")}
                       warningInFlow
                       inputClassName={inputClass}
                     />
@@ -376,15 +385,19 @@ export default function RequestDispatchConsole({
         </div>
       </div>
 
-      <ChooseOnMapModal
-        isOpen={mapTarget !== null}
-        title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
-        initial={mapTarget === "destination" ? booking.destination : booking.pickup}
-        onConfirm={(location) =>
-          onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
-        }
-        onClose={() => setMapTarget(null)}
-      />
+      {hasOpenedMap && (
+        <Suspense fallback={null}>
+          <ChooseOnMapModal
+            isOpen={mapTarget !== null}
+            title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
+            initial={mapTarget === "destination" ? booking.destination : booking.pickup}
+            onConfirm={(location) =>
+              onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
+            }
+            onClose={() => setMapTarget(null)}
+          />
+        </Suspense>
+      )}
     </section>
   );
 }

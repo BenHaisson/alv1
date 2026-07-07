@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { motion } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
-import ChooseOnMapModal from "./ChooseOnMapModal";
 import BookingOptionsSheet from "./BookingOptionsSheet";
 import { HERO_VIDEO } from "../data/visualJourney";
 import { DURATION_OPTIONS, type BookingState, type TripType } from "../lib/bookingRequest";
@@ -15,6 +14,10 @@ interface HeroCommandDeckProps {
 }
 
 type MapTarget = "pickup" | "destination" | null;
+
+// Leaflet (+ OSM tiles) only downloads once someone actually opens the map
+// picker — a rare interaction — instead of bundling it into the initial load.
+const ChooseOnMapModal = lazy(() => import("./ChooseOnMapModal"));
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -44,7 +47,13 @@ export default function HeroCommandDeck({
 }: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
+  const [hasOpenedMap, setHasOpenedMap] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
+  const openMap = (target: Exclude<MapTarget, null>) => {
+    setHasOpenedMap(true);
+    setMapTarget(target);
+  };
 
   const reveal = (delay: number) =>
     isReduced
@@ -150,7 +159,7 @@ export default function HeroCommandDeck({
                   placeholder="Zürich Airport (ZRH)"
                   value={booking.pickup}
                   onChange={(location) => onBookingChange({ pickup: location })}
-                  onOpenMap={() => setMapTarget("pickup")}
+                  onOpenMap={() => openMap("pickup")}
                   showCurrentLocation
                   inputClassName={fieldInputClass}
                 />
@@ -186,7 +195,7 @@ export default function HeroCommandDeck({
                     placeholder="Hotel, address, or landmark"
                     value={booking.destination}
                     onChange={(location) => onBookingChange({ destination: location })}
-                    onOpenMap={() => setMapTarget("destination")}
+                    onOpenMap={() => openMap("destination")}
                     inputClassName={fieldInputClass}
                   />
                 </div>
@@ -259,15 +268,19 @@ export default function HeroCommandDeck({
         </motion.div>
       </div>
 
-      <ChooseOnMapModal
-        isOpen={mapTarget !== null}
-        title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
-        initial={mapTarget === "destination" ? booking.destination : booking.pickup}
-        onConfirm={(location) =>
-          onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
-        }
-        onClose={() => setMapTarget(null)}
-      />
+      {hasOpenedMap && (
+        <Suspense fallback={null}>
+          <ChooseOnMapModal
+            isOpen={mapTarget !== null}
+            title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
+            initial={mapTarget === "destination" ? booking.destination : booking.pickup}
+            onConfirm={(location) =>
+              onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
+            }
+            onClose={() => setMapTarget(null)}
+          />
+        </Suspense>
+      )}
 
       <BookingOptionsSheet
         isOpen={isOptionsOpen}

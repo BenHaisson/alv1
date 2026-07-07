@@ -105,3 +105,35 @@ body {
     height: 100%;
   }
 }
+
+/* ── ChooseOnMapModal — Leaflet + OpenStreetMap, tinted for the dark brand
+   system. The filter targets the tile pane only, so the gold pin marker
+   (a separate Leaflet pane) stays crisp and untouched. Attribution is kept
+   fully visible per OSM's terms, just restyled to read on a dark map. ── */
+.alair-leaflet {
+  background: #0a0a0a;
+}
+.alair-leaflet .leaflet-tile-pane {
+  filter: grayscale(0.45) brightness(0.78) contrast(1.12);
+}
+.alair-leaflet .leaflet-control-attribution {
+  background: rgba(8, 10, 9, 0.75);
+  color: #a39e96;
+  border: 1px solid rgba(234, 222, 206, 0.12);
+  border-radius: 0;
+}
+.alair-leaflet .leaflet-control-attribution a {
+  color: #eadece;
+}
+.alair-leaflet .leaflet-control-zoom a {
+  background: rgba(8, 10, 9, 0.85);
+  color: #eadece;
+  border-color: rgba(234, 222, 206, 0.15);
+}
+.alair-leaflet .leaflet-control-zoom a:hover {
+  background: rgba(205, 162, 80, 0.15);
+  color: #cda250;
+}
+.alair-map-pin {
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
+}

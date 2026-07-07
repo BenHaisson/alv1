@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { usePlaceAutocomplete, type PlaceSuggestion } from "../lib/usePlaceAutocomplete";
+import { usePhotonGeocoder, type PhotonSuggestion } from "../lib/usePhotonGeocoder";
 import { EMPTY_LOCATION, isLocationValidated, type LocationValue } from "../lib/bookingRequest";
 import { useReducedMotionPref } from "./MotionProvider";
 
@@ -18,19 +18,27 @@ interface PlaceAutocompleteFieldProps {
   warningInFlow?: boolean;
 }
 
+type SearchStatus = "idle" | "loading" | "ok" | "empty" | "error";
+
+const DEBOUNCE_MS = 250;
+
 const coordsLabel = (lat: number, lng: number) => `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
 const UNVALIDATED_WARNING = "Please select a location from the suggestions or choose it on the map.";
 const LOCATION_DENIED_MESSAGE =
   "Location access was not allowed. Please type your address or choose on map.";
+const NO_RESULT_MESSAGE = "No matching location found. Try a hotel, airport, or full address.";
+const SERVICE_UNAVAILABLE_MESSAGE =
+  "Location search is temporarily unavailable. You can still type the address manually.";
 
 /**
- * A Places-backed location input: custom dark-glass suggestion list (never
- * the native browser dropdown), biased to Zürich/Switzerland, plus "Choose on
- * map" and "Use current location" actions under the suggestions. Selecting a
- * suggestion (or confirming a map pin / current-location fix) stores
- * place_id, formatted address, coordinates, city, and country on the shared
- * LocationValue — free-typed text alone is flagged with a subtle warning.
+ * A Photon-backed (OpenStreetMap) location input: custom dark-glass
+ * suggestion list (never the native browser dropdown), biased to
+ * Zürich/Switzerland, plus "Choose on map" and "Use current location" actions
+ * under the suggestions. Selecting a suggestion (or confirming a map pin /
+ * current-location fix) stores the formatted address, coordinates, city, and
+ * country on the shared LocationValue — free-typed text alone is flagged with
+ * a subtle warning. No API key, no Google dependency.
  */
 export default function PlaceAutocompleteField({
   id,
@@ -42,15 +50,17 @@ export default function PlaceAutocompleteField({
   showCurrentLocation = false,
   warningInFlow = false
 }: PlaceAutocompleteFieldProps) {
-  const { fetchSuggestions, reverseGeocode, fetchDetails } = usePlaceAutocomplete();
+  const { fetchSuggestions, reverseGeocode } = usePhotonGeocoder();
   const isReduced = useReducedMotionPref();
-  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<PhotonSuggestion[]>([]);
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<number | null>(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -75,24 +85,30 @@ export default function PlaceAutocompleteField({
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     if (!text.trim()) {
       setSuggestions([]);
+      setSearchStatus("idle");
       return;
     }
+
+    const requestId = ++requestIdRef.current;
+    setSearchStatus("loading");
     debounceRef.current = window.setTimeout(async () => {
-      const results = await fetchSuggestions(text);
-      setSuggestions(results);
-    }, 220);
+      const result = await fetchSuggestions(text);
+      if (requestId !== requestIdRef.current) return; // a newer keystroke superseded this request
+      if (result.status === "ok") {
+        setSuggestions(result.value);
+        setSearchStatus(result.value.length > 0 ? "ok" : "empty");
+      } else {
+        setSuggestions([]);
+        setSearchStatus(result.status);
+      }
+    }, DEBOUNCE_MS);
   };
 
-  const handleSelect = async (suggestion: PlaceSuggestion) => {
+  const handleSelect = (suggestion: PhotonSuggestion) => {
     setIsOpen(false);
     setSuggestions([]);
-    onChange({ ...EMPTY_LOCATION, description: suggestion.mainText });
-    const details = await fetchDetails(suggestion.placeId);
-    onChange({
-      ...details,
-      placeId: details.placeId ?? suggestion.placeId,
-      description: details.description || suggestion.mainText
-    });
+    setSearchStatus("idle");
+    onChange(suggestion.location);
   };
 
   const handleUseCurrentLocation = () => {
@@ -105,11 +121,24 @@ export default function PlaceAutocompleteField({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        const resolved = await reverseGeocode(latitude, longitude);
-        onChange({
-          ...resolved,
-          description: resolved.formattedAddress || resolved.description || coordsLabel(latitude, longitude)
-        });
+        const result = await reverseGeocode(latitude, longitude);
+        if (result.status === "ok") {
+          onChange({
+            ...result.value,
+            description: result.value.formattedAddress || result.value.description || coordsLabel(latitude, longitude)
+          });
+        } else {
+          // The GPS fix itself is still a validated coordinate even when
+          // reverse geocoding can't resolve a readable address for it.
+          onChange({
+            ...EMPTY_LOCATION,
+            lat: latitude,
+            lng: longitude,
+            description: coordsLabel(latitude, longitude),
+            provider: "photon"
+          });
+          if (result.status === "error") setLocationError(SERVICE_UNAVAILABLE_MESSAGE);
+        }
         setIsLocating(false);
         setIsOpen(false);
       },
@@ -179,12 +208,22 @@ export default function PlaceAutocompleteField({
             animate={{ opacity: 1, y: 0 }}
             exit={isReduced ? undefined : { opacity: 0, y: -6 }}
             transition={{ duration: 0.16 }}
-            className="absolute left-0 right-0 top-full z-50 mt-2 max-h-80 overflow-y-auto border border-brand-cream/15 bg-brand-deep-forest/95 text-left shadow-[0_20px_60px_rgba(0,0,0,0.55)] backdrop-blur-md"
+            style={{ width: "max(360px, 100%)", maxWidth: "calc(100vw - 2rem)" }}
+            className="absolute left-0 top-full z-50 mt-2 max-h-80 overflow-y-auto border border-brand-cream/15 bg-brand-deep-forest/95 text-left shadow-[0_20px_60px_rgba(0,0,0,0.55)] backdrop-blur-md"
           >
+            {searchStatus === "empty" && (
+              <p className="px-4 py-3 text-xs font-light leading-snug text-brand-stone">{NO_RESULT_MESSAGE}</p>
+            )}
+            {searchStatus === "error" && (
+              <p className="px-4 py-3 text-xs font-light leading-snug text-brand-gold/85">
+                {SERVICE_UNAVAILABLE_MESSAGE}
+              </p>
+            )}
+
             {suggestions.length > 0 && (
               <ul>
                 {suggestions.map((suggestion, index) => (
-                  <li key={suggestion.placeId}>
+                  <li key={suggestion.key}>
                     <button
                       type="button"
                       onMouseDown={(event) => event.preventDefault()}
