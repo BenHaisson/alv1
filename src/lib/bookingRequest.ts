@@ -112,9 +112,12 @@ export const WHATSAPP_NUMBER = "41772870956";
 export const BOOKING_EMAIL = "booking@alairnoir.ch";
 
 export interface VehicleMeta {
-  /** Short booking label — "BMW i7", "Mercedes V-Class". */
+  /** Full booking label — "BMW i7", "Mercedes-Benz V-Class". */
   label: string;
   caption: string;
+  capacity: string;
+  description: string;
+  cta: string;
   image: string;
 }
 
@@ -122,11 +125,17 @@ export const VEHICLE_META: Record<string, VehicleMeta> = {
   "bmw-i7": {
     label: "BMW i7",
     caption: "Silent electric sedan",
+    capacity: "1–3 passengers · 2 bags",
+    description: "Best for airport arrivals, executive meetings, hotels, and private city transfers.",
+    cta: "Select BMW i7",
     image: imageAssets.luxuryBmwI7
   },
   "v-class": {
-    label: "Mercedes V-Class",
+    label: "Mercedes-Benz V-Class",
     caption: "Spacious private cabin",
+    capacity: "1–6 passengers · 5 bags",
+    description: "Best for families, delegations, luggage-heavy transfers, events, and long-distance routes.",
+    cta: "Select V-Class",
     image: imageAssets.luxuryVClass
   }
 };
