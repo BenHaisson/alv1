@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { AnimatePresence, motion, useAnimationFrame, useInView } from "motion/react";
+// useInView still powers the drift-only-while-visible check below; the animated
+// numeric spec counters were removed to keep the fleet a visual choice.
 import { VEHICLES } from "../data";
 import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import type { VehicleGalleryFrame } from "../types";
@@ -23,47 +25,6 @@ const SWITCH_LABELS: Record<string, string> = {
   "bmw-i7": "BMW i7",
   "v-class": "V-Class"
 };
-
-function AnimatedCounter({ value, suffix, isReduced }: { value: number; suffix: string; isReduced: boolean }) {
-  const [count, setCount] = useState(isReduced ? value : 0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  useEffect(() => {
-    if (isReduced) {
-      setCount(value);
-      return;
-    }
-    if (!isInView) return;
-
-    const duration = 1200;
-    const startTime = performance.now();
-    let frame = 0;
-
-    const updateCount = (currentTime: number) => {
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      // easeOutExpo — a fast, premium settle rather than a linear/quad ramp.
-      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      setCount(easeProgress * value);
-      if (progress < 1) frame = requestAnimationFrame(updateCount);
-      else setCount(value);
-    };
-
-    frame = requestAnimationFrame(updateCount);
-    return () => cancelAnimationFrame(frame);
-  }, [isInView, value, isReduced]);
-
-  const displayValue = Number.isInteger(value) ? Math.floor(count) : count.toFixed(1);
-
-  return (
-    <span ref={ref} className="font-serif text-2xl font-light tracking-tight text-brand-cream md:text-3xl">
-      {displayValue}
-      <span className="ml-1 text-[10px] font-sans font-normal uppercase tracking-normal text-brand-stone">
-        {suffix}
-      </span>
-    </span>
-  );
-}
 
 function ConveyorFrame({
   frame,
@@ -212,10 +173,10 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       <div className="mx-auto mb-10 flex max-w-7xl flex-col gap-5 md:mb-12 md:flex-row md:items-end md:justify-between">
         <div>
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            The Fleet · In Motion
+            Inside the Cabins
           </span>
           <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
-            Both cabins pass by <span className="italic text-brand-stone">— slowly.</span>
+            A closer look <span className="italic text-brand-stone">— both cabins.</span>
           </p>
         </div>
         <span className="hidden text-[10px] font-mono uppercase tracking-[0.25em] text-brand-muted-stone md:block">
@@ -322,7 +283,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
           >
             <div className="max-w-md">
               <span className="mb-2 block text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                Recommended for — {RECOMMENDED[activeVehicle.id]}
+                Best for — {RECOMMENDED[activeVehicle.id]}
               </span>
               <h3 className="font-serif text-2xl font-light tracking-wide text-brand-ivory md:text-3xl">
                 {activeVehicle.name}
@@ -332,25 +293,12 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               </p>
             </div>
 
-            {activeVehicle.numericalSpecs && (
-              <div className="flex items-end gap-8 md:gap-10">
-                {activeVehicle.numericalSpecs.map((spec) => (
-                  <div key={spec.label} className="flex flex-col">
-                    <span className="mb-1.5 text-[9px] font-mono uppercase tracking-widest text-brand-muted-stone">
-                      {spec.label}
-                    </span>
-                    <AnimatedCounter value={spec.value} suffix={spec.suffix} isReduced={isReduced} />
-                  </div>
-                ))}
-              </div>
-            )}
-
             <button
               type="button"
               onClick={() => onRequestScroll(activeVehicle.name)}
               className="group flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
             >
-              <span>Request {SWITCH_LABELS[activeVehicle.id] ?? activeVehicle.name}</span>
+              <span>Book {SWITCH_LABELS[activeVehicle.id] ?? activeVehicle.name}</span>
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </button>
           </motion.div>

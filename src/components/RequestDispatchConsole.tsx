@@ -1,622 +1,288 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { imageAssets } from "../assets";
-import { JOURNEY_STEPS } from "../data";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
+import {
+  VEHICLE_META,
+  buildRequestText,
+  whatsappLink,
+  emailLink,
+  vehicleMetaFor,
+  type BookingState
+} from "../lib/bookingRequest";
 
 interface RequestDispatchConsoleProps {
-  prefilledVehicle?: string;
+  booking: BookingState;
+  onBookingChange: (patch: Partial<BookingState>) => void;
 }
-
-type StepId = "guest" | "route" | "timing" | "vehicle" | "instructions" | "dispatch";
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-const VEHICLE_META: Record<string, { label: string; caption: string; image: string }> = {
-  "bmw-i7": {
-    label: "BMW i7 xDrive60",
-    caption: "Silent Executive Sedan",
-    image: imageAssets.luxuryBmwI7
-  },
-  "v-class": {
-    label: "Mercedes-Benz V-Class",
-    caption: "Premium Private Capacity",
-    image: imageAssets.luxuryVClass
-  }
-};
-
-export default function RequestDispatchConsole({ prefilledVehicle = "" }: RequestDispatchConsoleProps) {
-  const [route, setRoute] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [passengers, setPassengers] = useState("1");
-  const [luggage, setLuggage] = useState("2");
-  const [vehicle, setVehicle] = useState(prefilledVehicle || "bmw-i7");
-  const [contact, setContact] = useState("");
-  const [notes, setNotes] = useState("");
+/**
+ * The final booking section — "Request Your Chauffeur". A single calm form
+ * (Route, Date, Time, Passengers, Luggage, Vehicle, Contact, Notes) beside a
+ * live Trip Summary that updates as fields are filled. Shares App-level booking
+ * state, so anything entered in the hero panel arrives already prefilled here.
+ */
+export default function RequestDispatchConsole({
+  booking,
+  onBookingChange
+}: RequestDispatchConsoleProps) {
   const [isCopied, setIsCopied] = useState(false);
-  const [activeStep, setActiveStep] = useState<StepId>("guest");
   const isReduced = useReducedMotionPref();
 
-  useEffect(() => {
-    if (prefilledVehicle) setVehicle(prefilledVehicle);
-  }, [prefilledVehicle]);
-
-  const vehicleMeta = VEHICLE_META[vehicle] ?? VEHICLE_META["bmw-i7"];
-  const recommendVClass = Number.parseInt(passengers, 10) >= 4 || luggage === "4" || luggage === "5+";
-
-  const steps = useMemo(() => {
-    const guestComplete = contact.trim() !== "";
-    const routeComplete = route.trim() !== "";
-    const timingComplete = date !== "" && time !== "";
-    const ready = guestComplete && routeComplete && timingComplete;
-
-    return [
-      { id: "guest" as StepId, number: "01", label: "Contact", complete: guestComplete },
-      { id: "route" as StepId, number: "02", label: "Route", complete: routeComplete },
-      { id: "timing" as StepId, number: "03", label: "Timing", complete: timingComplete },
-      { id: "vehicle" as StepId, number: "04", label: "Vehicle", complete: true },
-      { id: "instructions" as StepId, number: "05", label: "Instructions", complete: notes.trim() !== "" },
-      { id: "dispatch" as StepId, number: "06", label: "Request", complete: ready }
-    ];
-  }, [contact, route, date, time, notes]);
-
-  const readyToDispatch = steps[5].complete;
-  const requiredComplete = [steps[0], steps[1], steps[2]].filter((step) => step.complete).length;
-  const percentReady = Math.round((requiredComplete / 3) * 100);
-
-  const getSpecificationText = () => {
-    return `ALAIR NOIR PRIVATE CHAUFFEUR REQUEST
---------------------------------------------------
-Origin / Destination : ${route || "To be specified"}
-Date                 : ${date || "To be specified"}
-Time (Zürich local)  : ${time || "To be specified"}
-Passenger Count      : ${passengers} Passenger(s)
-Luggage Count        : ${luggage} Large Bag(s)
-Preferred Vehicle    : ${vehicleMeta.label} (${vehicleMeta.caption})
-Contact Reference    : ${contact || "To be specified"}
-Private Instructions : ${notes || "None"}
---------------------------------------------------
-Prepared for ALAIR NOIR GmbH, Zürich, Switzerland.`;
-  };
+  const vehicleMeta = vehicleMetaFor(booking.vehicle);
+  const requestText = buildRequestText(booking);
+  const ready = booking.route.trim() !== "" && booking.contact.trim() !== "";
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(getSpecificationText());
+    navigator.clipboard.writeText(requestText);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const whatsappLink = `https://wa.me/41772870956?text=${encodeURIComponent(getSpecificationText())}`;
-  const mailtoLink = `mailto:booking@alairnoir.ch?subject=Private Chauffeur Request Zürich&body=${encodeURIComponent(getSpecificationText())}`;
-
-  // Fast Request: the short path for clients who want speed — route, timing,
-  // contact, straight to WhatsApp. Shares state with the full console below,
-  // so anything typed here is already filled in there.
-  const fastReady = route.trim() !== "" && contact.trim() !== "";
-  const fastRequestText = `ALAIR NOIR — FAST CHAUFFEUR REQUEST
-Route   : ${route || "To be specified"}
-Date    : ${date || "To be specified"}
-Time    : ${time ? `${time} (Zürich local time)` : "To be specified"}
-Contact : ${contact || "To be specified"}`;
-  const fastWhatsappLink = `https://wa.me/41772870956?text=${encodeURIComponent(fastRequestText)}`;
-
-  const groupClass = (step: StepId) =>
-    `flex flex-col border p-5 transition-all duration-500 ${
-      activeStep === step
-        ? "border-brand-gold/40 bg-brand-deep-forest/40"
-        : "border-brand-cream/10 bg-brand-deep-forest/20"
-    }`;
-
-  const labelClass = "mb-2 text-[10px] font-mono uppercase tracking-widest text-brand-stone";
+  const labelClass = "mb-2 block text-[10px] font-mono uppercase tracking-widest text-brand-stone";
   const inputClass =
-    "w-full border border-brand-cream/10 bg-brand-black/60 p-4 text-sm font-light font-sans text-brand-ivory transition-all placeholder:text-brand-stone/55 focus:border-brand-gold/60 focus:outline-none";
+    "w-full border border-brand-cream/12 bg-brand-black/60 p-4 text-sm font-light text-brand-ivory transition-colors placeholder:text-brand-stone/55 focus:border-brand-gold/60 focus:outline-none";
 
   // The request-section nav anchor lives on StackedChapter's flow sentinel in
   // App.tsx — a pinned section would mis-report its own position.
   return (
-    <section className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise">
+    <section className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-32 lg:px-24 luxury-noise">
       <div className="mx-auto max-w-7xl">
         {/* Section header */}
         <div className="mb-12 max-w-3xl md:mb-16">
           <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            Booking
+            Contact
           </span>
           <h2 className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-            Begin with the route. <span className="font-light italic text-brand-stone">We will prepare the rest.</span>
+            Request Your Chauffeur
           </h2>
           <p className="text-base font-light leading-relaxed text-brand-body">
-            Send your pickup point, destination, date, time, passenger count, luggage details, and
-            preferred vehicle. ALAIR NOIR will confirm availability, route suitability, and the
-            chauffeur arrangement directly.
+            Send your route, time, passengers, luggage, and preferred vehicle. We confirm
+            availability and rate directly.
           </p>
         </div>
 
-        {/* How booking works — the five-step process, compact. */}
-        <div className="mb-14 border-y border-brand-cream/10 py-10 md:mb-16">
-          <span className="mb-8 block text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
-            How Booking Works
-          </span>
-          <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
-            {JOURNEY_STEPS.map((step, index) => (
-              <motion.li
-                key={step.id}
-                initial={isReduced ? false : { opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.6, delay: isReduced ? 0 : index * 0.08, ease: EASE_OUT }}
-                className="relative"
-              >
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="font-serif text-2xl font-light text-brand-cream/70">{step.number}</span>
-                  <span className="h-px flex-1 bg-brand-cream/10" />
-                </div>
-                <h3 className="mb-2 font-serif text-base font-light tracking-wide text-brand-ivory">
-                  {step.title}
-                </h3>
-                <p className="text-xs font-light leading-relaxed text-brand-stone">
-                  {step.description}
-                </p>
-              </motion.li>
-            ))}
-          </ol>
-        </div>
-
-        {/* Fast Request — the short path before the full console. */}
-        <div className="relative mb-14 border border-brand-cream/12 bg-brand-deep-forest/25 p-6 md:mb-16 md:p-8">
-          <CornerMarkers />
-          <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-gold">
-              Fast Request
-            </span>
-            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-              Route, timing, contact — sent in one message
-            </span>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.6fr_auto] lg:items-end">
-            <div className="flex flex-col">
-              <label htmlFor="fast-route" className={labelClass}>
-                Pickup / Destination
-              </label>
-              <input
-                id="fast-route"
-                type="text"
-                placeholder="Zürich Airport to Baur au Lac"
-                value={route}
-                onChange={(e) => setRoute(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="fast-date" className={labelClass}>
-                Date
-              </label>
-              <input
-                id="fast-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="fast-time" className={labelClass}>
-                Zürich local time
-              </label>
-              <input
-                id="fast-time"
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="fast-contact" className={labelClass}>
-                Contact (Email / Phone)
-              </label>
-              <input
-                id="fast-contact"
-                type="text"
-                placeholder="name@office.com or +41..."
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <a
-              href={fastReady ? fastWhatsappLink : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!fastReady}
-              className={`block whitespace-nowrap px-7 py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.15em] transition-all duration-300 ${
-                fastReady
-                  ? "bg-brand-gold text-brand-black hover:bg-brand-ivory"
-                  : "pointer-events-none border border-brand-cream/15 bg-brand-black/40 text-brand-stone/60"
-              }`}
-            >
-              Send by WhatsApp
-            </a>
-          </div>
-          <p className="mt-5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone/70">
-            {fastReady
-              ? "Ready to send — or continue below for the full request"
-              : "Add route and contact to send — or prepare the full request below"}
-          </p>
-        </div>
-
-        {/* The detailed request — for clients who want to specify vehicle and
-            private instructions before sending. */}
-        <div className="mb-6 flex items-baseline justify-between gap-4">
-          <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-stone">
-            The Detailed Request
-          </span>
-          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
-            {percentReady}% ready
-          </span>
-        </div>
-
-        {/* Private Chauffeur Request — step progress rail */}
-        <div className="mb-12 grid grid-cols-3 gap-2 md:grid-cols-6 md:gap-3">
-          {steps.map((step) => {
-            const isActive = activeStep === step.id;
-            return (
-              <button
-                key={step.id}
-                type="button"
-                onClick={() => {
-                  setActiveStep(step.id);
-                  document
-                    .getElementById(`console-${step.id}`)
-                    ?.scrollIntoView({ behavior: isReduced ? "auto" : "smooth", block: "center" });
-                }}
-                className={`cursor-pointer border px-3 py-3 text-left transition-all duration-300 focus:outline-none focus-visible:border-brand-gold ${
-                  isActive
-                    ? "border-brand-gold/60 bg-brand-gold-muted"
-                    : "border-brand-cream/10 bg-brand-deep-forest/20 hover:border-brand-cream/25"
-                }`}
-              >
-                <span className="flex items-center justify-between">
-                  <span
-                    className={`text-[9px] font-mono tracking-[0.2em] ${
-                      isActive ? "text-brand-gold" : "text-brand-stone/70"
-                    }`}
-                  >
-                    {step.number}
-                  </span>
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
-                      step.complete ? "bg-brand-gold" : "border border-brand-stone/50"
-                    }`}
-                  />
-                </span>
-                <span
-                  className={`mt-1.5 block text-[10px] font-mono uppercase tracking-[0.16em] ${
-                    isActive ? "text-brand-cream" : "text-brand-stone"
-                  }`}
-                >
-                  {step.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 items-stretch gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Left: dispatch form */}
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Left — the request form */}
           <div className="lg:col-span-7">
             <form onSubmit={(event) => event.preventDefault()} className="space-y-5">
-              {/* 01 Guest */}
-              <fieldset
-                id="console-guest"
-                onFocus={() => setActiveStep("guest")}
-                className={groupClass("guest")}
-              >
-                <legend className="sr-only">Contact details</legend>
-                <span className="mb-4 text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                  01 / Contact
-                </span>
-                <div className="space-y-5">
-                  <div className="flex flex-col">
-                    <label htmlFor="console-contact" className={labelClass}>
-                      Contact (Email / Phone)
-                    </label>
-                    <input
-                      id="console-contact"
-                      type="text"
-                      required
-                      placeholder="booking@clientoffice.com or +41..."
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <div className="flex flex-col">
-                      <label htmlFor="console-passengers" className={labelClass}>
-                        Passenger Count
-                      </label>
-                      <select
-                        id="console-passengers"
-                        value={passengers}
-                        onChange={(e) => setPassengers(e.target.value)}
-                        className={`${inputClass} cursor-pointer`}
-                      >
-                        <option value="1">1 Passenger</option>
-                        <option value="2">2 Passengers</option>
-                        <option value="3">3 Passengers</option>
-                        <option value="4">4 Group Passengers</option>
-                        <option value="5">5+ Delegation Group</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="console-luggage" className={labelClass}>
-                        Large Luggage Bags
-                      </label>
-                      <select
-                        id="console-luggage"
-                        value={luggage}
-                        onChange={(e) => setLuggage(e.target.value)}
-                        className={`${inputClass} cursor-pointer`}
-                      >
-                        <option value="0">No luggage</option>
-                        <option value="1">1 Large Bag</option>
-                        <option value="2">2 Standard Bags</option>
-                        <option value="3">3 Medium Bags</option>
-                        <option value="4">4 Large Cabin Cases</option>
-                        <option value="5+">5+ Large Cases</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
+              <div>
+                <label htmlFor="req-route" className={labelClass}>
+                  Route
+                </label>
+                <input
+                  id="req-route"
+                  type="text"
+                  placeholder="Zürich Airport → Davos"
+                  value={booking.route}
+                  onChange={(e) => onBookingChange({ route: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
 
-              {/* 02 Route */}
-              <fieldset
-                id="console-route"
-                onFocus={() => setActiveStep("route")}
-                className={groupClass("route")}
-              >
-                <legend className="sr-only">Route details</legend>
-                <span className="mb-4 text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                  02 / Route
-                </span>
-                <div className="flex flex-col">
-                  <label htmlFor="console-route-input" className={labelClass}>
-                    Route Description (e.g., Zürich Airport to Davos)
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="req-date" className={labelClass}>
+                    Date
                   </label>
                   <input
-                    id="console-route-input"
-                    type="text"
-                    required
-                    placeholder="Enter pickup address and destination stop"
-                    value={route}
-                    onChange={(e) => setRoute(e.target.value)}
+                    id="req-date"
+                    type="date"
+                    value={booking.date}
+                    onChange={(e) => onBookingChange({ date: e.target.value })}
                     className={inputClass}
                   />
                 </div>
-              </fieldset>
-
-              {/* 03 Timing */}
-              <fieldset
-                id="console-timing"
-                onFocus={() => setActiveStep("timing")}
-                className={groupClass("timing")}
-              >
-                <legend className="sr-only">Timing details</legend>
-                <span className="mb-4 text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                  03 / Timing
-                </span>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <div className="flex flex-col">
-                    <label htmlFor="console-date" className={labelClass}>
-                      Scheduled Date
-                    </label>
-                    <input
-                      id="console-date"
-                      type="date"
-                      required
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="console-time" className={labelClass}>
-                      Scheduled Time (Zürich local time)
-                    </label>
-                    <input
-                      id="console-time"
-                      type="time"
-                      required
-                      value={time}
-                      onChange={(e) => setTime(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-              </fieldset>
-
-              {/* 04 Vehicle */}
-              <fieldset
-                id="console-vehicle"
-                onFocus={() => setActiveStep("vehicle")}
-                className={groupClass("vehicle")}
-              >
-                <legend className="sr-only">Preferred vehicle</legend>
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                    04 / Vehicle
-                  </span>
-                  {recommendVClass && (
-                    <span className="text-[8px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                      V-Class suggested for this group
-                    </span>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {Object.entries(VEHICLE_META).map(([id, meta]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => setVehicle(id)}
-                      aria-pressed={vehicle === id}
-                      className={`flex cursor-pointer flex-col justify-between border p-4 text-left transition-all duration-300 focus:outline-none focus-visible:border-brand-gold ${
-                        vehicle === id
-                          ? "border-brand-gold bg-brand-gold-muted"
-                          : "border-brand-cream/10 hover:border-brand-cream/30"
-                      }`}
-                    >
-                      <span className="font-serif text-sm text-brand-ivory">{meta.label}</span>
-                      <span className="mt-1 text-[9px] font-mono text-brand-stone">{meta.caption}</span>
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-
-              {/* 05 Instructions */}
-              <fieldset
-                id="console-instructions"
-                onFocus={() => setActiveStep("instructions")}
-                className={groupClass("instructions")}
-              >
-                <legend className="sr-only">Private instructions</legend>
-                <span className="mb-4 text-[9px] font-mono uppercase tracking-[0.26em] text-brand-stone">
-                  05 / Instructions — optional
-                </span>
-                <div className="flex flex-col">
-                  <label htmlFor="console-notes" className={labelClass}>
-                    Private Instructions / Notes
+                <div>
+                  <label htmlFor="req-time" className={labelClass}>
+                    Time (Zürich local)
                   </label>
-                  <textarea
-                    id="console-notes"
-                    placeholder="Flight numbers, temperature, communication boundaries, or handover instructions..."
-                    value={notes}
-                    rows={3}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className={`${inputClass} resize-none`}
+                  <input
+                    id="req-time"
+                    type="time"
+                    value={booking.time}
+                    onChange={(e) => onBookingChange({ time: e.target.value })}
+                    className={inputClass}
                   />
                 </div>
-              </fieldset>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="req-passengers" className={labelClass}>
+                    Passengers
+                  </label>
+                  <select
+                    id="req-passengers"
+                    value={booking.passengers}
+                    onChange={(e) => onBookingChange({ passengers: e.target.value })}
+                    className={`${inputClass} cursor-pointer`}
+                  >
+                    <option value="1">1 Passenger</option>
+                    <option value="2">2 Passengers</option>
+                    <option value="3">3 Passengers</option>
+                    <option value="4">4 Passengers</option>
+                    <option value="5">5+ Passengers</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="req-luggage" className={labelClass}>
+                    Luggage
+                  </label>
+                  <select
+                    id="req-luggage"
+                    value={booking.luggage}
+                    onChange={(e) => onBookingChange({ luggage: e.target.value })}
+                    className={`${inputClass} cursor-pointer`}
+                  >
+                    <option value="0">No luggage</option>
+                    <option value="1">1 bag</option>
+                    <option value="2">2 bags</option>
+                    <option value="3">3 bags</option>
+                    <option value="4">4 bags</option>
+                    <option value="5+">5+ bags</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Vehicle — a visual choice, two cards. */}
+              <div>
+                <span className={labelClass}>Vehicle</span>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {Object.entries(VEHICLE_META).map(([id, meta]) => {
+                    const isActive = booking.vehicle === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => onBookingChange({ vehicle: id })}
+                        aria-pressed={isActive}
+                        className={`relative flex cursor-pointer flex-col justify-between overflow-hidden border p-4 text-left transition-all duration-300 focus:outline-none focus-visible:border-brand-gold ${
+                          isActive
+                            ? "border-brand-gold bg-brand-gold-muted"
+                            : "border-brand-cream/12 hover:border-brand-cream/30"
+                        }`}
+                      >
+                        <span className="font-serif text-base text-brand-ivory">{meta.label}</span>
+                        <span className="mt-1 text-[9px] font-mono uppercase tracking-[0.18em] text-brand-stone">
+                          {meta.caption}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="req-contact" className={labelClass}>
+                  Contact (Email / Phone)
+                </label>
+                <input
+                  id="req-contact"
+                  type="text"
+                  placeholder="name@office.com or +41…"
+                  value={booking.contact}
+                  onChange={(e) => onBookingChange({ contact: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="req-notes" className={labelClass}>
+                  Notes
+                </label>
+                <textarea
+                  id="req-notes"
+                  rows={3}
+                  placeholder="Flight number, waiting time, or handover instructions…"
+                  value={booking.notes}
+                  onChange={(e) => onBookingChange({ notes: e.target.value })}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
             </form>
           </div>
 
-          {/* Right: live dispatch summary */}
+          {/* Right — live Trip Summary */}
           <div
-            id="console-dispatch"
-            className="relative flex h-full flex-col justify-between border border-brand-cream/10 bg-brand-deep-forest/20 p-7 lg:col-span-5"
-            onMouseEnter={() => setActiveStep("dispatch")}
+            className="relative flex flex-col border border-brand-cream/12 bg-brand-deep-forest/25 p-7 lg:sticky lg:top-28 lg:col-span-5"
           >
             <CornerMarkers />
 
-            <div>
-              <div className="mb-6 flex items-center justify-between border-b border-brand-cream/10 pb-3">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-brand-stone">
-                  Your Request
+            <div className="mb-5 flex items-center justify-between border-b border-brand-cream/10 pb-3">
+              <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-brand-stone">
+                Prepare Request
+              </span>
+              <span className="flex items-center gap-2">
+                <span
+                  className={`h-2 w-2 rounded-full ${ready ? "bg-brand-gold" : "bg-brand-stone/40"} ${
+                    isReduced ? "" : "animate-pulse"
+                  }`}
+                />
+                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
+                  {ready ? "Ready to send" : "Draft"}
                 </span>
-                <span className="flex items-center gap-2">
-                  <span
-                    className={`h-2 w-2 rounded-full ${
-                      readyToDispatch ? "bg-brand-gold" : "bg-brand-stone/40"
-                    } ${isReduced ? "" : "animate-pulse"}`}
-                  />
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-gold/80">
-                    {readyToDispatch ? "Ready to send" : "Draft"}
-                  </span>
+              </span>
+            </div>
+
+            {/* Selected vehicle preview */}
+            <div className="relative mb-6 h-32 overflow-hidden border border-brand-cream/10">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={booking.vehicle}
+                  src={vehicleMeta.image}
+                  alt={vehicleMeta.label}
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                  initial={isReduced ? false : { opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={isReduced ? undefined : { opacity: 0 }}
+                  transition={{ duration: 0.6, ease: EASE_OUT }}
+                  className="h-full w-full object-cover brightness-[0.85]"
+                />
+              </AnimatePresence>
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-black/85 to-transparent" />
+              <div className="absolute bottom-2 left-3">
+                <span className="block font-serif text-sm text-brand-ivory">{vehicleMeta.label}</span>
+                <span className="block text-[8px] font-mono uppercase tracking-[0.2em] text-brand-stone">
+                  {vehicleMeta.caption}
                 </span>
-              </div>
-
-              {/* Selected vehicle preview */}
-              <div className="relative mb-6 h-32 overflow-hidden border border-brand-cream/10">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={vehicle}
-                    src={vehicleMeta.image}
-                    alt={vehicleMeta.label}
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
-                    initial={isReduced ? false : { opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={isReduced ? undefined : { opacity: 0 }}
-                    transition={{ duration: 0.6, ease: EASE_OUT }}
-                    className="h-full w-full object-cover brightness-[0.85]"
-                  />
-                </AnimatePresence>
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-black/85 to-transparent" />
-                <div className="absolute bottom-2 left-3">
-                  <span className="block font-serif text-sm text-brand-ivory">{vehicleMeta.label}</span>
-                  <span className="block text-[8px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                    {vehicleMeta.caption}
-                  </span>
-                </div>
-              </div>
-
-              {/* Required-field progress */}
-              <div className="mb-6">
-                <div className="mb-2 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
-                  <span>Booking request · {percentReady}%</span>
-                  <span>{requiredComplete} / 3 required</span>
-                </div>
-                <div className="h-[2px] w-full bg-brand-cream/10">
-                  <motion.div
-                    animate={{ scaleX: requiredComplete / 3 }}
-                    transition={{ duration: isReduced ? 0 : 0.6, ease: EASE_OUT }}
-                    className="h-full origin-left bg-brand-gold"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-8 max-h-[300px] overflow-y-auto whitespace-pre-wrap rounded border border-brand-cream/5 bg-brand-black/90 p-5 font-mono text-xs leading-relaxed text-brand-stone select-all">
-                {getSpecificationText()}
               </div>
             </div>
 
-            <div className="space-y-4">
+            <span className="mb-3 block text-[10px] font-mono uppercase tracking-[0.24em] text-brand-cream">
+              Trip Summary
+            </span>
+            <div className="mb-6 max-h-[280px] overflow-y-auto whitespace-pre-wrap rounded border border-brand-cream/5 bg-brand-black/90 p-5 font-mono text-xs leading-relaxed text-brand-stone select-all">
+              {requestText}
+            </div>
+
+            <div className="mt-auto space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <a
+                  href={whatsappLink(booking)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory"
+                >
+                  Send by WhatsApp
+                </a>
+                <a
+                  href={emailLink(booking)}
+                  className="block border border-brand-cream/30 py-4 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/5"
+                >
+                  Send by Email
+                </a>
+              </div>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="w-full cursor-pointer border border-brand-cream/25 py-4 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:bg-brand-cream/5 focus:outline-none focus-visible:border-brand-gold"
+                className="w-full cursor-pointer border border-brand-cream/20 py-3.5 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/50 hover:bg-brand-cream/5 focus:outline-none focus-visible:border-brand-gold"
               >
-                {isCopied ? "Request Copied to Clipboard" : "Copy Request Draft"}
+                {isCopied ? "Request Copied" : "Copy Request"}
               </button>
-
-              <AnimatePresence mode="wait" initial={false}>
-                {readyToDispatch ? (
-                  <motion.div
-                    key="dispatch-actions"
-                    initial={isReduced ? false : { opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={isReduced ? undefined : { opacity: 0, y: 10 }}
-                    transition={{ duration: 0.5, ease: EASE_OUT }}
-                    className="grid grid-cols-2 gap-4"
-                  >
-                    <a
-                      href={whatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.15em] text-brand-black transition-all duration-300 hover:bg-brand-ivory"
-                    >
-                      Book by WhatsApp
-                    </a>
-                    <a
-                      href={mailtoLink}
-                      className="block border border-brand-cream/30 py-4 text-center text-xs font-mono uppercase tracking-[0.15em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:bg-brand-cream/5"
-                    >
-                      Request by Email
-                    </a>
-                  </motion.div>
-                ) : (
-                  <motion.p
-                    key="dispatch-hint"
-                    initial={isReduced ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={isReduced ? undefined : { opacity: 0 }}
-                    className="border border-brand-cream/10 bg-brand-black/40 px-4 py-3.5 text-center text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone"
-                  >
-                    Complete contact, route, and timing to send the request
-                  </motion.p>
-                )}
-              </AnimatePresence>
             </div>
           </div>
         </div>

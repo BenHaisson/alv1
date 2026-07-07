@@ -1,223 +1,246 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import MagneticButton from "./MagneticButton";
-import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
+import { motion } from "motion/react";
+import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import { HERO_VIDEO } from "../data/visualJourney";
+import { VEHICLE_META, whatsappLink, emailLink, type BookingState } from "../lib/bookingRequest";
 
 interface HeroCommandDeckProps {
+  booking: BookingState;
+  onBookingChange: (patch: Partial<BookingState>) => void;
   onRequestScroll: () => void;
 }
 
-function FloatingCard({
-  progress,
-  range,
-  from,
-  className,
-  label,
-  lines,
-  isReduced
-}: {
-  progress: MotionValue<number>;
-  range: [number, number];
-  from: { x?: number; y?: number };
-  className: string;
-  label: string;
-  lines: string[];
-  isReduced: boolean;
-}) {
-  // Hold keyframe at progress 1 so motion's scroll-linked WAAPI keeps the
-  // revealed state instead of fading back out past the input range.
-  const opacity = useTransform(progress, [range[0], range[1], 1], [0, 1, 1]);
-  const x = useTransform(progress, [range[0], range[1], 1], [from.x ?? 0, 0, 0]);
-  const y = useTransform(progress, [range[0], range[1], 1], [from.y ?? 0, 0, -14]);
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-  return (
-    <motion.aside
-      style={isReduced ? undefined : { opacity, x, y }}
-      className={`glass-panel pointer-events-none absolute z-30 hidden px-5 py-4 xl:block ${className}`}
-    >
-      <CornerMarkers />
-      <span className="mb-2 flex items-center gap-2">
-        <span className="h-1 w-1 rounded-full bg-brand-cream/45" />
-        <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-stone">{label}</span>
-      </span>
-      {lines.map((line) => (
-        <span
-          key={line}
-          className="block text-[10px] font-mono uppercase leading-relaxed tracking-[0.22em] text-brand-ivory/85"
-        >
-          {line}
-        </span>
-      ))}
-    </motion.aside>
-  );
-}
+const TRUST_LINE = [
+  "Zürich-based",
+  "BMW i7",
+  "Mercedes V-Class",
+  "Switzerland & selected European routes"
+];
 
-export default function HeroCommandDeck({ onRequestScroll }: HeroCommandDeckProps) {
-  const heroRef = useRef<HTMLElement>(null);
+/**
+ * Section 01 — the Booking Hero. First screen exists only for the order: a
+ * clean cinematic background (slow breathe) behind a booking panel that is the
+ * visual focus. No manifesto, no long positioning paragraph — the client lands,
+ * understands it is private chauffeur booking in Zürich, and sends the request
+ * by WhatsApp or email. The panel shares App-level booking state, so anything
+ * entered here is already prefilled in the final request form.
+ */
+export default function HeroCommandDeck({
+  booking,
+  onBookingChange,
+  onRequestScroll
+}: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end end"]
-  });
 
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.05, 0.35, 0.7, 1], [0.82, 0.9, 0.85, 0.58, 0.46]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
-  const imageX = useTransform(scrollYProgress, [0, 1], ["2.5%", "0%"]);
+  const labelClass =
+    "mb-2 block text-[10px] font-mono uppercase tracking-[0.22em] text-brand-stone";
+  const fieldClass =
+    "w-full border border-brand-cream/12 bg-brand-black/60 px-4 py-3.5 text-sm font-light text-brand-ivory transition-colors placeholder:text-brand-stone/50 focus:border-brand-gold/60 focus:outline-none";
 
-  // Every reveal carries an explicit hold keyframe at progress 1 ([a, b, 1])
-  // so motion's scroll-linked WAAPI keeps the revealed state through the end
-  // of the pinned range instead of fading back to the start value.
-  const eyebrowOpacity = useTransform(scrollYProgress, [0.02, 0.1, 1], [0, 1, 1]);
-  const eyebrowY = useTransform(scrollYProgress, [0.02, 0.1, 1], [18, 0, 0]);
-  const titleOneOpacity = useTransform(scrollYProgress, [0.1, 0.22, 1], [0, 1, 1]);
-  const titleOneY = useTransform(scrollYProgress, [0.1, 0.22, 1], [42, 0, 0]);
-  const titleTwoOpacity = useTransform(scrollYProgress, [0.2, 0.32, 1], [0, 1, 1]);
-  const titleTwoY = useTransform(scrollYProgress, [0.2, 0.32, 1], [42, 0, 0]);
-  const copyOpacity = useTransform(scrollYProgress, [0.3, 0.42, 1], [0, 1, 1]);
-  const copyY = useTransform(scrollYProgress, [0.3, 0.42, 1], [28, 0, 0]);
-  const actionsOpacity = useTransform(scrollYProgress, [0.4, 0.52, 1], [0, 1, 1]);
-  const actionsY = useTransform(scrollYProgress, [0.4, 0.52, 1], [24, 0, 0]);
-  const detailOpacity = useTransform(scrollYProgress, [0.52, 0.66, 1], [0, 1, 1]);
-  const detailY = useTransform(scrollYProgress, [0.52, 0.66, 1], [22, 0, 0]);
+  const reveal = (delay: number) =>
+    isReduced
+      ? {}
+      : {
+          initial: { opacity: 0, y: 24 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.9, delay, ease: EASE }
+        };
 
   return (
-    <section ref={heroRef} className="relative h-[200vh] border-b border-brand-cream/10 bg-brand-black">
-      <div className="sticky top-0 min-h-[100svh] overflow-hidden luxury-noise">
-        {/* Poster-first video slot: /videos/bmw-i7-hero.mp4 cross-fades in when
-            present; poster serves mobile, reduced-motion, and missing-file cases.
-            The scroll-linked opacity/scale/x treatment wraps both media. */}
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={isReduced ? undefined : { opacity: imageOpacity, scale: imageScale, x: imageX }}
-        >
-          {/* Exterior arrival video: the hero introduces presence and arrival
-              authority; the cabin video lives in the Private Interval section.
-              Mobile serves the poster (default minVideoWidth) to protect
-              initial load. */}
-          <CinematicVideoBackground
-            slot={HERO_VIDEO}
-            overlay={false}
-            priority
-            mediaClassName="object-center grayscale-[0.04] brightness-[0.94] contrast-[1.12]"
-          />
-        </motion.div>
-
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-brand-black/82 via-brand-black/34 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-black/88 via-transparent to-brand-black/46" />
-
-        {/* Floating detail cards — kept in the right-hand negative space (xl+
-            only, where there is room beside the left-anchored headline) so they
-            never overlap the title at any viewport height. */}
-        <FloatingCard
-          progress={scrollYProgress}
-          range={[0.34, 0.46]}
-          from={{ x: 44 }}
-          className="right-10 top-32 xl:right-16"
-          label="Primary Cabin"
-          lines={["BMW i7 xDrive60", "Silent executive cabin", "Electric luxury sedan"]}
-          isReduced={isReduced}
+    <section className="relative min-h-[100svh] overflow-hidden border-b border-brand-cream/10 bg-brand-black luxury-noise">
+      {/* Cinematic background — the outer layer holds a gentle infinite breathe
+          so the frame is never static; the inner layer is the poster-first
+          video. Clean by design: car / airport / arrival, no clutter. */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={isReduced ? undefined : { scale: [1.04, 1.12, 1.04] }}
+        transition={
+          isReduced
+            ? undefined
+            : { duration: 22, repeat: Infinity, ease: "easeInOut" }
+        }
+      >
+        <CinematicVideoBackground
+          slot={HERO_VIDEO}
+          overlay={false}
+          priority
+          mediaClassName="object-center grayscale-[0.04] brightness-[0.92] contrast-[1.12]"
         />
-        <FloatingCard
-          progress={scrollYProgress}
-          range={[0.44, 0.56]}
-          from={{ y: 30 }}
-          className="bottom-[36%] right-10 xl:right-16"
-          label="Service Classes"
-          lines={["Airport · Executive · Private", "Family Office · Hotel · Long-Distance"]}
-          isReduced={isReduced}
-        />
+      </motion.div>
 
-        <div className="relative z-20 flex min-h-[100svh] flex-col justify-end px-6 pb-10 pt-28 md:px-12 lg:px-24">
-          <div className="max-w-4xl">
-            <motion.div
-              style={isReduced ? undefined : { opacity: eyebrowOpacity, y: eyebrowY }}
-              className="mb-5 flex flex-wrap items-center gap-4"
-            >
-              <span className="font-mono text-sm tracking-widest text-brand-gold">Private Chauffeur Service Zürich</span>
-              <span className="h-px w-10 bg-brand-cream/25" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand-stone">
-                Zürich-based · Switzerland-wide · Directly arranged
-              </span>
-            </motion.div>
+      {/* Legibility gradients — anchor the panel in the darker left/bottom. */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-brand-black/88 via-brand-black/45 to-brand-black/10" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-black/92 via-transparent to-brand-black/40" />
 
-            <h1 className="mb-8 font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory">
-              <motion.span
-                style={isReduced ? undefined : { opacity: titleOneOpacity, y: titleOneY }}
-                className="block"
-              >
-                Discreet chauffeur service
-              </motion.span>
-              <motion.span
-                style={isReduced ? undefined : { opacity: titleTwoOpacity, y: titleTwoY }}
-                className="block font-light italic text-brand-stone"
-              >
-                for people whose time cannot feel improvised.
-              </motion.span>
-            </h1>
+      <div className="relative z-20 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center gap-12 px-6 pb-16 pt-28 md:px-12 lg:flex-row lg:items-center lg:gap-16 lg:px-24 lg:pt-24">
+        {/* Left — the short headline and supporting line only. */}
+        <div className="max-w-xl lg:flex-1">
+          <motion.span
+            {...reveal(0.05)}
+            className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold"
+          >
+            Private Chauffeur Service Zürich
+          </motion.span>
 
-            <motion.p
-              style={isReduced ? undefined : { opacity: copyOpacity, y: copyY }}
-              className="mb-10 max-w-2xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
-            >
-              ALAIR NOIR GmbH provides private chauffeur service in Zürich and across Switzerland
-              for executives, founders, private clients, family offices, diplomatic guests, hotels,
-              and airport arrivals. Every journey is prepared with timing, privacy, presence, and
-              composure before the vehicle reaches the door.
-            </motion.p>
+          <motion.h1
+            {...reveal(0.15)}
+            className="font-serif text-[clamp(2.4rem,5.5vw,4rem)] font-light leading-[1.08] text-brand-ivory"
+          >
+            Private Chauffeur
+            <br />
+            <span className="italic text-brand-stone">Service Zürich</span>
+          </motion.h1>
 
-            <motion.div
-              style={isReduced ? undefined : { opacity: actionsOpacity, y: actionsY }}
-              className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-8"
-            >
-              <MagneticButton
-                onClick={onRequestScroll}
-                className="cursor-pointer rounded-sm bg-brand-cream px-8 py-4 text-center text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-black shadow-lg shadow-black/30 transition-colors duration-150 ease-in-out hover:bg-brand-ivory hover:text-brand-deep-forest"
-              >
-                Request Private Chauffeur
-              </MagneticButton>
-
-              <a
-                href="https://wa.me/41772870956"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center justify-center space-x-3 text-xs font-mono uppercase tracking-[0.2em] text-brand-cream transition-colors duration-150 ease-in-out hover:text-white"
-              >
-                <span>Book by WhatsApp</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-1">-&gt;</span>
-              </a>
-            </motion.div>
-          </div>
+          <motion.p
+            {...reveal(0.28)}
+            className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body lg:text-lg"
+          >
+            Book a discreet transfer with ALAIR NOIR.
+          </motion.p>
 
           <motion.div
-            style={isReduced ? undefined : { opacity: detailOpacity, y: detailY }}
-            className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-brand-cream/10 pt-7"
+            {...reveal(0.4)}
+            className="mt-8 flex flex-wrap gap-x-5 gap-y-2.5"
           >
-            {["Airport Transfers", "Executive Travel", "Private Clients", "Hotel & Concierge", "Long-Distance Routes"].map(
-              (label) => (
-                <span key={label} className="flex items-center gap-2">
-                  <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/85">
-                    {label}
-                  </span>
+            {TRUST_LINE.map((item) => (
+              <span key={item} className="flex items-center gap-2">
+                <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-ivory/80">
+                  {item}
                 </span>
-              )
-            )}
+              </span>
+            ))}
           </motion.div>
         </div>
 
-        {/* Chapter progress hairline — cream, so the fixed gold bar at the top
-            of the page stays the one gold progress indicator. */}
-        <motion.div
-          style={isReduced ? undefined : { opacity: detailOpacity }}
-          className="absolute bottom-0 left-0 right-0 z-40 h-[2px] bg-brand-cream/10"
+        {/* Right — the booking panel, the focus of the screen. Soft upward
+            reveal on load. */}
+        <motion.aside
+          initial={isReduced ? false : { opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: isReduced ? 0 : 0.5, ease: EASE }}
+          className="relative w-full max-w-md self-center border border-brand-cream/15 bg-brand-deep-forest/55 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-md md:p-8 lg:w-[420px]"
+          aria-label="Booking request"
         >
-          <motion.div
-            className="h-full bg-brand-cream/50"
-            style={{ scaleX: scrollYProgress, transformOrigin: "0% 50%" }}
-          />
-        </motion.div>
+          <CornerMarkers />
+
+          <div className="mb-6 flex items-center justify-between border-b border-brand-cream/10 pb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-brand-cream">
+              Request a Transfer
+            </span>
+            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-brand-stone">
+              Zürich
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="hero-route" className={labelClass}>
+                Route
+              </label>
+              <input
+                id="hero-route"
+                type="text"
+                placeholder="Zürich Airport → Baur au Lac"
+                value={booking.route}
+                onChange={(e) => onBookingChange({ route: e.target.value })}
+                className={fieldClass}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="hero-date" className={labelClass}>
+                  Date
+                </label>
+                <input
+                  id="hero-date"
+                  type="date"
+                  value={booking.date}
+                  onChange={(e) => onBookingChange({ date: e.target.value })}
+                  className={fieldClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="hero-time" className={labelClass}>
+                  Time
+                </label>
+                <input
+                  id="hero-time"
+                  type="time"
+                  value={booking.time}
+                  onChange={(e) => onBookingChange({ time: e.target.value })}
+                  className={fieldClass}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="hero-passengers" className={labelClass}>
+                  Passengers
+                </label>
+                <select
+                  id="hero-passengers"
+                  value={booking.passengers}
+                  onChange={(e) => onBookingChange({ passengers: e.target.value })}
+                  className={`${fieldClass} cursor-pointer`}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5+</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="hero-vehicle" className={labelClass}>
+                  Vehicle
+                </label>
+                <select
+                  id="hero-vehicle"
+                  value={booking.vehicle}
+                  onChange={(e) => onBookingChange({ vehicle: e.target.value })}
+                  className={`${fieldClass} cursor-pointer`}
+                >
+                  {Object.entries(VEHICLE_META).map(([id, meta]) => (
+                    <option key={id} value={id}>
+                      {meta.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-7 space-y-3">
+            <a
+              href={whatsappLink(booking)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.18em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory"
+            >
+              Request by WhatsApp
+            </a>
+            <a
+              href={emailLink(booking)}
+              className="block w-full border border-brand-cream/30 py-4 text-center text-xs font-mono uppercase tracking-[0.18em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/5"
+            >
+              Request by Email
+            </a>
+          </div>
+
+          <button
+            type="button"
+            onClick={onRequestScroll}
+            className="mt-4 flex w-full items-center justify-center gap-2 text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
+          >
+            Add luggage, contact &amp; notes
+            <span aria-hidden="true">↓</span>
+          </button>
+        </motion.aside>
       </div>
     </section>
   );

@@ -62,6 +62,10 @@ export interface FleetRevealCard {
   name: string;
   role: string;
   line: string;
+  /** Short "best for" tags — a visual choice, not a spec sheet. */
+  bestFor: string[];
+  /** CTA label, e.g. "Book BMW i7". */
+  cta: string;
   image: string;
   /** Optional approved video moment for this card (falls back to `image`). */
   video?: VideoSlot;
@@ -70,17 +74,21 @@ export interface FleetRevealCard {
 export const FLEET_REVEAL: FleetRevealCard[] = [
   {
     id: "bmw-i7",
-    name: "BMW i7 xDrive60",
-    role: "The Executive Cabin",
-    line: "Silent, electric, composed — for single-principal movement.",
+    name: "BMW i7",
+    role: "Executive Sedan",
+    line: "Silent electric sedan for private executive travel.",
+    bestFor: ["1–3 passengers", "Airport arrivals", "CEO transfers", "Quiet city movement"],
+    cta: "Book BMW i7",
     image: imageAssets.bmwI7RunwaySunset,
     video: BMW_I7_RUNWAY_VIDEO
   },
   {
     id: "v-class",
-    name: "Mercedes-Benz V-Class",
-    role: "The Private Shuttle",
-    line: "Space for families, guests, and luggage — without losing the standard.",
+    name: "Mercedes V-Class",
+    role: "Private Cabin",
+    line: "Spacious private cabin for families, assistants, guests, and delegations.",
+    bestFor: ["Groups", "Luggage", "Private offices", "Event weeks"],
+    cta: "Book Mercedes V-Class",
     image: imageAssets.vclassAlairNoirArrival,
     video: VCLASS_ARRIVAL_VIDEO
   }

@@ -2,13 +2,32 @@ import { motion, useSpring, type MotionValue } from "motion/react";
 import StackedClientCards from "./StackedClientCards";
 import { DESTINATIONS } from "../../data/visualJourney";
 
+interface DestinationStackMotionProps {
+  /** Scrolls to the request section — wired to the "Arrange Route" CTA. */
+  onArrange?: () => void;
+}
+
+/** The booking route list — reduced to plain destinations for the client. */
+const ROUTE_LIST = [
+  "Zürich Airport",
+  "Zürich City",
+  "Davos",
+  "St. Moritz",
+  "Lucerne",
+  "Basel",
+  "Geneva",
+  "Milan",
+  "Munich"
+];
+
 /**
- * Section 05 — "Zürich to wherever." 3D destination card stack (reuses the
- * StackedClientCards engine) over a schematic SVG route line that draws with
- * scroll. Pure code motion — no generated video. Content lives in
- * DESTINATIONS (src/data/visualJourney.ts).
+ * Section 04 — "Where we drive." The schematic SVG route line and 3D
+ * destination card stack (StackedClientCards engine) are kept as the visual
+ * map, but the copy is reduced to a simple route list and a single CTA so the
+ * section stays booking-focused. Content lives in DESTINATIONS
+ * (src/data/visualJourney.ts).
  */
-export default function DestinationStackMotion() {
+export default function DestinationStackMotion({ onArrange }: DestinationStackMotionProps) {
   return (
     <StackedClientCards
       cards={DESTINATIONS}
@@ -16,67 +35,38 @@ export default function DestinationStackMotion() {
       ariaLabel="Destinations served from Zürich"
       sectionClassName="bg-brand-black"
       heightPerCardVh={44}
-      aside={(active, goTo) => (
+      aside={() => (
         <div className="max-w-xl">
           <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
             The Routes
           </span>
           <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
-            Zürich
-            <br />
-            <span className="italic text-brand-stone">to wherever.</span>
+            Where we drive
           </h2>
-          <p className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body">
-            The base is Zürich. The range is the day&apos;s requirement — airport,
-            city, alps, or the other end of the country.
-          </p>
-          <p className="mt-4 max-w-md text-sm font-light leading-relaxed text-brand-ivory/75">
-            Private chauffeur journeys from Zürich to Davos, St. Moritz, Gstaad,
-            Geneva, Lucerne, and Lugano — with flight-aware airport transfers,
-            hourly bookings, and selected cross-border routes to Milan and Munich
-            on request. Send the route; availability and rate are confirmed
-            directly.
+
+          <ul className="mt-8 flex max-w-md flex-wrap gap-x-3 gap-y-3">
+            {ROUTE_LIST.map((route) => (
+              <li
+                key={route}
+                className="border border-brand-cream/15 bg-brand-black/40 px-3.5 py-2 text-[11px] font-mono uppercase tracking-[0.14em] text-brand-ivory/85"
+              >
+                {route}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 max-w-md text-sm font-light leading-relaxed text-brand-body">
+            Request your route. We confirm availability and rate directly.
           </p>
 
-          <ol className="mt-10 hidden max-w-sm flex-col gap-1 lg:flex">
-            {DESTINATIONS.map((card, index) => {
-              const isActive = index === active;
-              return (
-                <li key={card.id}>
-                  <button
-                    type="button"
-                    onClick={() => goTo(index)}
-                    className="group flex w-full items-center gap-4 py-1.5 text-left focus:outline-none"
-                    aria-current={isActive ? "true" : undefined}
-                  >
-                    <span
-                      className={`font-mono text-[10px] tracking-[0.25em] transition-colors duration-300 ${
-                        isActive ? "text-brand-gold" : "text-brand-muted-stone"
-                      }`}
-                    >
-                      {card.number}
-                    </span>
-                    <span
-                      className={`h-px transition-all duration-500 ${
-                        isActive
-                          ? "w-10 bg-brand-gold"
-                          : "w-5 bg-brand-cream/20 group-hover:w-8 group-hover:bg-brand-gold/50"
-                      }`}
-                    />
-                    <span
-                      className={`font-serif text-lg font-light transition-colors duration-300 ${
-                        isActive
-                          ? "text-brand-ivory"
-                          : "text-brand-stone group-hover:text-brand-cream"
-                      }`}
-                    >
-                      {card.title}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+          <button
+            type="button"
+            onClick={onArrange}
+            className="group mt-8 flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream transition-colors duration-300 hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
+          >
+            <span>Arrange Route</span>
+            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </button>
         </div>
       )}
       background={(progress) => <RouteLine progress={progress} />}
