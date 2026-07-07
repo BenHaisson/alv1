@@ -1,20 +1,20 @@
+import { useState } from "react";
 import { motion } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
+import PlaceAutocompleteField from "./PlaceAutocompleteField";
+import ChooseOnMapModal from "./ChooseOnMapModal";
+import BookingOptionsSheet from "./BookingOptionsSheet";
 import { HERO_VIDEO } from "../data/visualJourney";
-import {
-  whatsappLink,
-  emailLink,
-  DURATION_OPTIONS,
-  type BookingState,
-  type TripType
-} from "../lib/bookingRequest";
+import { DURATION_OPTIONS, type BookingState, type TripType } from "../lib/bookingRequest";
 
 interface HeroCommandDeckProps {
   booking: BookingState;
   onBookingChange: (patch: Partial<BookingState>) => void;
   onRequestScroll: () => void;
 }
+
+type MapTarget = "pickup" | "destination" | null;
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -43,6 +43,8 @@ export default function HeroCommandDeck({
   onRequestScroll
 }: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
+  const [mapTarget, setMapTarget] = useState<MapTarget>(null);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   const reveal = (delay: number) =>
     isReduced
@@ -142,14 +144,17 @@ export default function HeroCommandDeck({
               <label htmlFor="hero-pickup" className={fieldLabelClass}>
                 Pickup location
               </label>
-              <input
-                id="hero-pickup"
-                type="text"
-                placeholder="Zürich Airport (ZRH)"
-                value={booking.pickup}
-                onChange={(e) => onBookingChange({ pickup: e.target.value })}
-                className={`${fieldInputClass} mt-1.5`}
-              />
+              <div className="mt-1.5">
+                <PlaceAutocompleteField
+                  id="hero-pickup"
+                  placeholder="Zürich Airport (ZRH)"
+                  value={booking.pickup}
+                  onChange={(location) => onBookingChange({ pickup: location })}
+                  onOpenMap={() => setMapTarget("pickup")}
+                  showCurrentLocation
+                  inputClassName={fieldInputClass}
+                />
+              </div>
             </div>
 
             {booking.tripType === "hourly" ? (
@@ -175,14 +180,16 @@ export default function HeroCommandDeck({
                 <label htmlFor="hero-destination" className={fieldLabelClass}>
                   Destination
                 </label>
-                <input
-                  id="hero-destination"
-                  type="text"
-                  placeholder="Hotel, address, or landmark"
-                  value={booking.destination}
-                  onChange={(e) => onBookingChange({ destination: e.target.value })}
-                  className={`${fieldInputClass} mt-1.5`}
-                />
+                <div className="mt-1.5">
+                  <PlaceAutocompleteField
+                    id="hero-destination"
+                    placeholder="Hotel, address, or landmark"
+                    value={booking.destination}
+                    onChange={(location) => onBookingChange({ destination: location })}
+                    onOpenMap={() => setMapTarget("destination")}
+                    inputClassName={fieldInputClass}
+                  />
+                </div>
               </div>
             )}
 
@@ -229,33 +236,15 @@ export default function HeroCommandDeck({
             </div>
 
             <div className="flex items-center p-3 md:p-2.5">
-              <a
-                href={whatsappLink(booking)}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setIsOptionsOpen(true)}
                 className="flex w-full items-center justify-center whitespace-nowrap bg-brand-gold px-6 py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.16em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory md:w-auto md:py-4"
               >
-                Request by WhatsApp
-              </a>
+                View options
+              </button>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div {...reveal(0.56)} className="mt-5 flex flex-col items-center gap-3">
-          <a
-            href={emailLink(booking)}
-            className="text-[10px] font-mono uppercase tracking-[0.2em] text-brand-cream/85 transition-colors duration-200 hover:text-brand-cream"
-          >
-            Request by Email
-          </a>
-          <button
-            type="button"
-            onClick={onRequestScroll}
-            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
-          >
-            Add passengers, luggage, vehicle &amp; contact
-            <span aria-hidden="true">↓</span>
-          </button>
         </motion.div>
 
         <motion.div {...reveal(0.68)} className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2.5">
@@ -269,6 +258,24 @@ export default function HeroCommandDeck({
           ))}
         </motion.div>
       </div>
+
+      <ChooseOnMapModal
+        isOpen={mapTarget !== null}
+        title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
+        initial={mapTarget === "destination" ? booking.destination : booking.pickup}
+        onConfirm={(location) =>
+          onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
+        }
+        onClose={() => setMapTarget(null)}
+      />
+
+      <BookingOptionsSheet
+        isOpen={isOptionsOpen}
+        onClose={() => setIsOptionsOpen(false)}
+        booking={booking}
+        onBookingChange={onBookingChange}
+        onViewFullForm={onRequestScroll}
+      />
     </section>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
+import PlaceAutocompleteField from "./PlaceAutocompleteField";
+import ChooseOnMapModal from "./ChooseOnMapModal";
 import {
   VEHICLE_META,
   DURATION_OPTIONS,
@@ -16,6 +18,8 @@ const TRIP_TABS: { id: TripType; label: string }[] = [
   { id: "one-way", label: "One way" },
   { id: "hourly", label: "By the hour" }
 ];
+
+type MapTarget = "pickup" | "destination" | null;
 
 interface RequestDispatchConsoleProps {
   booking: BookingState;
@@ -35,11 +39,12 @@ export default function RequestDispatchConsole({
   onBookingChange
 }: RequestDispatchConsoleProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const isReduced = useReducedMotionPref();
 
   const vehicleMeta = vehicleMetaFor(booking.vehicle);
   const requestText = buildRequestText(booking);
-  const ready = booking.pickup.trim() !== "" && booking.contact.trim() !== "";
+  const ready = booking.pickup.description.trim() !== "" && booking.contact.trim() !== "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(requestText);
@@ -103,13 +108,15 @@ export default function RequestDispatchConsole({
                   <label htmlFor="req-pickup" className={labelClass}>
                     Pickup location
                   </label>
-                  <input
+                  <PlaceAutocompleteField
                     id="req-pickup"
-                    type="text"
                     placeholder="Zürich Airport (ZRH)"
                     value={booking.pickup}
-                    onChange={(e) => onBookingChange({ pickup: e.target.value })}
-                    className={inputClass}
+                    onChange={(location) => onBookingChange({ pickup: location })}
+                    onOpenMap={() => setMapTarget("pickup")}
+                    showCurrentLocation
+                    warningInFlow
+                    inputClassName={inputClass}
                   />
                 </div>
                 {booking.tripType === "hourly" ? (
@@ -135,13 +142,14 @@ export default function RequestDispatchConsole({
                     <label htmlFor="req-destination" className={labelClass}>
                       Destination
                     </label>
-                    <input
+                    <PlaceAutocompleteField
                       id="req-destination"
-                      type="text"
                       placeholder="Hotel, address, or landmark"
                       value={booking.destination}
-                      onChange={(e) => onBookingChange({ destination: e.target.value })}
-                      className={inputClass}
+                      onChange={(location) => onBookingChange({ destination: location })}
+                      onOpenMap={() => setMapTarget("destination")}
+                      warningInFlow
+                      inputClassName={inputClass}
                     />
                   </div>
                 )}
@@ -367,6 +375,16 @@ export default function RequestDispatchConsole({
           </div>
         </div>
       </div>
+
+      <ChooseOnMapModal
+        isOpen={mapTarget !== null}
+        title={mapTarget === "destination" ? "Choose Destination" : "Choose Pickup Location"}
+        initial={mapTarget === "destination" ? booking.destination : booking.pickup}
+        onConfirm={(location) =>
+          onBookingChange(mapTarget === "destination" ? { destination: location } : { pickup: location })
+        }
+        onClose={() => setMapTarget(null)}
+      />
     </section>
   );
 }

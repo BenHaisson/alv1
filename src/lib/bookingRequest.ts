@@ -12,12 +12,53 @@ import { imageAssets } from "../assets";
 
 export type TripType = "one-way" | "hourly";
 
+/**
+ * A location field's full value — free-typed text until a Google Places
+ * suggestion (or a map pin / current-location fix) is resolved, at which
+ * point placeId/coordinates are attached. The booking system always prefers
+ * this validated form over plain text.
+ */
+export interface LocationValue {
+  /** What's shown in the input. */
+  description: string;
+  placeId: string | null;
+  formattedAddress: string | null;
+  lat: number | null;
+  lng: number | null;
+  city: string | null;
+  country: string | null;
+}
+
+export const EMPTY_LOCATION: LocationValue = {
+  description: "",
+  placeId: null,
+  formattedAddress: null,
+  lat: null,
+  lng: null,
+  city: null,
+  country: null
+};
+
+/** Coordinates are the real signal of a resolved place — free text alone isn't. */
+export function isLocationValidated(location: LocationValue): boolean {
+  return location.lat != null && location.lng != null;
+}
+
+export function locationText(location: LocationValue): string {
+  return location.formattedAddress || location.description || "";
+}
+
+export function locationMapsLink(location: LocationValue): string | null {
+  if (location.lat == null || location.lng == null) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
+}
+
 export interface BookingState {
   tripType: TripType;
   /** Always used — the second slot (destination or duration) depends on tripType. */
-  pickup: string;
+  pickup: LocationValue;
   /** One-way only. */
-  destination: string;
+  destination: LocationValue;
   /** Hourly only — an hours value from DURATION_OPTIONS, e.g. "3". */
   duration: string;
   date: string;
@@ -32,8 +73,8 @@ export interface BookingState {
 
 export const EMPTY_BOOKING: BookingState = {
   tripType: "one-way",
-  pickup: "",
-  destination: "",
+  pickup: EMPTY_LOCATION,
+  destination: EMPTY_LOCATION,
   duration: "2",
   date: "",
   time: "",
@@ -99,17 +140,23 @@ export function vehicleIdFromName(name?: string): string {
 export function buildRequestText(booking: BookingState): string {
   const vehicle = vehicleMetaFor(booking.vehicle);
   const isHourly = booking.tripType === "hourly";
+  const pickupText = locationText(booking.pickup);
+  const pickupMapsLink = locationMapsLink(booking.pickup);
   const lines = [
     "ALAIR NOIR — PRIVATE CHAUFFEUR REQUEST",
     "",
     `Trip type   : ${isHourly ? "By the hour" : "One way"}`,
-    `Pickup      : ${booking.pickup || "To be confirmed"}`
+    `Pickup      : ${pickupText || "To be confirmed"}`
   ];
+  if (pickupMapsLink) lines.push(`Pickup Maps : ${pickupMapsLink}`);
 
   if (isHourly) {
     lines.push(`Duration    : ${durationLabelFor(booking.duration)}`);
   } else {
-    lines.push(`Destination : ${booking.destination || "To be confirmed"}`);
+    const destinationText = locationText(booking.destination);
+    const destinationMapsLink = locationMapsLink(booking.destination);
+    lines.push(`Destination : ${destinationText || "To be confirmed"}`);
+    if (destinationMapsLink) lines.push(`Dest. Maps  : ${destinationMapsLink}`);
   }
 
   lines.push(
