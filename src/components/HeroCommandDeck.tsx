@@ -16,7 +16,7 @@ const TRUST_LINE = [
   "Zürich-based",
   "BMW i7",
   "Mercedes V-Class",
-  "Switzerland & selected European routes"
+  "Private & pre-arranged"
 ];
 
 /**
@@ -81,23 +81,24 @@ export default function HeroCommandDeck({
             {...reveal(0.05)}
             className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold"
           >
-            Private Chauffeur Service Zürich
+            Private Chauffeur Service · Zürich
           </motion.span>
 
           <motion.h1
             {...reveal(0.15)}
             className="font-serif text-[clamp(2.4rem,5.5vw,4rem)] font-light leading-[1.08] text-brand-ivory"
           >
-            Private Chauffeur
+            Book Your Private Chauffeur
             <br />
-            <span className="italic text-brand-stone">Service Zürich</span>
+            <span className="italic text-brand-stone">in Zürich.</span>
           </motion.h1>
 
           <motion.p
             {...reveal(0.28)}
             className="mt-6 max-w-md text-base font-light leading-relaxed text-brand-body lg:text-lg"
           >
-            Book a discreet transfer with ALAIR NOIR.
+            Discreet transfers for airport arrivals, executive meetings, hotels, events, and
+            selected European routes.
           </motion.p>
 
           <motion.div
