@@ -1,5 +1,5 @@
-import { lazy, Suspense, useState } from "react";
-import { motion } from "motion/react";
+import { lazy, Suspense, useRef, useState, type ReactNode } from "react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
@@ -33,6 +33,34 @@ const TRIP_TABS: { id: TripType; label: string }[] = [
   { id: "hourly", label: "By the hour" }
 ];
 
+function RevealLayer({
+  children,
+  delay = 0,
+  className
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const isReduced = useReducedMotionPref();
+
+  if (isReduced) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 26, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ amount: 0.45, once: true }}
+      transition={{ duration: 1.08, delay, ease: EASE }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /**
  * Section 01 — the Booking Hero. One full-screen cinematic image with a dark
  * readable overlay behind a centered headline and a compact horizontal booking
@@ -45,24 +73,27 @@ export default function HeroCommandDeck({
   onBookingChange,
   onRequestScroll
 }: HeroCommandDeckProps) {
+  const sectionRef = useRef<HTMLElement>(null);
   const isReduced = useReducedMotionPref();
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const [hasOpenedMap, setHasOpenedMap] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.85", "start 0.25"]
+  });
+  const entry = useSpring(scrollYProgress, { stiffness: 70, damping: 24, restDelta: 0.001 });
+  const backgroundOpacity = useTransform(entry, [0, 0.45, 1], [0.18, 0.72, 1]);
+  const backgroundScale = useTransform(entry, [0, 1], [1.08, 1.02]);
+  const atmosphereOpacity = useTransform(entry, [0, 0.45, 1], [0.92, 0.68, 0.42]);
+  const consoleY = useTransform(entry, [0, 1], [34, 0]);
+  const consoleScale = useTransform(entry, [0, 1], [0.985, 1]);
+
   const openMap = (target: Exclude<MapTarget, null>) => {
     setHasOpenedMap(true);
     setMapTarget(target);
   };
-
-  const reveal = (delay: number) =>
-    isReduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.9, delay, ease: EASE }
-        };
 
   const fieldLabelClass =
     "text-[9px] font-mono uppercase tracking-[0.22em] text-brand-stone transition-colors duration-200 group-focus-within:text-brand-gold";
@@ -70,17 +101,20 @@ export default function HeroCommandDeck({
     "w-full bg-transparent text-sm font-light text-brand-ivory placeholder:text-brand-stone/45 focus:outline-none";
 
   return (
-    <section className="relative min-h-[100svh] overflow-hidden border-b border-brand-cream/10 bg-brand-black luxury-noise">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[100svh] overflow-hidden border-b border-brand-cream/10 bg-brand-black luxury-noise"
+      aria-label="Private chauffeur booking"
+    >
       {/* Cinematic background — one full-bleed image/video with a gentle
           infinite breathe so the frame is never static. Clean by design: car /
           airport / arrival, no clutter. */}
       <motion.div
         className="absolute inset-0 z-0"
-        animate={isReduced ? undefined : { scale: [1.04, 1.12, 1.04] }}
-        transition={
+        style={
           isReduced
             ? undefined
-            : { duration: 22, repeat: Infinity, ease: "easeInOut" }
+            : { opacity: backgroundOpacity, scale: backgroundScale }
         }
       >
         <CinematicVideoBackground
@@ -93,38 +127,55 @@ export default function HeroCommandDeck({
 
       {/* Dark readable overlay — uniform enough to hold centered text over any
           part of the frame, deepened toward the edges for the header and bar. */}
-      <div className="absolute inset-0 z-10 bg-black/42" />
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 z-10 bg-black"
+        style={isReduced ? undefined : { opacity: atmosphereOpacity }}
+      />
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-brand-black/72 via-transparent to-brand-black/85" />
+      <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_50%_45%,rgba(15,28,21,0.18),rgba(10,10,10,0.72)_72%)]" />
 
       <div className="relative z-20 flex min-h-[100svh] flex-col items-center justify-center px-6 pb-14 pt-32 text-center md:px-12">
-        <motion.h1
-          {...reveal(0.1)}
-          className="font-serif text-[clamp(2.6rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory"
-        >
-          Your chauffeur
-          <br />
-          <span className="italic text-brand-stone">is ready.</span>
-        </motion.h1>
+        <RevealLayer delay={0.04}>
+          <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold/80">
+            Private dispatch
+          </span>
+        </RevealLayer>
 
-        <motion.p
-          {...reveal(0.24)}
-          className="mx-auto mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body lg:text-lg"
-        >
-          Private transfers in Zürich, tailored for airport arrivals, business travel, and
-          discreet city movements.
-        </motion.p>
+        <RevealLayer delay={0.16}>
+          <h1 className="font-serif text-[clamp(2.6rem,6vw,4.5rem)] font-light leading-[1.08] text-brand-ivory">
+            Your chauffeur
+            <br />
+            <span className="italic text-brand-stone">is ready.</span>
+          </h1>
+        </RevealLayer>
+
+        <RevealLayer delay={0.28}>
+          <p className="mx-auto mt-6 max-w-xl text-base font-light leading-relaxed text-brand-body lg:text-lg">
+            Private transfers in Zürich, tailored for airport arrivals, business travel, and
+            discreet city movements.
+          </p>
+        </RevealLayer>
 
         {/* Booking bar — the single compact instrument. Tabs on top, four
             fields and the primary CTA in one hairline-divided row. */}
         <motion.div
-          {...reveal(0.42)}
+          initial={isReduced ? false : { opacity: 0, filter: "blur(10px)" }}
+          whileInView={isReduced ? undefined : { opacity: 1, filter: "blur(0px)" }}
+          viewport={{ amount: 0.45, once: true }}
+          transition={{ duration: 1.15, delay: 0.42, ease: EASE }}
+          style={
+            isReduced
+              ? undefined
+              : { y: consoleY, scale: consoleScale }
+          }
           className="relative mt-10 w-full max-w-5xl border border-brand-cream/15 bg-brand-deep-forest/60 text-left shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-md"
           aria-label="Booking request"
         >
           <CornerMarkers />
 
           {/* Trip type tabs */}
-          <div className="flex items-center gap-2 px-4 pt-4 md:px-5">
+          <RevealLayer delay={0.58} className="flex items-center gap-2 px-4 pt-4 md:px-5">
             {TRIP_TABS.map((tab) => {
               const isActive = booking.tripType === tab.id;
               return (
@@ -143,13 +194,13 @@ export default function HeroCommandDeck({
                 </button>
               );
             })}
-          </div>
+          </RevealLayer>
 
           {/* Fields + CTA — one continuous instrument, hairline-divided. The
               second slot swaps between Destination (one-way) and Duration
               (hourly) with the trip type tabs above. */}
           <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.05fr_1.05fr_0.8fr_0.9fr_0.8fr_auto] md:divide-x md:divide-y-0">
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <RevealLayer delay={0.72} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-pickup" className={fieldLabelClass}>
                 Pickup location
               </label>
@@ -164,10 +215,10 @@ export default function HeroCommandDeck({
                   inputClassName={fieldInputClass}
                 />
               </div>
-            </div>
+            </RevealLayer>
 
             {booking.tripType === "hourly" ? (
-              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <RevealLayer delay={0.82} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
                 <label htmlFor="hero-duration" className={fieldLabelClass}>
                   Duration
                 </label>
@@ -183,9 +234,9 @@ export default function HeroCommandDeck({
                     </option>
                   ))}
                 </select>
-              </div>
+              </RevealLayer>
             ) : (
-              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <RevealLayer delay={0.82} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
                 <label htmlFor="hero-destination" className={fieldLabelClass}>
                   Destination
                 </label>
@@ -199,10 +250,10 @@ export default function HeroCommandDeck({
                     inputClassName={fieldInputClass}
                   />
                 </div>
-              </div>
+              </RevealLayer>
             )}
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <RevealLayer delay={0.94} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-date" className={fieldLabelClass}>
                 Date
               </label>
@@ -214,9 +265,9 @@ export default function HeroCommandDeck({
                 onChange={(e) => onBookingChange({ date: e.target.value })}
                 className={`${fieldInputClass} mt-1.5`}
               />
-            </div>
+            </RevealLayer>
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <RevealLayer delay={1.04} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-flight" className={fieldLabelClass}>
                 Flight number
               </label>
@@ -228,9 +279,9 @@ export default function HeroCommandDeck({
                 onChange={(e) => onBookingChange({ flightNumber: e.target.value })}
                 className={`${fieldInputClass} mt-1.5`}
               />
-            </div>
+            </RevealLayer>
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <RevealLayer delay={1.14} className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-time" className={fieldLabelClass}>
                 Pickup time
               </label>
@@ -242,9 +293,9 @@ export default function HeroCommandDeck({
                 onChange={(e) => onBookingChange({ time: e.target.value })}
                 className={`${fieldInputClass} mt-1.5`}
               />
-            </div>
+            </RevealLayer>
 
-            <div className="flex items-center p-3 md:p-2.5">
+            <RevealLayer delay={1.26} className="flex items-center p-3 md:p-2.5">
               <button
                 type="button"
                 onClick={() => setIsOptionsOpen(true)}
@@ -252,11 +303,11 @@ export default function HeroCommandDeck({
               >
                 View options
               </button>
-            </div>
+            </RevealLayer>
           </div>
         </motion.div>
 
-        <motion.div {...reveal(0.68)} className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2.5">
+        <RevealLayer delay={1.36} className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2.5">
           {TRUST_LINE.map((item) => (
             <span key={item} className="flex items-center gap-2">
               <span className="h-1 w-1 rounded-full bg-brand-cream/40" />
@@ -265,7 +316,7 @@ export default function HeroCommandDeck({
               </span>
             </span>
           ))}
-        </motion.div>
+        </RevealLayer>
       </div>
 
       {hasOpenedMap && (

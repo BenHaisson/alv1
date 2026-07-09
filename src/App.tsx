@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import { MotionProvider, useMediaQuery } from "./components/MotionProvider";
+import { MotionProvider } from "./components/MotionProvider";
 import SmoothScroll from "./components/SmoothScroll";
 import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
@@ -88,7 +88,6 @@ export default function App() {
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeKey, setActiveKey] = useState("hero");
-  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -96,45 +95,6 @@ export default function App() {
     }
     window.scrollTo(0, 0);
   }, []);
-
-  // Auto-advance the opening intro: after a short beat the portal eases itself
-  // into the hero so no action is required to enter. Any wheel / touch / key
-  // input before then cancels it — the visitor always keeps control, and it
-  // stays skippable by simply scrolling. Reduced-motion visitors are exempt.
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    if (window.scrollY > 8) return;
-
-    let done = false;
-    const opts: AddEventListenerOptions = { passive: true };
-
-    const finish = (autoAdvance: boolean) => {
-      if (done) return;
-      done = true;
-      window.clearTimeout(timer);
-      window.removeEventListener("wheel", onUser, opts);
-      window.removeEventListener("touchstart", onUser, opts);
-      window.removeEventListener("keydown", onUser);
-      if (!autoAdvance) return;
-
-      const hero = document.getElementById("hero-section");
-      if (!hero) return;
-      const heroTop = hero.getBoundingClientRect().top + window.scrollY;
-      // The Booking Hero reveals its content on mount (not scroll-linked), so
-      // land exactly at its top — the headline must be visible immediately,
-      // not scrolled partway past it.
-      scrollWindowTo(heroTop);
-    };
-
-    const onUser = () => finish(false);
-    const timer = window.setTimeout(() => finish(true), 2800);
-
-    window.addEventListener("wheel", onUser, opts);
-    window.addEventListener("touchstart", onUser, opts);
-    window.addEventListener("keydown", onUser);
-
-    return () => finish(false);
-  }, [prefersReducedMotion]);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
