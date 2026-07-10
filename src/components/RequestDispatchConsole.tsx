@@ -4,8 +4,10 @@ import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
 import {
   VEHICLE_META,
+  DATE_INPUT_PLACEHOLDER,
   DURATION_OPTIONS,
   buildRequestText,
+  formatBookingDateInput,
   whatsappLink,
   emailLink,
   vehicleMetaFor,
@@ -171,9 +173,11 @@ export default function RequestDispatchConsole({
                   </label>
                   <input
                     id="req-date"
-                    type="date"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder={DATE_INPUT_PLACEHOLDER}
                     value={booking.date}
-                    onChange={(e) => onBookingChange({ date: e.target.value })}
+                    onChange={(e) => onBookingChange({ date: formatBookingDateInput(e.target.value) })}
                     className={inputClass}
                   />
                 </div>

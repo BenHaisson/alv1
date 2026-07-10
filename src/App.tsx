@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import { MotionProvider, useMediaQuery } from "./components/MotionProvider";
+import { MotionProvider } from "./components/MotionProvider";
 import SmoothScroll from "./components/SmoothScroll";
 import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
@@ -16,7 +16,6 @@ import StackedChapter from "./components/motion/StackedChapter";
 import StandardsSection from "./components/StandardsSection";
 import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
-import RequestDispatchConsole from "./components/RequestDispatchConsole";
 import LuxuryFooter from "./components/LuxuryFooter";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
@@ -25,8 +24,7 @@ const SECTIONS = [
   { key: "hero", id: "hero-section", label: "01 // BOOK", navLabel: "Book" },
   { key: "fleet", id: "fleet-section", label: "02 // THE FLEET", navLabel: "Fleet" },
   { key: "routes", id: "routes-section", label: "03 // THE ROUTES", navLabel: "Routes" },
-  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" },
-  { key: "request", id: "request-section", label: "05 // CONTACT", navLabel: "Contact" }
+  { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" }
 ];
 
 function JourneyRail({
@@ -88,7 +86,6 @@ export default function App() {
   const [isCurtainActive, setIsCurtainActive] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeKey, setActiveKey] = useState("hero");
-  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -96,45 +93,6 @@ export default function App() {
     }
     window.scrollTo(0, 0);
   }, []);
-
-  // Auto-advance the opening intro: after a short beat the portal eases itself
-  // into the hero so no action is required to enter. Any wheel / touch / key
-  // input before then cancels it — the visitor always keeps control, and it
-  // stays skippable by simply scrolling. Reduced-motion visitors are exempt.
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    if (window.scrollY > 8) return;
-
-    let done = false;
-    const opts: AddEventListenerOptions = { passive: true };
-
-    const finish = (autoAdvance: boolean) => {
-      if (done) return;
-      done = true;
-      window.clearTimeout(timer);
-      window.removeEventListener("wheel", onUser, opts);
-      window.removeEventListener("touchstart", onUser, opts);
-      window.removeEventListener("keydown", onUser);
-      if (!autoAdvance) return;
-
-      const hero = document.getElementById("hero-section");
-      if (!hero) return;
-      const heroTop = hero.getBoundingClientRect().top + window.scrollY;
-      // The Booking Hero reveals its content on mount (not scroll-linked), so
-      // land exactly at its top — the headline must be visible immediately,
-      // not scrolled partway past it.
-      scrollWindowTo(heroTop);
-    };
-
-    const onUser = () => finish(false);
-    const timer = window.setTimeout(() => finish(true), 2800);
-
-    window.addEventListener("wheel", onUser, opts);
-    window.addEventListener("touchstart", onUser, opts);
-    window.addEventListener("keydown", onUser);
-
-    return () => finish(false);
-  }, [prefersReducedMotion]);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -186,7 +144,7 @@ export default function App() {
 
   const handleFleetRequest = (vehicleName?: string) => {
     updateBooking({ vehicle: vehicleIdFromName(vehicleName) });
-    scrollToSection("request");
+    scrollToSection("hero");
   };
 
   return (
@@ -275,7 +233,6 @@ export default function App() {
             <HeroCommandDeck
               booking={booking}
               onBookingChange={updateBooking}
-              onRequestScroll={() => scrollToSection("request")}
             />
             <SectionTransition />
           </div>
@@ -309,7 +266,7 @@ export default function App() {
           {/* 04 — Routes: "Where we drive" destination stack + route line
               (sticky pin — stays in plain flow). */}
           <div id="routes-section" className="relative z-[5] scroll-mt-20">
-            <DestinationStackMotion onArrange={() => scrollToSection("request")} />
+            <DestinationStackMotion onArrange={() => scrollToSection("hero")} />
             <SectionTransition />
           </div>
 
@@ -322,11 +279,6 @@ export default function App() {
           <div className="relative z-[7]">
             <TrustStrip />
           </div>
-
-          {/* 06 — Final request: "Request Your Chauffeur". */}
-          <StackedChapter zIndex={8} id="request-section">
-            <RequestDispatchConsole booking={booking} onBookingChange={updateBooking} />
-          </StackedChapter>
 
           {/* Final covering sheet — not stacked: the footer is shorter than a
               viewport, so a pinned FAQ would rest half-scaled at max scroll. The

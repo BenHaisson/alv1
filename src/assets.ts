@@ -1,4 +1,6 @@
 import alairNoirHero from "./assets/images/alair_noir_hero.png";
+import bookingHeroAlairNoir from "./assets/images/booking_hero_alair_noir.png";
+import bookingHeroZurichGold from "./assets/images/booking_hero_zurich_gold.png";
 import bmwI7AlpineCruise from "./assets/images/bmw_i7_alpine_cruise_1782861758267.jpg";
 import bmwI7CockpitDay from "./assets/images/bmw_i7_cockpit_day.jpg";
 import bmwI7CockpitNight from "./assets/images/bmw_i7_cockpit_night_1782861804665.jpg";
@@ -50,6 +52,8 @@ const identityPrivateClients = bmwI7Exterior;
 
 export const imageAssets = {
   alairNoirHero,
+  bookingHeroAlairNoir,
+  bookingHeroZurichGold,
   bmwI7AlpineCruise,
   chauffeurDoorHotelNight,
   bmwI7CockpitDay,

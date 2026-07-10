@@ -7,8 +7,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
     { label: "Book", target: "hero" },
     { label: "Fleet", target: "fleet" },
     { label: "Routes", target: "routes" },
-    { label: "Standard", target: "standards" },
-    { label: "Contact", target: "request" }
+    { label: "Standard", target: "standards" }
   ];
 
   const services = [
@@ -86,7 +85,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
               {services.map((service) => (
                 <li key={service}>
                   <button
-                    onClick={() => onNavClick("request")}
+                    onClick={() => onNavClick("hero")}
                     className="text-[11px] font-mono tracking-wider text-brand-stone hover:text-brand-cream transition-colors duration-300 cursor-pointer text-left"
                   >
                     {service}

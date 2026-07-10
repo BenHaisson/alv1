@@ -4,6 +4,7 @@ import { FLEET_REVEAL } from "../../data/visualJourney";
 import { useMediaQuery, useReducedMotionPref, CornerMarkers } from "../MotionProvider";
 import MotionImage from "./MotionImage";
 import CinematicVideoBackground from "./CinematicVideoBackground";
+import { PREMIUM_SPRING } from "../../lib/motion";
 
 interface FleetRevealMotionProps {
   onRequestScroll?: (vehicleName?: string) => void;
@@ -57,6 +58,8 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
             return (
               <motion.article
                 key={vehicle.id}
+                whileHover={isReduced ? undefined : { y: -4 }}
+                transition={PREMIUM_SPRING}
                 style={
                   animateSeparation
                     ? isFirst
@@ -82,7 +85,7 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                     reveal={isFirst ? "up" : "left"}
                     delay={isReduced ? 0 : index * 0.18}
                     className="aspect-[16/10]"
-                    imgClassName="brightness-[0.92] contrast-[1.08] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    imgClassName="brightness-[0.92] contrast-[1.08]"
                   />
                 )}
 
@@ -115,16 +118,32 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                   </div>
 
                   {onRequestScroll && (
-                    <button
+                    <motion.button
                       type="button"
                       onClick={() => onRequestScroll(vehicle.name)}
-                      className="group/cta mt-4 flex w-fit cursor-pointer items-center gap-3 border border-brand-cream/25 px-6 py-3 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream transition-colors duration-200 ease-out hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
+                      initial="rest"
+                      animate="rest"
+                      whileHover={isReduced ? undefined : "hover"}
+                      variants={{
+                        rest: { y: 0, borderColor: "rgba(234,222,206,0.25)", color: "#EADECE" },
+                        hover: { y: -2, borderColor: "rgba(234,222,206,0.6)", color: "#FAF8F5" }
+                      }}
+                      whileTap={isReduced ? undefined : { scale: 0.985 }}
+                      transition={PREMIUM_SPRING}
+                      className="mt-4 flex w-fit cursor-pointer items-center gap-3 border border-brand-cream/25 px-6 py-3 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream focus:outline-none focus-visible:border-brand-gold"
                     >
                       <span>{vehicle.cta}</span>
-                      <span className="transition-transform duration-300 group-hover/cta:translate-x-1">
+                      <motion.span
+                        aria-hidden="true"
+                        variants={{
+                          rest: { x: 0 },
+                          hover: { x: 4 }
+                        }}
+                        transition={PREMIUM_SPRING}
+                      >
                         →
-                      </span>
-                    </button>
+                      </motion.span>
+                    </motion.button>
                   )}
                 </div>
               </motion.article>
