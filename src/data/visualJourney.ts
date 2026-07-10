@@ -25,9 +25,8 @@ export interface VideoSlot {
 /** The hero moment: exterior presence and arrival authority. Runs behind
  *  HeroCommandDeck; the cabin belongs to the Private Interval section. */
 export const HERO_VIDEO: VideoSlot = {
-  src: "/videos/bmw-i7-hero.mp4",
-  poster: imageAssets.alairNoirHero,
-  alt: "Black BMW i7 arriving through Zürich at night for Alair Noir"
+  poster: imageAssets.bookingHeroZurichGold,
+  alt: "Black BMW i7 waiting in Zürich at night for Alair Noir"
 };
 
 /** The Private Interval moment: the quiet rear cabin (PrivateIntervalMotion). */

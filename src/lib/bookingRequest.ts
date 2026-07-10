@@ -108,6 +108,24 @@ export function durationLabelFor(value: string): string {
   return DURATION_OPTIONS.find((option) => option.value === value)?.label ?? "To be confirmed";
 }
 
+export const DATE_INPUT_PLACEHOLDER = "dd/mm/yy";
+
+export function formatBookingDateInput(value: string): string {
+  const isoDate = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDate) return `${isoDate[3]}/${isoDate[2]}/${isoDate[1].slice(-2)}`;
+
+  const digits = value.replace(/\D/g, "");
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+
+  if (digits.length >= 8 && Number(digits.slice(0, 4)) >= 1900) {
+    return `${digits.slice(6, 8)}/${digits.slice(4, 6)}/${digits.slice(2, 4)}`;
+  }
+
+  const dateDigits = digits.length >= 8 ? `${digits.slice(0, 4)}${digits.slice(-2)}` : digits.slice(0, 6);
+  return `${dateDigits.slice(0, 2)}/${dateDigits.slice(2, 4)}/${dateDigits.slice(4, 6)}`;
+}
+
 export const WHATSAPP_NUMBER = "41772870956";
 export const BOOKING_EMAIL = "booking@alairnoir.ch";
 

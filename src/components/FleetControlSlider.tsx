@@ -5,15 +5,15 @@ import { AnimatePresence, motion, useAnimationFrame, useInView } from "motion/re
 import { VEHICLES } from "../data";
 import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import type { VehicleGalleryFrame } from "../types";
+import { MOTION_DURATION, MOTION_EASE, PREMIUM_SPRING } from "../lib/motion";
 
 interface FleetControlSliderProps {
   onRequestScroll: (vehicleName?: string) => void;
 }
 
-const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 /** Auto-drift pace in px/s — the pace of a slow walk past the fleet. */
-const DRIFT_PX_PER_SECOND = 45;
+const DRIFT_PX_PER_SECOND = 34;
 
 const RECOMMENDED: Record<string, string> = {
   "bmw-i7": "Executive arrivals & private clients",
@@ -40,9 +40,11 @@ function ConveyorFrame({
   ariaHidden?: boolean;
 }) {
   return (
-    <figure
+    <motion.figure
       aria-hidden={ariaHidden}
-      className="group/frame relative flex-none overflow-hidden border border-brand-cream/12 bg-brand-black transition-[border-color] duration-200 ease-out hover:border-brand-gold/70 max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
+      whileHover={{ borderColor: "rgba(205,162,80,0.7)" }}
+      transition={PREMIUM_SPRING}
+      className="relative flex-none overflow-hidden border border-brand-cream/12 bg-brand-black max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
     >
       <img
         src={frame.image}
@@ -53,7 +55,7 @@ function ConveyorFrame({
         decoding="async"
         draggable={false}
         referrerPolicy="no-referrer"
-        className="h-full w-full select-none object-cover brightness-[0.94] transition-transform duration-200 ease-out group-hover/frame:scale-[1.03] md:w-auto md:max-w-none"
+        className="h-full w-full select-none object-cover brightness-[0.94] md:w-auto md:max-w-none"
       />
 
       {/* Frame index — etched, top left */}
@@ -70,7 +72,7 @@ function ConveyorFrame({
           {frame.caption}
         </p>
       </figcaption>
-    </figure>
+    </motion.figure>
   );
 }
 
@@ -166,7 +168,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     <motion.section
       ref={sectionRef}
       animate={{ backgroundColor: selectedIdx === 0 ? "#0A0A0A" : "#08130D" }}
-      transition={{ duration: isReduced ? 0 : 1.1, ease: "easeInOut" }}
+      transition={{ duration: isReduced ? 0 : MOTION_DURATION.cinematic, ease: MOTION_EASE }}
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >
       {/* Compact header — the chapter title lives in FleetRevealMotion above */}
@@ -199,7 +201,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                 type="button"
                 onClick={() => setSelectedIdx(idx)}
                 aria-pressed={isActive}
-                className={`relative cursor-pointer px-3 py-2 text-[9px] font-mono uppercase tracking-[0.2em] transition-colors duration-300 focus:outline-none focus-visible:text-brand-gold md:px-4 md:text-[10px] ${
+                className={`relative cursor-pointer px-3 py-2 text-[9px] font-mono uppercase tracking-[0.2em] focus:outline-none focus-visible:text-brand-gold md:px-4 md:text-[10px] ${
                   isActive ? "text-brand-black" : "text-brand-stone hover:text-brand-cream"
                 }`}
               >
@@ -222,7 +224,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
             initial={isReduced ? { opacity: 0 } : { opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={isReduced ? { opacity: 0 } : { opacity: 0, y: -30 }}
-            transition={{ duration: 0.9, ease: EASE_OUT }}
+            transition={{ duration: MOTION_DURATION.reveal, ease: MOTION_EASE }}
           >
             <div
               onPointerDown={handlePointerDown}
@@ -278,7 +280,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
             initial={isReduced ? { opacity: 0 } : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={isReduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
-            transition={{ duration: 0.7, ease: EASE_OUT, delay: isReduced ? 0 : 0.15 }}
+            transition={{ duration: 0.7, ease: MOTION_EASE, delay: isReduced ? 0 : 0.15 }}
             className="mt-10 flex flex-col gap-8 md:mt-12 md:flex-row md:items-end md:justify-between"
           >
             <div className="max-w-md">
@@ -293,14 +295,32 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               </p>
             </div>
 
-            <button
+            <motion.button
               type="button"
               onClick={() => onRequestScroll(activeVehicle.name)}
-              className="group flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream transition-all duration-300 hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
+              initial="rest"
+              animate="rest"
+              whileHover={isReduced ? undefined : "hover"}
+              whileTap={isReduced ? undefined : { scale: 0.985 }}
+              variants={{
+                rest: { y: 0, borderColor: "rgba(234,222,206,0.25)", color: "#EADECE" },
+                hover: { y: -2, borderColor: "rgba(234,222,206,0.6)", color: "#FAF8F5" }
+              }}
+              transition={PREMIUM_SPRING}
+              className="flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream focus:outline-none focus-visible:border-brand-gold"
             >
               <span>Book {SWITCH_LABELS[activeVehicle.id] ?? activeVehicle.name}</span>
-              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-            </button>
+              <motion.span
+                aria-hidden="true"
+                variants={{
+                  rest: { x: 0 },
+                  hover: { x: 4 }
+                }}
+                transition={PREMIUM_SPRING}
+              >
+                →
+              </motion.span>
+            </motion.button>
           </motion.div>
         </AnimatePresence>
       </div>

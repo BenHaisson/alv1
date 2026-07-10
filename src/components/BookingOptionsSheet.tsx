@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type WheelEvent } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, type PanInfo } from "motion/react";
+import { X } from "lucide-react";
 import {
   VEHICLE_META,
   durationLabelFor,
@@ -10,17 +11,15 @@ import {
   type BookingState
 } from "../lib/bookingRequest";
 import { CornerMarkers, useMediaQuery, useReducedMotionPref } from "./MotionProvider";
+import { MOTION_DURATION, MOTION_EASE, PREMIUM_SPRING } from "../lib/motion";
 
 interface BookingOptionsSheetProps {
   isOpen: boolean;
   onClose: () => void;
   booking: BookingState;
   onBookingChange: (patch: Partial<BookingState>) => void;
-  /** Optional bridge to the full request section further down the page. */
-  onViewFullForm?: () => void;
 }
 
-const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const TO_BE_CONFIRMED = "To be confirmed";
 
 function passengerLabel(value: string): string {
@@ -43,12 +42,14 @@ export default function BookingOptionsSheet({
   isOpen,
   onClose,
   booking,
-  onBookingChange,
-  onViewFullForm
+  onBookingChange
 }: BookingOptionsSheetProps) {
   const isReduced = useReducedMotionPref();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [isCopied, setIsCopied] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const scrollBodyRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const isHourly = booking.tripType === "hourly";
   const pickupText = locationText(booking.pickup) || TO_BE_CONFIRMED;
@@ -72,11 +73,41 @@ export default function BookingOptionsSheet({
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute("aria-hidden"));
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousActive = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeButtonRef.current?.focus();
+    return () => previousActive?.focus();
+  }, [isOpen]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(buildTransferSummary());
@@ -104,9 +135,17 @@ export default function BookingOptionsSheet({
     if (info.offset.y > 90 || info.velocity.y > 600) onClose();
   };
 
+  const handleDialogWheel = (event: WheelEvent<HTMLDivElement>) => {
+    const scrollBody = scrollBodyRef.current;
+    if (!scrollBody || scrollBody.contains(event.target as Node)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    scrollBody.scrollTop += event.deltaY;
+  };
+
   const labelClass = "mb-2 block text-[10px] font-mono uppercase tracking-widest text-brand-stone";
   const inputClass =
-    "w-full border border-brand-cream/12 bg-brand-black/60 p-3.5 text-sm font-light text-brand-ivory transition-colors placeholder:text-brand-stone/55 focus:border-brand-gold/60 focus:outline-none";
+    "w-full border border-brand-cream/12 bg-brand-black/60 p-3.5 text-sm font-light text-brand-ivory placeholder:text-brand-stone/55 focus:border-brand-gold/60 focus:outline-none";
 
   if (typeof document === "undefined") return null;
 
@@ -124,14 +163,19 @@ export default function BookingOptionsSheet({
             aria-hidden="true"
           />
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Choose your ALAIR NOIR experience"
+            data-lenis-prevent
+            data-lenis-prevent-wheel
+            data-lenis-prevent-touch
+            onWheel={handleDialogWheel}
             initial={isReduced ? { opacity: 0 } : { y: "100%" }}
             animate={isReduced ? { opacity: 1 } : { y: 0 }}
             exit={isReduced ? { opacity: 0 } : { y: "100%" }}
-            transition={{ duration: 0.55, ease: EASE_OUT }}
-            className="fixed inset-x-0 bottom-0 z-[9996] flex h-[94vh] flex-col overflow-hidden rounded-t-xl border-t border-brand-cream/15 bg-brand-deep-forest shadow-[0_-30px_90px_rgba(0,0,0,0.65)] luxury-noise md:h-[90vh] md:rounded-t-2xl"
+            transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE }}
+            className="fixed inset-x-0 bottom-0 z-[9996] flex h-[94vh] flex-col overflow-hidden border-t border-brand-cream/15 bg-brand-deep-forest shadow-[0_-30px_90px_rgba(0,0,0,0.65)] luxury-noise md:h-[90vh]"
           >
             {/* Header — drag handle (mobile swipe-to-close), Hide options, close. */}
             <motion.div
@@ -153,18 +197,22 @@ export default function BookingOptionsSheet({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="hidden cursor-pointer text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone transition-colors duration-150 hover:text-brand-cream sm:inline"
+                    className="hidden cursor-pointer text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone hover:text-brand-cream sm:inline"
                   >
                     Hide options
                   </button>
-                  <button
+                  <motion.button
+                    ref={closeButtonRef}
                     type="button"
                     onClick={onClose}
                     aria-label="Close"
-                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-brand-cream/20 text-brand-cream transition-colors duration-150 hover:border-brand-gold hover:text-brand-gold"
+                    whileHover={isReduced ? undefined : { y: -1, borderColor: "rgba(205,162,80,0.9)", color: "#CDA250" }}
+                    whileTap={isReduced ? undefined : { scale: 0.96 }}
+                    transition={PREMIUM_SPRING}
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center border border-brand-cream/20 text-brand-cream"
                   >
-                    ✕
-                  </button>
+                    <X aria-hidden="true" size={15} strokeWidth={1.7} />
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
@@ -194,7 +242,15 @@ export default function BookingOptionsSheet({
             </div>
 
             {/* Scrollable body. */}
-            <div className="flex-1 overflow-y-auto overscroll-contain">
+            <div
+              ref={scrollBodyRef}
+              data-lenis-prevent
+              data-lenis-prevent-wheel
+              data-lenis-prevent-touch
+              onWheel={(event) => event.stopPropagation()}
+              onTouchMove={(event) => event.stopPropagation()}
+              className="flex-1 overflow-y-auto overscroll-contain"
+            >
               <div className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-10">
                 <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px] lg:gap-14">
                   {/* Left — vehicle choice + passenger details. */}
@@ -213,7 +269,7 @@ export default function BookingOptionsSheet({
                         return (
                           <article
                             key={id}
-                            className={`flex flex-col overflow-hidden border bg-brand-black/40 transition-all duration-300 ${
+                            className={`flex flex-col overflow-hidden border bg-brand-black/40 ${
                               isActive ? "border-brand-gold" : "border-brand-cream/12 hover:border-brand-cream/25"
                             }`}
                           >
@@ -241,18 +297,21 @@ export default function BookingOptionsSheet({
                               <p className="text-xs font-light leading-relaxed text-brand-body">
                                 {meta.description}
                               </p>
-                              <button
+                              <motion.button
                                 type="button"
                                 onClick={() => onBookingChange({ vehicle: id })}
                                 aria-pressed={isActive}
-                                className={`mt-auto cursor-pointer border py-3 text-center text-[10px] font-mono font-semibold uppercase tracking-[0.18em] transition-colors duration-200 focus:outline-none focus-visible:border-brand-gold ${
+                                whileHover={isReduced ? undefined : { y: -2 }}
+                                whileTap={isReduced ? undefined : { scale: 0.985 }}
+                                transition={PREMIUM_SPRING}
+                                className={`mt-auto cursor-pointer border py-3 text-center text-[10px] font-mono font-semibold uppercase tracking-[0.18em] focus:outline-none focus-visible:border-brand-gold ${
                                   isActive
                                     ? "border-brand-gold bg-brand-gold text-brand-black"
                                     : "border-brand-cream/25 text-brand-cream hover:border-brand-cream/50 hover:bg-brand-cream/5"
                                 }`}
                               >
                                 {isActive ? "Selected" : meta.cta}
-                              </button>
+                              </motion.button>
                             </div>
                           </article>
                         );
@@ -367,13 +426,13 @@ export default function BookingOptionsSheet({
                           href={whatsappLink(booking)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory"
+                          className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black hover:bg-brand-ivory"
                         >
                           Request by WhatsApp
                         </a>
                         <a
                           href={emailLink(booking)}
-                          className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/5"
+                          className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream hover:border-brand-cream/60 hover:bg-brand-cream/5"
                         >
                           Request by Email
                         </a>
@@ -383,22 +442,10 @@ export default function BookingOptionsSheet({
                         <button
                           type="button"
                           onClick={handleCopy}
-                          className="cursor-pointer text-[10px] font-mono uppercase tracking-[0.16em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
+                          className="cursor-pointer text-[10px] font-mono uppercase tracking-[0.16em] text-brand-stone hover:text-brand-cream focus:outline-none"
                         >
                           {isCopied ? "Request Copied" : "Copy Request"}
                         </button>
-                        {onViewFullForm && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onClose();
-                              onViewFullForm();
-                            }}
-                            className="cursor-pointer text-[10px] font-mono uppercase tracking-[0.16em] text-brand-stone transition-colors duration-200 hover:text-brand-cream focus:outline-none"
-                          >
-                            Full form ↓
-                          </button>
-                        )}
                       </div>
                     </div>
                   </aside>
@@ -413,13 +460,13 @@ export default function BookingOptionsSheet({
                   href={whatsappLink(booking)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black transition-colors duration-200 hover:bg-brand-ivory"
+                  className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black hover:bg-brand-ivory"
                 >
                   Request by WhatsApp
                 </a>
                 <a
                   href={emailLink(booking)}
-                  className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream transition-colors duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/5"
+                  className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream hover:border-brand-cream/60 hover:bg-brand-cream/5"
                 >
                   Request by Email
                 </a>

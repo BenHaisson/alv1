@@ -26,6 +26,68 @@
   --color-brand-divider: rgba(234, 222, 206, 0.15);
 }
 
+@layer components {
+  .section-shell {
+    @apply px-6 py-24 md:px-12 md:py-32 lg:px-24 lg:py-36;
+  }
+
+  .section-shell-compact {
+    @apply px-6 py-20 md:px-12 md:py-28 lg:px-24;
+  }
+
+  .section-inner {
+    @apply mx-auto max-w-7xl;
+  }
+
+  .panel-hairline {
+    @apply border border-brand-cream/12 bg-brand-deep-forest/40;
+  }
+
+  .button-primary {
+    @apply bg-brand-gold text-brand-black;
+  }
+
+  .button-secondary {
+    @apply border border-brand-cream/30 text-brand-cream;
+  }
+
+  .control-label {
+    @apply block text-[10px] font-mono uppercase tracking-widest text-brand-stone;
+  }
+
+  .hero-booking-grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    border: 1px solid rgba(234, 222, 206, 0.42);
+    border-radius: 6px;
+    background: rgba(8, 19, 13, 0.76);
+    padding: 20px;
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .hero-booking-grid--expanded {
+    background: rgba(8, 19, 13, 0.9);
+    border-color: rgba(234, 222, 206, 0.62);
+    box-shadow: 0 36px 110px rgba(0, 0, 0, 0.62);
+  }
+
+  @media (min-width: 768px) {
+    .hero-booking-grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+      align-items: center;
+      padding: 0;
+    }
+
+    .hero-booking-grid--expanded {
+      grid-template-rows: auto minmax(16rem, 1fr);
+      min-height: min(64vh, 500px);
+    }
+  }
+}
+
 /* General Layout Adjustments */
 body {
   background-color: #0A0A0A;
@@ -33,6 +95,14 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+body[data-booking-expanded="true"] {
+  overflow: hidden;
+}
+
+body[data-booking-expanded="true"] #hero-section {
+  z-index: 35;
 }
 
 /* Custom premium scrollbar */

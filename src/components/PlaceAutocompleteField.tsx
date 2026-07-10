@@ -204,6 +204,11 @@ export default function PlaceAutocompleteField({
         {isOpen && (
           <motion.div
             id={`${id}-suggestions`}
+            data-lenis-prevent
+            data-lenis-prevent-wheel
+            data-lenis-prevent-touch
+            onWheel={(event) => event.stopPropagation()}
+            onTouchMove={(event) => event.stopPropagation()}
             initial={isReduced ? false : { opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={isReduced ? undefined : { opacity: 0, y: -6 }}
