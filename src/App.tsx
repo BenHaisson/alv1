@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import { MotionProvider } from "./components/MotionProvider";
+import { MotionProvider, useMediaQuery } from "./components/MotionProvider";
 import SmoothScroll from "./components/SmoothScroll";
 import { scrollWindowTo } from "./lib/smoothScroll";
 import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
@@ -17,7 +17,6 @@ import StandardsSection from "./components/StandardsSection";
 import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import LuxuryFooter from "./components/LuxuryFooter";
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
 const SECTIONS = [
@@ -76,6 +75,7 @@ function JourneyRail({
 }
 
 export default function App() {
+  const isMobileViewport = useMediaQuery("(max-width: 767px)");
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   // Booking state lifted here so the hero panel and the final request form share
   // one source of truth — whatever the client types up top is already prefilled
@@ -132,7 +132,7 @@ export default function App() {
     setTimeout(() => {
       const element = document.getElementById(targetId);
       if (element) {
-        const top = element.getBoundingClientRect().top + window.scrollY - 76;
+        const top = element.getBoundingClientRect().top + window.scrollY - 56;
         scrollWindowTo(top, { immediate: true });
       }
     }, 360);
@@ -166,10 +166,8 @@ export default function App() {
 
         {isIntroComplete && <JourneyRail activeKey={activeKey} onSelect={scrollToSection} />}
 
-        {isIntroComplete && <FloatingWhatsApp collapsed={activeKey !== "hero"} />}
-
         <AnimatePresence>
-          {isIntroComplete && showBackToTop && (
+          {isIntroComplete && showBackToTop && (!isMobileViewport || activeKey !== "hero") && (
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

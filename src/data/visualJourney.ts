@@ -16,6 +16,9 @@ export interface VideoSlot {
   src?: string;
   /** Poster / fallback still (imported asset). Always required. */
   poster: string;
+  /** Portrait fallback for mobile hero framing. Uses `poster` when omitted. */
+  mobilePoster?: string;
+  mobileAlt?: string;
   alt: string;
   /** Per-slot override of the width below which only the poster is served.
    *  Set 0 for clips light enough to play on mobile. */
@@ -26,6 +29,7 @@ export interface VideoSlot {
  *  HeroCommandDeck; the cabin belongs to the Private Interval section. */
 export const HERO_VIDEO: VideoSlot = {
   poster: imageAssets.bookingHeroZurichGold,
+  mobilePoster: imageAssets.bookingHeroMobileAlairNoir,
   alt: "Black BMW i7 waiting in Zürich at night for Alair Noir"
 };
 

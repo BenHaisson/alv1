@@ -42,11 +42,14 @@ export default function CinematicVideoBackground({
 }: CinematicVideoBackgroundProps) {
   const isReduced = useReducedMotionPref();
   const isWide = useMediaQuery(`(min-width: ${slot.minVideoWidth ?? minVideoWidth}px)`);
+  const usesMobilePoster = useMediaQuery("(max-width: 767px)");
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [hasApproached, setHasApproached] = useState(priority);
+  const poster = usesMobilePoster && slot.mobilePoster ? slot.mobilePoster : slot.poster;
+  const alt = usesMobilePoster && slot.mobilePoster ? slot.mobileAlt ?? slot.alt : slot.alt;
 
   // "Near" spans one extra viewport in each direction so the video is decoding
   // by the time the section scrolls in, but not on initial page load.
@@ -78,8 +81,8 @@ export default function CinematicVideoBackground({
         transition={{ duration: 2.4, ease: EASE }}
       >
         <img
-          src={slot.poster}
-          alt={slot.alt}
+          src={poster}
+          alt={alt}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
@@ -98,7 +101,7 @@ export default function CinematicVideoBackground({
             loop
             playsInline
             preload="metadata"
-            poster={slot.poster}
+            poster={poster}
             onCanPlay={() => setVideoReady(true)}
             onError={() => setVideoFailed(true)}
           >
