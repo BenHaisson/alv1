@@ -1,10 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import { CalendarClock, DoorOpen, PlaneLanding, Route } from "lucide-react";
-import { motion, type Variants } from "motion/react";
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { useRef } from "react";
 import { imageAssets } from "../assets";
 import { useReducedMotionPref } from "./MotionProvider";
-
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 interface ServiceCard {
   label: string;
@@ -50,178 +49,177 @@ const SERVICE_CARDS: ServiceCard[] = [
   }
 ];
 
-const gridVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.12
-    }
-  }
-};
+const FINAL_CARD_HOLD = 0.16;
 
-const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 34,
-    clipPath: "inset(0 0 12% 0)"
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    clipPath: "inset(0 0 0% 0)",
-    transition: { duration: 0.9, ease: EASE }
-  }
-};
+interface ServiceCardContentProps {
+  card: ServiceCard;
+}
 
-const imageVariants: Variants = {
-  rest: { scale: 1.02, y: "0%" },
-  hover: {
-    scale: 1.075,
-    y: "-1.2%",
-    transition: {
-      type: "spring",
-      stiffness: 105,
-      damping: 24,
-      mass: 1.05
-    }
-  }
-};
-
-const accentVariants: Variants = {
-  rest: { scaleX: 0.22, opacity: 0.72 },
-  hover: {
-    scaleX: 1,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 135,
-      damping: 27,
-      mass: 0.9
-    }
-  }
-};
-
-export default function NotForEveryone() {
-  const isReduced = useReducedMotionPref();
+function ServiceCardContent({ card }: ServiceCardContentProps) {
+  const Icon = card.icon;
 
   return (
-    <section className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-32 lg:px-24 lg:py-36 luxury-noise">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 border-t border-brand-cream/12 pt-7 md:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] md:gap-12 md:pt-9">
-          <motion.div
-            initial={isReduced ? false : { opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.7 }}
-            transition={{ duration: 0.72, ease: EASE }}
-            className="flex items-center gap-4 self-start"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-gold">
-              02
-            </span>
-            <span className="h-px w-10 bg-brand-cream/25" aria-hidden="true" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-stone">
-              Private mobility
-            </span>
-          </motion.div>
+    <>
+      <img
+        src={card.image}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        className="absolute inset-0 h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
+        style={{ objectPosition: card.imagePosition }}
+      />
 
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,7,5,0.03)_0%,rgba(4,7,5,0.1)_42%,rgba(4,7,5,0.68)_100%)]"
+      />
+
+      <div className="absolute inset-x-0 bottom-0 border-t border-brand-cream/18 bg-[rgba(4,7,5,0.9)] px-5 py-5 shadow-[0_-18px_54px_rgba(0,0,0,0.3)] backdrop-blur-md md:px-8 md:py-6 lg:px-10">
+        <div className="grid items-end gap-4 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] md:gap-10">
           <div>
-            <motion.h2
-              initial={isReduced ? false : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.82, ease: EASE }}
-              className="max-w-3xl font-serif text-[clamp(2.75rem,5.2vw,5rem)] font-light leading-[0.98] text-brand-ivory"
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-gold/82">
+              {card.label}
+            </span>
+
+            <div className="mt-2.5 flex items-center gap-3.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-black/64 text-brand-cream">
+                <Icon aria-hidden="true" size={17} strokeWidth={1.35} />
+              </span>
+              <h3 className="font-serif text-[1.75rem] font-light leading-none text-brand-ivory md:text-[2.15rem]">
+                {card.title}
+              </h3>
+            </div>
+          </div>
+
+          <p className="max-w-[46ch] text-sm font-light leading-6 text-brand-cream/72 md:justify-self-end md:text-[15px]">
+            {card.description}
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+interface StackedServiceCardProps {
+  card: ServiceCard;
+  index: number;
+  progress: MotionValue<number>;
+}
+
+function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) {
+  const outgoingCards = SERVICE_CARDS.length - 1;
+  const movementRange = 1 - FINAL_CARD_HOLD;
+  const segment = movementRange / outgoingCards;
+  const start = index * segment;
+  const end = start + segment;
+  const isFinalCard = index === SERVICE_CARDS.length - 1;
+  const y = useTransform(
+    progress,
+    isFinalCard ? [0, 1] : [start, end],
+    isFinalCard ? ["0%", "0%"] : ["0%", "-125%"]
+  );
+  const visibility = useTransform(progress, (value) =>
+    isFinalCard || value < end ? ("visible" as const) : ("hidden" as const)
+  );
+
+  return (
+    <motion.article
+      style={{
+        y,
+        visibility,
+        zIndex: SERVICE_CARDS.length - index
+      }}
+      className="absolute inset-0 isolate overflow-hidden rounded-2xl border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)]"
+    >
+      <ServiceCardContent card={card} />
+    </motion.article>
+  );
+}
+
+function SectionHeading() {
+  return (
+    <div className="shrink-0 border-b border-brand-cream/10 pb-5 md:pb-6">
+      <div className="flex items-center gap-4 self-start md:pt-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-gold">
+          02
+        </span>
+        <span className="h-px w-12 bg-brand-cream/25" aria-hidden="true" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-stone">
+          Private mobility
+        </span>
+      </div>
+
+      <div className="mt-4 max-w-3xl text-left md:mt-5">
+        <h2 className="font-serif text-[2.65rem] font-light leading-[0.94] text-brand-ivory md:text-5xl lg:text-[3.35rem]">
+          Not for everyone. <span className="italic text-brand-stone">For you.</span>
+        </h2>
+        <p className="mt-3 max-w-[48ch] text-[13px] font-light leading-5 text-brand-body md:text-sm md:leading-6">
+          Four ways to move with certainty, prepared around your time, privacy, and destination.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ReducedMotionCards() {
+  return (
+    <section className="relative border-b border-brand-cream/10 bg-brand-black px-5 pb-16 pt-20 md:px-10 md:pb-24 md:pt-24 lg:px-16">
+      <div className="mx-auto max-w-[90rem]">
+        <SectionHeading />
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          {SERVICE_CARDS.map((card) => (
+            <article
+              key={card.title}
+              className="relative isolate h-[30rem] overflow-hidden rounded-2xl border border-brand-cream/16 bg-brand-deep-forest"
             >
-              Not for everyone.
-              <br />
-              <span className="italic text-brand-stone">For you.</span>
-            </motion.h2>
-            <motion.p
-              initial={isReduced ? false : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.76, delay: isReduced ? 0 : 0.1, ease: EASE }}
-              className="mt-6 max-w-xl text-sm font-light leading-7 text-brand-body md:text-base"
-            >
-              Four ways to move with certainty. Each journey is prepared around your time,
-              privacy, and destination.
-            </motion.p>
+              <ServiceCardContent card={card} />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function NotForEveryone() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isReduced = useReducedMotionPref();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  });
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 118,
+    damping: 30,
+    mass: 0.72,
+    restDelta: 0.001
+  });
+
+  if (isReduced) return <ReducedMotionCards />;
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative h-[400svh] border-b border-brand-cream/10 bg-brand-black luxury-noise"
+    >
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
+
+      <div className="sticky top-14 h-[calc(100svh-3.5rem)] overflow-hidden px-5 pb-4 pt-5 md:top-16 md:h-[calc(100svh-4rem)] md:px-10 md:pb-7 md:pt-6 lg:px-16">
+        <div className="mx-auto flex h-full max-w-[90rem] flex-col">
+          <SectionHeading />
+
+          <div className="relative mt-4 min-h-0 flex-1 md:mt-6">
+            {SERVICE_CARDS.map((card, index) => (
+              <StackedServiceCard
+                key={card.title}
+                card={card}
+                index={index}
+                progress={progress}
+              />
+            ))}
           </div>
         </div>
-
-        <motion.div
-          variants={isReduced ? undefined : gridVariants}
-          initial={isReduced ? false : "hidden"}
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.12 }}
-          className="mt-14 grid gap-5 md:mt-20 md:grid-cols-2 md:gap-6 lg:grid-cols-4"
-        >
-          {SERVICE_CARDS.map((card) => {
-            const Icon = card.icon;
-
-            return (
-              <motion.article
-                key={card.title}
-                variants={isReduced ? undefined : cardVariants}
-                className="group relative isolate min-h-[31rem] overflow-hidden border border-brand-cream/14 bg-brand-deep-forest md:min-h-[34rem]"
-              >
-                <motion.div
-                  initial="rest"
-                  animate="rest"
-                  whileHover={isReduced ? undefined : "hover"}
-                  className="absolute inset-0"
-                >
-                  <motion.img
-                    src={card.image}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
-                    variants={isReduced ? undefined : imageVariants}
-                    className="absolute inset-0 h-full w-full object-cover brightness-[0.74] contrast-[1.06]"
-                    style={{ objectPosition: card.imagePosition }}
-                  />
-
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,8,6,0.08)_0%,rgba(5,8,6,0.12)_34%,rgba(5,8,6,0.82)_68%,rgba(5,8,6,0.98)_100%)]"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 shadow-[inset_0_0_0_1px_rgba(250,248,245,0.02)]"
-                  />
-
-                  <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
-                    <div className="flex items-center gap-3">
-                      <motion.span
-                        aria-hidden="true"
-                        variants={isReduced ? undefined : accentVariants}
-                        className="h-px w-12 origin-left bg-brand-gold"
-                      />
-                      <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-brand-cream/65">
-                        {card.label}
-                      </span>
-                    </div>
-
-                    <div className="mt-5 flex items-start gap-3.5">
-                      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-brand-cream/22 bg-brand-black/35 text-brand-cream backdrop-blur-sm">
-                        <Icon aria-hidden="true" size={17} strokeWidth={1.35} />
-                      </span>
-                      <h3 className="max-w-[12ch] font-serif text-2xl font-light leading-[1.05] text-brand-ivory md:text-[1.7rem]">
-                        {card.title}
-                      </h3>
-                    </div>
-                    <p className="mt-4 max-w-[30ch] text-[13px] font-light leading-6 text-brand-body">
-                      {card.description}
-                    </p>
-                  </div>
-                </motion.div>
-              </motion.article>
-            );
-          })}
-        </motion.div>
       </div>
     </section>
   );
