@@ -63,17 +63,16 @@ function ServiceCardContent({ card }: ServiceCardContentProps) {
 
   return (
     <>
-      <picture className="absolute inset-0">
+      <picture className="absolute inset-0 block">
         {card.mobileImage && <source media="(max-width: 767px)" srcSet={card.mobileImage} />}
         <motion.img
           src={card.image}
           alt=""
-          loading="lazy"
+          loading="eager"
           decoding="async"
           referrerPolicy="no-referrer"
           initial={{ clipPath: "inset(0 0 100% 0)" }}
-          whileInView={{ clipPath: "inset(0 0 0% 0)" }}
-          viewport={{ once: true, amount: 0.18 }}
+          animate={{ clipPath: "inset(0 0 0% 0)" }}
           transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
           className="h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
           style={{ objectPosition: card.imagePosition }}
