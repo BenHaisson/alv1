@@ -1,3 +1,5 @@
+import BrandLockup from "./BrandLockup";
+
 interface LuxuryFooterProps {
   onNavClick: (sectionId: string) => void;
 }
@@ -44,12 +46,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-3">
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-brand-cream tracking-[0.15em] mb-4">
-              ALAIR NOIR
-            </h2>
-            <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-brand-stone block mb-6">
-              NOT FOR EVERYONE · FOR YOU
-            </span>
+            <BrandLockup size="footer" className="mb-6" />
             <p className="text-xs text-brand-stone font-light leading-relaxed max-w-sm">
               ALAIR NOIR GmbH is a Zürich-based private chauffeur service for executives, private
               clients, family offices, hotels, diplomatic guests, airport transfers, and
@@ -151,9 +148,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
             Switzerland
           </div>
           <div className="text-right">
-            <span className="block font-serif text-lg font-light italic text-brand-cream mb-2">
-              Not for everyone. For you.
-            </span>
+            <BrandLockup size="compact" align="right" className="mb-3" />
             <div className="flex justify-start gap-4 text-[10px] font-mono text-brand-stone uppercase tracking-widest sm:justify-end">
               <span className="cursor-pointer hover:text-brand-cream transition-colors">Impressum</span>
               <span>·</span>

@@ -17,6 +17,7 @@ import StandardsSection from "./components/StandardsSection";
 import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import LuxuryFooter from "./components/LuxuryFooter";
+import BrandLockup from "./components/BrandLockup";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
 const SECTIONS = [
@@ -204,12 +205,7 @@ export default function App() {
                 transition={{ delay: 0.16, duration: 0.36 }}
                 className="text-center"
               >
-                <h2 className="text-2xl font-serif font-light uppercase tracking-[0.35em] text-brand-cream">
-                  ALAIR NOIR
-                </h2>
-                <span className="mt-3 block text-[9px] font-mono tracking-[0.25em] text-brand-stone">
-                  ARRIVING
-                </span>
+                <BrandLockup size="curtain" align="center" />
               </motion.div>
             </motion.div>
           )}

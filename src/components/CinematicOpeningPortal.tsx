@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import { motion } from "motion/react";
 import { useReducedMotionPref } from "./MotionProvider";
 import { MOTION_DURATION, MOTION_EASE } from "../lib/motion";
+import BrandLockup from "./BrandLockup";
 
 interface CinematicOpeningPortalProps {
   onComplete: (isComplete: boolean) => void;
 }
-
-const LOCATION_LINE = "ZÜRICH · SWITZERLAND";
-const SIGNATURE_LINES = ["Not for Everyone,", "For you."];
 
 export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningPortalProps) {
   const isReduced = useReducedMotionPref();
@@ -56,30 +54,12 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
             <span className="font-serif text-5xl font-light tracking-[0.08em] md:text-7xl">N</span>
           </motion.div>
 
-          <motion.h1
+          <motion.div
             {...reveal(0.62, 24)}
-            className="select-none font-serif text-4xl font-light tracking-[0.3em] text-white glow-subtle md:text-7xl"
+            className="glow-subtle"
           >
-            ALAIR NOIR
-          </motion.h1>
-
-          <motion.p
-            {...reveal(0.96, 24)}
-            className="mt-6 text-[11px] font-sans uppercase tracking-[0.32em] text-brand-gold/55 md:text-xs"
-          >
-            {LOCATION_LINE}
-          </motion.p>
-
-          <motion.p
-            {...reveal(1.28, 24)}
-            className="mt-9 font-serif text-2xl font-light italic leading-[1.15] text-[#fcf3c8] md:text-4xl"
-          >
-            {SIGNATURE_LINES.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </motion.p>
+            <BrandLockup size="opening" align="center" />
+          </motion.div>
         </div>
 
         <motion.div

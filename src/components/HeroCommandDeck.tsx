@@ -159,8 +159,8 @@ export default function HeroCommandDeck({
     damping: 24,
     restDelta: 0.001
   });
-  const backgroundScale = useTransform(stagedProgress, [0, 0.36, 1], [1.08, 1.02, 1]);
-  const backgroundY = useTransform(stagedProgress, [0, 1], ["3.5%", "-3.5%"]);
+  const backgroundScale = useTransform(stagedProgress, [0, 0.22, 0.62, 1], [1.01, 1.03, 1.12, 1.08]);
+  const backgroundY = useTransform(stagedProgress, [0, 0.62, 1], ["2.5%", "-1.5%", "-3.5%"]);
   const darkVeilOpacity = useTransform(stagedProgress, [0, 0.28, 0.62], [0.16, 0.34, 0.46]);
   const gradientOpacity = useTransform(stagedProgress, [0, 0.42, 1], [0.28, 0.86, 1]);
   const headlineOpacity = useTransform(stagedProgress, [0.18, 0.34], [0, 1]);
@@ -187,7 +187,7 @@ export default function HeroCommandDeck({
           slot={HERO_VIDEO}
           overlay={false}
           priority
-          mediaClassName="-translate-y-[4%] scale-[1.08] object-top grayscale-[0.04] brightness-[0.95] contrast-[1.12] md:-translate-y-[2%] md:scale-[1.04] md:object-center md:brightness-[0.9]"
+          mediaClassName="-translate-y-[4%] scale-[1.08] object-top grayscale-[0.04] brightness-[0.95] contrast-[1.12] md:-translate-y-[2%] md:scale-[1.02] md:object-center md:brightness-[0.9]"
         />
       </motion.div>
 
