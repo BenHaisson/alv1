@@ -174,6 +174,7 @@ export default function PlaceAutocompleteField({
 
   const warningNode = (locationError || showUnvalidatedWarning) && (
     <p
+      id={`${id}-validation`}
       className={`px-0.5 text-[10px] font-light leading-snug ${
         locationError ? "text-red-300/90" : "text-brand-gold/85"
       }`}
@@ -198,6 +199,8 @@ export default function PlaceAutocompleteField({
         aria-expanded={isOpen}
         aria-autocomplete="list"
         aria-controls={`${id}-suggestions`}
+        aria-invalid={Boolean(locationError || showUnvalidatedWarning)}
+        aria-describedby={locationError || showUnvalidatedWarning ? `${id}-validation` : undefined}
       />
 
       <AnimatePresence>
@@ -233,7 +236,7 @@ export default function PlaceAutocompleteField({
                       type="button"
                       onMouseDown={(event) => event.preventDefault()}
                       onClick={() => handleSelect(suggestion)}
-                      className={`flex w-full flex-col gap-0.5 border-b border-brand-cream/5 px-4 py-3 text-left transition-colors duration-150 last:border-b-0 ${
+                      className={`flex w-full flex-col gap-0.5 border-b border-brand-cream/5 px-4 py-3 text-left last:border-b-0 ${
                         index === activeIndex ? "bg-brand-gold-muted" : "hover:bg-brand-cream/5"
                       }`}
                     >
@@ -257,7 +260,7 @@ export default function PlaceAutocompleteField({
                   setIsOpen(false);
                   onOpenMap();
                 }}
-                className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[11px] font-mono uppercase tracking-[0.16em] text-brand-cream transition-colors duration-150 hover:bg-brand-cream/5"
+                className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[11px] font-mono uppercase tracking-[0.16em] text-brand-cream hover:bg-brand-cream/5"
               >
                 <span aria-hidden="true" className="text-brand-gold">
                   ⌖
@@ -270,7 +273,7 @@ export default function PlaceAutocompleteField({
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={handleUseCurrentLocation}
                   disabled={isLocating}
-                  className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[11px] font-mono uppercase tracking-[0.16em] text-brand-cream transition-colors duration-150 hover:bg-brand-cream/5 disabled:cursor-wait disabled:opacity-60"
+                  className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[11px] font-mono uppercase tracking-[0.16em] text-brand-cream hover:bg-brand-cream/5 disabled:cursor-wait disabled:opacity-60"
                 >
                   <span aria-hidden="true" className="text-brand-gold">
                     ◎

@@ -12,6 +12,7 @@ import {
 } from "../lib/bookingRequest";
 import { CornerMarkers, useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import { MOTION_DURATION, MOTION_EASE, PREMIUM_SPRING } from "../lib/motion";
+import BrandLockup from "./BrandLockup";
 
 interface BookingOptionsSheetProps {
   isOpen: boolean;
@@ -190,9 +191,7 @@ export default function BookingOptionsSheet({
               </div>
               <div className="flex items-center justify-between gap-4 px-6 py-4 md:px-10">
                 <CornerMarkers tone="cream" />
-                <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-brand-gold">
-                  ALAIR NOIR
-                </span>
+                <BrandLockup size="compact" align="center" />
                 <div className="flex items-center gap-5">
                   <button
                     type="button"

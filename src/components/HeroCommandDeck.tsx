@@ -3,7 +3,6 @@ import {
   CalendarCheck,
   CalendarDays,
   Car,
-  ChevronDown,
   Clock,
   Clock3,
   MapPin,
@@ -16,6 +15,11 @@ import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
 import BookingOptionsSheet from "./BookingOptionsSheet";
+import { BookingCard } from "./booking/BookingCard";
+import { BookingDatePicker } from "./booking/BookingDatePicker";
+import { BookingDropdown } from "./booking/BookingDropdown";
+import { BookingField } from "./booking/BookingField";
+import { SegmentedControl, type BookingType } from "./booking/SegmentedControl";
 import { HERO_VIDEO } from "../data/visualJourney";
 import {
   DATE_INPUT_PLACEHOLDER,
@@ -44,10 +48,12 @@ const TRUST_LINE: { icon: LucideIcon; label: string }[] = [
   { icon: CalendarCheck, label: "Pre-arranged" }
 ];
 
-const TRIP_TABS: { id: TripType; label: string }[] = [
-  { id: "one-way", label: "One way" },
-  { id: "hourly", label: "By the hour" }
-];
+const TIME_OPTIONS = Array.from({ length: 48 }, (_, index) => {
+  const hours = Math.floor(index / 2);
+  const minutes = index % 2 === 0 ? "00" : "30";
+  const value = `${String(hours).padStart(2, "0")}:${minutes}`;
+  return { value, label: value };
+});
 
 const FIELD_CUES: Record<ActiveBookingField, { icon: LucideIcon; title: string; body: string }> = {
   pickup: {
@@ -90,6 +96,14 @@ export default function HeroCommandDeck({
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isBookingExpanded, setIsBookingExpanded] = useState(false);
   const [activeField, setActiveField] = useState<ActiveBookingField>("pickup");
+  const [showValidation, setShowValidation] = useState(false);
+  const [bookingType, setBookingType] = useState<BookingType>(
+    booking.tripType === "hourly" ? "hourly" : "oneWay"
+  );
+
+  useEffect(() => {
+    setBookingType(booking.tripType === "hourly" ? "hourly" : "oneWay");
+  }, [booking.tripType]);
 
   useEffect(() => {
     if (!isBookingExpanded) return;
@@ -143,12 +157,22 @@ export default function HeroCommandDeck({
     });
   };
 
-  const fieldLabelClass =
-    "text-xs font-sans font-semibold text-brand-ivory/95 transition-colors duration-200 group-focus-within:text-brand-gold";
+  const handleBookingTypeChange = (nextType: BookingType) => {
+    setShowValidation(false);
+    setBookingType(nextType);
+    handleTripTypeChange(nextType === "hourly" ? "hourly" : "one-way");
+  };
+
   const fieldInputClass =
     "w-full bg-transparent text-[15px] font-light text-brand-cream placeholder:text-brand-cream/50 focus:outline-none";
   const activeCue = FIELD_CUES[activeField];
   const ActiveCueIcon = activeCue.icon;
+  const pickupMissing = !booking.pickup.description.trim();
+  const secondFieldMissing =
+    bookingType === "hourly" ? !booking.duration : !booking.destination.description.trim();
+  const dateMissing = !booking.date.trim();
+  const timeMissing = !booking.time.trim();
+  const isBookingValid = !pickupMissing && !secondFieldMissing && !dateMissing && !timeMissing;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -159,8 +183,8 @@ export default function HeroCommandDeck({
     damping: 24,
     restDelta: 0.001
   });
-  const backgroundScale = useTransform(stagedProgress, [0, 0.36, 1], [1.08, 1.02, 1]);
-  const backgroundY = useTransform(stagedProgress, [0, 1], ["3.5%", "-3.5%"]);
+  const backgroundScale = useTransform(stagedProgress, [0, 0.22, 0.62, 1], [1.01, 1.03, 1.12, 1.08]);
+  const backgroundY = useTransform(stagedProgress, [0, 0.62, 1], ["2.5%", "-1.5%", "-3.5%"]);
   const darkVeilOpacity = useTransform(stagedProgress, [0, 0.28, 0.62], [0.16, 0.34, 0.46]);
   const gradientOpacity = useTransform(stagedProgress, [0, 0.42, 1], [0.28, 0.86, 1]);
   const headlineOpacity = useTransform(stagedProgress, [0.18, 0.34], [0, 1]);
@@ -176,7 +200,7 @@ export default function HeroCommandDeck({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100svh] border-b border-brand-cream/10 bg-brand-black luxury-noise md:min-h-[280svh]"
+      className="relative min-h-[100svh] border-b border-brand-cream/10 bg-brand-black luxury-noise md:min-h-[500svh]"
     >
       <div className="relative min-h-[100svh] overflow-hidden md:sticky md:top-0 md:h-[100svh] md:min-h-0">
       <motion.div
@@ -187,7 +211,7 @@ export default function HeroCommandDeck({
           slot={HERO_VIDEO}
           overlay={false}
           priority
-          mediaClassName="-translate-y-[4%] scale-[1.08] object-top grayscale-[0.04] brightness-[0.95] contrast-[1.12] md:-translate-y-[2%] md:scale-[1.04] md:object-center md:brightness-[0.9]"
+          mediaClassName="-translate-y-[4%] scale-[1.08] object-top grayscale-[0.04] brightness-[0.95] contrast-[1.12] md:-translate-y-[2%] md:scale-[1.02] md:object-center md:brightness-[0.9]"
         />
       </motion.div>
 
@@ -232,12 +256,13 @@ export default function HeroCommandDeck({
         <motion.div
           ref={bookingShellRef}
           layout
+          layoutDependency={isBookingExpanded}
           style={
             isReduced || isBookingExpanded || isMobileBooking
               ? undefined
               : { opacity: cardOpacity, y: cardY, scale: cardScale }
           }
-          transition={{ layout: { duration: 0.72, ease: EASE } }}
+          transition={{ layout: { duration: 0.34, ease: EASE } }}
           className={
             isBookingExpanded
               ? "fixed inset-x-4 top-[clamp(6.5rem,16vh,9rem)] z-50 mx-auto flex w-[calc(100vw-2rem)] max-w-[1180px] flex-col items-center text-left md:inset-x-8 md:top-[clamp(7rem,18vh,10rem)]"
@@ -246,164 +271,119 @@ export default function HeroCommandDeck({
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
         >
-          <div className="relative mx-auto mb-3 mt-6 flex h-14 w-[min(330px,calc(100vw-48px))] rounded-full border border-brand-ivory/20 bg-[rgba(5,8,6,0.72)] p-1 shadow-[0_16px_44px_rgba(0,0,0,0.36)] backdrop-blur-[18px] md:mb-5 md:mt-0 md:inline-flex md:w-auto md:border-brand-cream/45 md:bg-brand-black/45 md:backdrop-blur-sm">
-            {TRIP_TABS.map((tab) => {
-              const isActive = booking.tripType === tab.id;
-              return (
-                <motion.button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => handleTripTypeChange(tab.id)}
-                  aria-pressed={isActive}
-                  whileTap={isReduced ? undefined : { scale: 0.975 }}
-                  className={`relative flex-1 cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none md:min-w-28 md:flex-none md:px-6 md:py-2.5 ${
-                    isActive ? "text-brand-black" : "text-brand-cream hover:text-white"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="hero-trip-tab"
-                      className="absolute inset-0 rounded-full bg-[#D6C7B0] md:bg-brand-gold"
-                      transition={{ type: "spring", stiffness: 420, damping: 38, mass: 0.75 }}
-                    />
-                  )}
-                  <span className="relative z-10">{tab.label}</span>
-                </motion.button>
-              );
-            })}
-          </div>
+          <SegmentedControl value={bookingType} onChange={handleBookingTypeChange} />
 
-          <motion.div
-            layout
-            className={`hero-booking-grid ${isBookingExpanded ? "hero-booking-grid--expanded" : ""}`}
-            transition={{ layout: { duration: 0.72, ease: EASE } }}
-          >
-            <motion.div
-              whileTap={isReduced ? undefined : { scale: 0.995 }}
-              className="hero-booking-field group md:px-6 md:py-5"
-              onPointerDownCapture={() => activateBookingField("pickup")}
-              onFocusCapture={() => activateBookingField("pickup")}
+          <BookingCard expanded={isBookingExpanded}>
+            <BookingField
+              id="hero-pickup"
+              label="Pickup location"
+              className="md:px-6 md:py-5"
+              onActivate={() => activateBookingField("pickup")}
+              validationMessage={showValidation && pickupMissing ? "Enter a pickup location." : undefined}
             >
-              <label htmlFor="hero-pickup" className={fieldLabelClass}>
-                Pickup location
-              </label>
-              <div className="hero-booking-line border-b border-brand-cream/58">
-                <PlaceAutocompleteField
-                  id="hero-pickup"
-                  placeholder="Address, airport, hotel, ..."
-                  value={booking.pickup}
-                  onChange={(location) => onBookingChange({ pickup: location })}
-                  onOpenMap={() => openMap("pickup")}
-                  showCurrentLocation
-                  inputClassName={fieldInputClass}
-                />
-              </div>
-            </motion.div>
+              <PlaceAutocompleteField
+                id="hero-pickup"
+                placeholder="Address, airport, hotel, ..."
+                value={booking.pickup}
+                onChange={(location) => onBookingChange({ pickup: location })}
+                onOpenMap={() => openMap("pickup")}
+                showCurrentLocation
+                inputClassName={fieldInputClass}
+              />
+            </BookingField>
 
-            {booking.tripType === "hourly" ? (
-              <motion.div
-                whileTap={isReduced ? undefined : { scale: 0.995 }}
-                className="hero-booking-field group md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
-                onPointerDownCapture={() => activateBookingField("duration")}
-                onFocusCapture={() => activateBookingField("duration")}
-              >
-                <label htmlFor="hero-duration" className={fieldLabelClass}>
-                  Duration
-                </label>
-                <div className="hero-booking-line flex items-center border-b border-brand-cream/58">
-                  <select
+            <div className="grid min-h-[58px] border-b border-brand-cream/20 md:min-h-[90px] md:border-b-0 md:border-r md:border-brand-cream/48">
+              <AnimatePresence initial={false} mode="sync">
+                {bookingType === "hourly" ? (
+                  <BookingField
+                    key="duration"
                     id="hero-duration"
-                    value={booking.duration}
-                    onChange={(e) => onBookingChange({ duration: e.target.value })}
-                    className={`${fieldInputClass} cursor-pointer appearance-none`}
+                    label="Duration"
+                    replacement
+                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    onActivate={() => activateBookingField("duration")}
+                    validationMessage={showValidation && secondFieldMissing ? "Select a duration." : undefined}
                   >
-                    {DURATION_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value} className="bg-brand-deep-forest text-brand-ivory">
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="h-4 w-4 shrink-0 text-brand-cream" aria-hidden="true" />
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                whileTap={isReduced ? undefined : { scale: 0.995 }}
-                className="hero-booking-field group md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
-                onPointerDownCapture={() => activateBookingField("destination")}
-                onFocusCapture={() => activateBookingField("destination")}
-              >
-                <label htmlFor="hero-destination" className={fieldLabelClass}>
-                  Drop-off location
-                </label>
-                <div className="hero-booking-line border-b border-brand-cream/58">
-                  <PlaceAutocompleteField
+                    <BookingDropdown
+                      id="hero-duration"
+                      value={booking.duration}
+                      options={DURATION_OPTIONS}
+                      onChange={(duration) => onBookingChange({ duration })}
+                      labelledBy="hero-duration-label"
+                      invalid={showValidation && secondFieldMissing}
+                    />
+                  </BookingField>
+                ) : (
+                  <BookingField
+                    key="destination"
                     id="hero-destination"
-                    placeholder="Address, airport, hotel, ..."
-                    value={booking.destination}
-                    onChange={(location) => onBookingChange({ destination: location })}
-                    onOpenMap={() => openMap("destination")}
-                    inputClassName={fieldInputClass}
-                  />
-                </div>
-              </motion.div>
-            )}
+                    label="Drop-off location"
+                    replacement
+                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    onActivate={() => activateBookingField("destination")}
+                    validationMessage={showValidation && secondFieldMissing ? "Enter a drop-off location." : undefined}
+                  >
+                    <PlaceAutocompleteField
+                      id="hero-destination"
+                      placeholder="Address, airport, hotel, ..."
+                      value={booking.destination}
+                      onChange={(location) => onBookingChange({ destination: location })}
+                      onOpenMap={() => openMap("destination")}
+                      inputClassName={fieldInputClass}
+                    />
+                  </BookingField>
+                )}
+              </AnimatePresence>
+            </div>
 
-            <motion.div
-              whileTap={isReduced ? undefined : { scale: 0.995 }}
-              className="hero-booking-field group md:px-6 md:py-5"
-              onPointerDownCapture={() => activateBookingField("date")}
-              onFocusCapture={() => activateBookingField("date")}
+            <BookingField
+              id="hero-date"
+              label="Date"
+              className="md:px-6 md:py-5"
+              onActivate={() => activateBookingField("date")}
+              validationMessage={showValidation && dateMissing ? "Select a date." : undefined}
             >
-              <label htmlFor="hero-date" className={fieldLabelClass}>
-                Date
-              </label>
-              <div className="hero-booking-line flex items-center border-b border-brand-cream/58">
-                <input
-                  id="hero-date"
-                  type="text"
-                  inputMode="numeric"
-                  placeholder={DATE_INPUT_PLACEHOLDER}
-                  value={booking.date}
-                  onChange={(e) => onBookingChange({ date: formatBookingDateInput(e.target.value) })}
-                  className={`${fieldInputClass} min-w-0`}
-                />
-                <ChevronDown className="h-4 w-4 shrink-0 text-brand-cream" aria-hidden="true" />
-              </div>
-            </motion.div>
+              <BookingDatePicker
+                id="hero-date"
+                value={booking.date}
+                placeholder={DATE_INPUT_PLACEHOLDER}
+                labelledBy="hero-date-label"
+                onChange={(date) => onBookingChange({ date: formatBookingDateInput(date) })}
+                invalid={showValidation && dateMissing}
+              />
+            </BookingField>
 
-            <motion.div
-              whileTap={isReduced ? undefined : { scale: 0.995 }}
-              className="hero-booking-field group md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
-              onPointerDownCapture={() => activateBookingField("time")}
-              onFocusCapture={() => activateBookingField("time")}
+            <BookingField
+              id="hero-time"
+              label="Pickup time"
+              className="md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
+              onActivate={() => activateBookingField("time")}
+              validationMessage={showValidation && timeMissing ? "Select a pickup time." : undefined}
             >
-              <label htmlFor="hero-time" className={fieldLabelClass}>
-                Pickup time
-              </label>
-              <div className="hero-booking-line flex items-center border-b border-brand-cream/58">
-                <input
-                  id="hero-time"
-                  type="time"
-                  value={booking.time}
-                  onChange={(e) => onBookingChange({ time: e.target.value })}
-                  className={`${fieldInputClass} min-w-0`}
-                />
-                <ChevronDown className="h-4 w-4 shrink-0 text-brand-cream" aria-hidden="true" />
-              </div>
-            </motion.div>
+              <BookingDropdown
+                id="hero-time"
+                value={booking.time}
+                options={TIME_OPTIONS}
+                onChange={(time) => onBookingChange({ time })}
+                labelledBy="hero-time-label"
+                placeholder="Select time"
+                invalid={showValidation && timeMissing}
+              />
+            </BookingField>
 
             <div className="hero-booking-cta flex items-center md:p-5">
               <motion.button
                 type="button"
                 onClick={() => {
+                  setShowValidation(true);
+                  if (!isBookingValid) return;
                   setIsBookingExpanded(false);
                   setIsOptionsOpen(true);
                 }}
-                whileHover={isReduced ? undefined : { y: -1, backgroundColor: "#FAF8F5" }}
-                whileTap={isReduced ? undefined : { scale: 0.975 }}
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                className="flex h-[52px] w-full items-center justify-center whitespace-nowrap rounded-full bg-[#D6C7B0] px-6 text-center text-sm font-semibold tracking-[0.02em] text-brand-black md:h-auto md:w-auto md:bg-brand-gold md:py-3.5 md:tracking-normal"
+                whileHover={isReduced ? undefined : { backgroundColor: "#FAF8F5" }}
+                whileTap={isReduced ? undefined : { opacity: 0.88 }}
+                transition={isReduced ? { duration: 0 } : { duration: 0.15, ease: "easeInOut" }}
+                className="flex h-[52px] w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-sm font-semibold tracking-[0.02em] text-brand-black md:h-auto md:w-auto md:py-3.5 md:tracking-normal"
               >
                 View options
               </motion.button>
@@ -434,7 +414,7 @@ export default function HeroCommandDeck({
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </BookingCard>
 
           {!isBookingExpanded && (
             <motion.div

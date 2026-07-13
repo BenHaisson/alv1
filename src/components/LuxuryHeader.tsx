@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import BrandLockup from "./BrandLockup";
 
 interface LuxuryHeaderProps {
   onNavClick: (sectionId: string) => void;
@@ -35,12 +36,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             transition={{ type: "spring", stiffness: 420, damping: 34 }}
             className="flex cursor-pointer flex-col items-start text-left focus:outline-none"
           >
-            <span className="block text-lg font-serif font-light leading-none tracking-[0.18em] text-white md:text-xl">
-              ALAIR NOIR
-            </span>
-            <span className="mt-0.5 text-[8px] font-serif italic leading-none tracking-[0.04em] text-brand-stone">
-              Not for Everyone, For you.
-            </span>
+            <BrandLockup size="nav" />
           </motion.button>
 
           <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary journey">

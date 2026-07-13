@@ -17,6 +17,7 @@ import StandardsSection from "./components/StandardsSection";
 import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
 import LuxuryFooter from "./components/LuxuryFooter";
+import BrandLockup from "./components/BrandLockup";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
 const SECTIONS = [
@@ -204,12 +205,7 @@ export default function App() {
                 transition={{ delay: 0.16, duration: 0.36 }}
                 className="text-center"
               >
-                <h2 className="text-2xl font-serif font-light uppercase tracking-[0.35em] text-brand-cream">
-                  ALAIR NOIR
-                </h2>
-                <span className="mt-3 block text-[9px] font-mono tracking-[0.25em] text-brand-stone">
-                  ARRIVING
-                </span>
+                <BrandLockup size="curtain" align="center" />
               </motion.div>
             </motion.div>
           )}
@@ -232,7 +228,6 @@ export default function App() {
               booking={booking}
               onBookingChange={updateBooking}
             />
-            <SectionTransition />
           </div>
 
           {/* From here down each chapter is a sheet in the card stack: it pins
@@ -243,9 +238,11 @@ export default function App() {
               cover previously pinned sheets. z ascends down the page. */}
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <StackedChapter zIndex={2}>
-            <NotForEveryone />
-          </StackedChapter>
+          <div className="relative z-[2] md:-mt-[100svh]">
+            <StackedChapter zIndex={2}>
+              <NotForEveryone />
+            </StackedChapter>
+          </div>
 
           {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin
               gallery below. FleetRevealMotion drives its own scroll progress but
