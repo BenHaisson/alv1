@@ -200,16 +200,50 @@ export default function HeroCommandDeck({
   const cardScale = useTransform(stagedProgress, [0.42, 0.62], [0.982, 1]);
   const trustOpacity = useTransform(stagedProgress, [0.58, 0.74], [0, 1]);
   const trustY = useTransform(stagedProgress, [0.58, 0.74], [18, 0]);
+  const mobileBackgroundY = useTransform(
+    stagedProgress,
+    [0, 0.34, 0.62, 1],
+    ["1%", "-2%", "-10%", "-12%"]
+  );
+  const mobileHeadlineOpacity = useTransform(
+    stagedProgress,
+    [0.08, 0.2, 0.42, 0.54],
+    [0, 1, 1, 0]
+  );
+  const mobileHeadlineY = useTransform(stagedProgress, [0.08, 0.2, 0.54], [30, 0, -22]);
+  const mobileCopyOpacity = useTransform(
+    stagedProgress,
+    [0.14, 0.26, 0.42, 0.52],
+    [0, 1, 1, 0]
+  );
+  const mobileCopyY = useTransform(stagedProgress, [0.14, 0.26, 0.52], [22, 0, -16]);
+  const mobileCardOpacity = useTransform(stagedProgress, [0.42, 0.6], [0, 1]);
+  const mobileCardY = useTransform(stagedProgress, [0.42, 0.62], [64, 0]);
+  const mobileCardScale = useTransform(stagedProgress, [0.42, 0.62], [0.985, 1]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100svh] border-b border-brand-cream/10 bg-brand-black luxury-noise md:min-h-[500svh]"
+      className={`relative border-b border-brand-cream/10 bg-brand-black luxury-noise ${
+        isReduced ? "min-h-[100svh]" : "h-[300svh] md:min-h-[500svh]"
+      }`}
     >
-      <div className="relative min-h-[100svh] overflow-hidden md:sticky md:top-0 md:h-[100svh] md:min-h-0">
+      <div
+        className={
+          isReduced
+            ? "relative min-h-[100svh] overflow-hidden"
+            : "sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-0 md:h-[100svh]"
+        }
+      >
       <motion.div
         className="absolute inset-0 z-0"
-        style={isReduced || isMobileBooking ? undefined : { scale: backgroundScale, y: backgroundY }}
+        style={
+          isReduced
+            ? undefined
+            : isMobileBooking
+              ? { scale: backgroundScale, y: mobileBackgroundY }
+              : { scale: backgroundScale, y: backgroundY }
+        }
       >
         <CinematicVideoBackground
           slot={HERO_VIDEO}
@@ -226,10 +260,16 @@ export default function HeroCommandDeck({
         style={isReduced ? undefined : { opacity: gradientOpacity }}
       />
 
-      <div className="relative z-20 flex min-h-[100svh] flex-col items-center justify-start px-6 pb-[max(36px,env(safe-area-inset-bottom))] pt-[148px] text-center md:h-[100svh] md:justify-center md:px-12 md:pb-[clamp(14rem,30vh,18rem)] md:pt-32">
+      <div className="relative z-20 flex h-full flex-col items-center justify-start px-4 pb-[max(14px,env(safe-area-inset-bottom))] pt-[clamp(1rem,3vh,1.5rem)] text-center md:h-[100svh] md:justify-center md:px-12 md:pb-[clamp(14rem,30vh,18rem)] md:pt-32">
         <motion.h1
-          style={isReduced || isMobileBooking ? undefined : { opacity: headlineOpacity, y: headlineY }}
-          className="mx-auto max-w-[90%] font-serif text-[clamp(42px,11vw,58px)] font-light leading-[0.95] text-brand-ivory md:max-w-none md:text-[clamp(2.6rem,6vw,4.5rem)] md:leading-[1.08]"
+          style={
+            isReduced
+              ? undefined
+              : isMobileBooking
+                ? { opacity: mobileHeadlineOpacity, y: mobileHeadlineY }
+                : { opacity: headlineOpacity, y: headlineY }
+          }
+          className="mx-auto max-w-[92%] font-serif text-[clamp(36px,10vw,50px)] font-light leading-[0.95] text-brand-ivory md:max-w-none md:text-[clamp(2.6rem,6vw,4.5rem)] md:leading-[1.08]"
         >
           Your chauffeur
           <br />
@@ -237,8 +277,14 @@ export default function HeroCommandDeck({
         </motion.h1>
 
         <motion.p
-          style={isReduced || isMobileBooking ? undefined : { opacity: copyOpacity, y: copyY }}
-          className="mx-auto mt-3 max-w-[32ch] text-[15px] font-light leading-[1.45] text-brand-ivory/80 md:mt-6 md:max-w-xl md:text-base md:leading-relaxed md:text-brand-body lg:text-lg"
+          style={
+            isReduced
+              ? undefined
+              : isMobileBooking
+                ? { opacity: mobileCopyOpacity, y: mobileCopyY }
+                : { opacity: copyOpacity, y: copyY }
+          }
+          className="mx-auto mt-2 max-w-[31ch] text-[13px] font-light leading-[1.4] text-brand-ivory/80 md:mt-6 md:max-w-xl md:text-base md:leading-relaxed md:text-brand-body lg:text-lg"
         >
           Private transfers in Zürich, tailored for airport arrivals, business travel, and
           discreet city movements.
@@ -262,15 +308,17 @@ export default function HeroCommandDeck({
           layout
           layoutDependency={isBookingExpanded}
           style={
-            isReduced || isBookingExpanded || isMobileBooking
+            isReduced || isBookingExpanded
               ? undefined
-              : { opacity: cardOpacity, y: cardY, scale: cardScale }
+              : isMobileBooking
+                ? { opacity: mobileCardOpacity, y: mobileCardY, scale: mobileCardScale }
+                : { opacity: cardOpacity, y: cardY, scale: cardScale }
           }
           transition={{ layout: { duration: 0.34, ease: EASE } }}
           className={
             isBookingExpanded
               ? "fixed inset-x-4 top-[clamp(6.5rem,16vh,9rem)] z-50 mx-auto flex w-[calc(100vw-2rem)] max-w-[1180px] flex-col items-center text-left md:inset-x-8 md:top-[clamp(7rem,18vh,10rem)]"
-              : "relative mx-auto mt-0 flex w-[min(420px,calc(100vw-48px))] max-w-[1120px] flex-col items-center text-center md:absolute md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
+              : "absolute inset-x-0 bottom-[max(14px,env(safe-area-inset-bottom))] mx-auto flex w-[min(390px,calc(100vw-32px))] max-w-[1120px] flex-col items-center text-center md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
           }
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
@@ -296,7 +344,7 @@ export default function HeroCommandDeck({
               />
             </BookingField>
 
-            <div className="grid min-h-[58px] border-b border-brand-cream/20 md:min-h-[90px] md:border-b-0 md:border-r md:border-brand-cream/48">
+            <div className="grid min-h-[48px] border-b border-brand-cream/20 md:min-h-[90px] md:border-b-0 md:border-r md:border-brand-cream/48">
               <AnimatePresence initial={false} mode="sync">
                 {bookingType === "hourly" ? (
                   <BookingField
@@ -387,7 +435,7 @@ export default function HeroCommandDeck({
                 whileHover={isReduced ? undefined : { backgroundColor: "#FAF8F5" }}
                 whileTap={isReduced ? undefined : { opacity: 0.88 }}
                 transition={isReduced ? { duration: 0 } : { duration: 0.15, ease: "easeInOut" }}
-                className="flex h-[52px] w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-sm font-semibold tracking-[0.02em] text-brand-black md:h-auto md:w-auto md:py-3.5 md:tracking-normal"
+                className="flex h-11 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-sm font-semibold tracking-[0.02em] text-brand-black md:h-auto md:w-auto md:py-3.5 md:tracking-normal"
               >
                 View options
               </motion.button>
@@ -422,8 +470,8 @@ export default function HeroCommandDeck({
 
           {!isBookingExpanded && (
             <motion.div
-              style={isReduced || isMobileBooking ? undefined : { opacity: trustOpacity, y: trustY }}
-              className="mt-[18px] grid w-full max-w-[420px] grid-cols-2 justify-items-center gap-x-4 gap-y-3 px-2 pb-[max(32px,env(safe-area-inset-bottom))] text-center md:mt-5 md:flex md:max-w-[960px] md:items-center md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0"
+              style={isReduced ? undefined : { opacity: trustOpacity, y: trustY }}
+              className="mt-5 hidden w-full max-w-[960px] items-center justify-center gap-y-3 text-center md:flex md:gap-x-0 md:pb-0"
             >
               {TRUST_LINE.map((item, index) => {
                 const TrustIcon = item.icon;
