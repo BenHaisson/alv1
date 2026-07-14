@@ -16,50 +16,55 @@ const BOOKING_TYPES: { value: BookingType; label: string }[] = [
 export function SegmentedControl({ value, onChange }: SegmentedControlProps) {
   const isReduced = useReducedMotionPref();
 
+  const moveSelection = (direction: -1 | 1) => {
+    const currentIndex = BOOKING_TYPES.findIndex((option) => option.value === value);
+    const nextIndex = (currentIndex + direction + BOOKING_TYPES.length) % BOOKING_TYPES.length;
+    onChange(BOOKING_TYPES[nextIndex].value);
+  };
+
   return (
-    <fieldset
+    <motion.div
       aria-label="Journey type"
-      className="relative mx-auto mb-2 flex h-11 w-full rounded-full border border-brand-cream/30 bg-brand-black/72 p-1 shadow-[0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md md:mb-5 md:h-14 md:w-auto"
+      className="booking-type-toggle mx-auto mb-2 md:mb-5"
+      role="radiogroup"
     >
-      <legend className="sr-only">Journey type</legend>
       {BOOKING_TYPES.map((option) => {
         const isSelected = value === option.value;
 
         return (
-          <label
+          <motion.button
             key={option.value}
-            className="relative flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full px-3 text-[13px] font-semibold focus-within:outline focus-within:outline-1 focus-within:outline-offset-2 focus-within:outline-brand-gold md:min-w-28 md:flex-none md:px-6 md:text-sm"
+            type="button"
+            role="radio"
+            aria-checked={isSelected}
+            className={isSelected ? "active" : undefined}
+            tabIndex={isSelected ? 0 : -1}
+            onClick={() => onChange(option.value)}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                event.preventDefault();
+                moveSelection(-1);
+              }
+              if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                event.preventDefault();
+                moveSelection(1);
+              }
+            }}
+            animate={{
+              backgroundColor: isSelected ? "#D4AA43" : "rgba(0, 0, 0, 0)",
+              color: isSelected ? "#0A0A0A" : "#F6F2E9"
+            }}
+            whileTap={isReduced ? undefined : { scale: 0.985 }}
+            transition={
+              isReduced
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 420, damping: 38, mass: 0.75 }
+            }
           >
-            <input
-              className="sr-only"
-              type="radio"
-              name="hero-booking-type"
-              value={option.value}
-              checked={isSelected}
-              onChange={() => onChange(option.value)}
-            />
-            {isSelected && (
-              <motion.span
-                layoutId="hero-booking-type-emphasis"
-                aria-hidden="true"
-                className="absolute inset-0 rounded-full bg-brand-gold"
-                transition={
-                  isReduced
-                    ? { duration: 0 }
-                    : { type: "spring", stiffness: 420, damping: 38, mass: 0.75 }
-                }
-              />
-            )}
-            <motion.span
-              className="relative z-10"
-              animate={{ color: isSelected ? "#0A0A0A" : "#EADECE" }}
-              transition={isReduced ? { duration: 0 } : { duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {option.label}
-            </motion.span>
-          </label>
+            {option.label}
+          </motion.button>
         );
       })}
-    </fieldset>
+    </motion.div>
   );
 }
