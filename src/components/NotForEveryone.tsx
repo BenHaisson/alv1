@@ -1,5 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-import { CalendarClock, DoorOpen, PlaneLanding, Route } from "lucide-react";
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { useRef } from "react";
 import { imageAssets } from "../assets";
@@ -11,7 +9,6 @@ interface ServiceCard {
   description: string;
   image: string;
   mobileImage?: string;
-  icon: LucideIcon;
   imagePosition?: string;
 }
 
@@ -22,7 +19,6 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Your chauffeur is already waiting. No queues, no uncertainty, no delay.",
     image: imageAssets.privateArrivalsDesktop,
     mobileImage: imageAssets.privateArrivalsMobile,
-    icon: DoorOpen,
     imagePosition: "center"
   },
   {
@@ -31,23 +27,22 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Built around your agenda, with discreet waiting and flexible departures.",
     image: imageAssets.executiveSchedulesDesktop,
     mobileImage: imageAssets.executiveSchedulesMobile,
-    icon: CalendarClock,
     imagePosition: "62% center"
   },
   {
     label: "Flight-aware",
     title: "Airport transfers",
     description: "Flight-aware pickups with seamless transfers from terminal to destination.",
-    image: imageAssets.zurichAirportArrival,
-    icon: PlaneLanding,
+    image: imageAssets.airportTransfersDesktop,
+    mobileImage: imageAssets.airportTransfersMobile,
     imagePosition: "center"
   },
   {
     label: "Europe",
     title: "Long-distance routes",
     description: "Private journeys across Switzerland and throughout Europe, without compromise.",
-    image: imageAssets.bmwI7AlpineCruise,
-    icon: Route,
+    image: imageAssets.longDistanceRoutesDesktop,
+    mobileImage: imageAssets.longDistanceRoutesMobile,
     imagePosition: "center"
   }
 ];
@@ -59,7 +54,7 @@ interface ServiceCardContentProps {
 }
 
 function ServiceCardContent({ card }: ServiceCardContentProps) {
-  const Icon = card.icon;
+  const isReduced = useReducedMotionPref();
 
   return (
     <>
@@ -71,9 +66,10 @@ function ServiceCardContent({ card }: ServiceCardContentProps) {
           loading="eager"
           decoding="async"
           referrerPolicy="no-referrer"
-          initial={{ clipPath: "inset(0 0 100% 0)" }}
-          animate={{ clipPath: "inset(0 0 0% 0)" }}
-          transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
+          initial={isReduced ? false : { clipPath: "inset(0 0 100% 0)" }}
+          animate={isReduced ? undefined : { clipPath: "inset(0 0 0% 0)" }}
+          whileHover={isReduced ? undefined : { scale: 1.025, filter: "brightness(0.9) contrast(1.06)" }}
+          transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}
           className="h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
           style={{ objectPosition: card.imagePosition }}
         />
@@ -81,31 +77,25 @@ function ServiceCardContent({ card }: ServiceCardContentProps) {
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,7,5,0.03)_0%,rgba(4,7,5,0.1)_42%,rgba(4,7,5,0.68)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(5,8,6,0.96)_0%,rgba(5,8,6,0.72)_22%,rgba(5,8,6,0.18)_52%,transparent_72%)]"
       />
 
-      <div className="absolute inset-x-0 bottom-0 border-t border-brand-cream/18 bg-[rgba(4,7,5,0.9)] px-5 py-5 shadow-[0_-18px_54px_rgba(0,0,0,0.3)] backdrop-blur-md md:px-8 md:py-6 lg:px-10">
-        <div className="grid items-end gap-4 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] md:gap-10">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-gold/82">
-              {card.label}
-            </span>
-
-            <div className="mt-2.5 flex items-center gap-3.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-black/64 text-brand-cream">
-                <Icon aria-hidden="true" size={17} strokeWidth={1.35} />
-              </span>
-              <h3 className="font-serif text-[1.75rem] font-light leading-none text-brand-ivory md:text-[2.15rem]">
-                {card.title}
-              </h3>
-            </div>
-          </div>
-
-          <p className="max-w-[46ch] text-sm font-light leading-6 text-brand-cream/72 md:justify-self-end md:text-[15px]">
-            {card.description}
-          </p>
-        </div>
-      </div>
+      <motion.div
+        className="absolute inset-x-0 bottom-0 w-full max-w-none px-6 pb-8 md:max-w-[35%] md:px-12 md:pb-12 lg:px-14"
+        whileHover={isReduced ? undefined : { y: -5 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <span className="font-sans text-[11px] font-medium uppercase tracking-[0.24em] text-brand-gold">
+          {card.label}
+        </span>
+        <h3 className="mt-3 font-editorial text-[2.2rem] font-normal leading-[0.98] text-brand-ivory md:text-[3.25rem]">
+          {card.title}
+        </h3>
+        <span className="mt-6 block h-px w-12 bg-brand-gold" aria-hidden="true" />
+        <p className="mt-5 max-w-[360px] text-[15px] font-light leading-[1.55] text-brand-cream/72 md:text-[18px]">
+          {card.description}
+        </p>
+      </motion.div>
     </>
   );
 }
@@ -117,6 +107,7 @@ interface StackedServiceCardProps {
 }
 
 function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) {
+  const isReduced = useReducedMotionPref();
   const outgoingCards = SERVICE_CARDS.length - 1;
   const movementRange = 1 - FINAL_CARD_HOLD;
   const segment = movementRange / outgoingCards;
@@ -139,7 +130,9 @@ function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) 
         visibility,
         zIndex: SERVICE_CARDS.length - index
       }}
-      className="absolute inset-0 isolate overflow-hidden rounded-2xl border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)]"
+      whileHover={isReduced ? undefined : { borderColor: "rgba(234, 222, 206, 0.28)" }}
+      transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
+      className="absolute inset-0 isolate overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)] md:rounded-[28px]"
     >
       <ServiceCardContent card={card} />
     </motion.article>
@@ -180,7 +173,7 @@ function ReducedMotionCards() {
           {SERVICE_CARDS.map((card) => (
             <article
               key={card.title}
-              className="relative isolate h-[30rem] overflow-hidden rounded-2xl border border-brand-cream/16 bg-brand-deep-forest"
+              className="relative isolate min-h-[620px] aspect-[3/4] overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest md:aspect-[16/7] md:rounded-[28px]"
             >
               <ServiceCardContent card={card} />
             </article>
@@ -214,11 +207,11 @@ export default function NotForEveryone() {
     >
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
 
-      <div className="sticky top-14 h-[calc(100svh-3.5rem)] overflow-hidden px-5 pb-4 pt-5 md:top-16 md:h-[calc(100svh-4rem)] md:px-10 md:pb-7 md:pt-6 lg:px-16">
+      <div className="sticky top-14 h-[calc(100svh-3.5rem)] overflow-visible px-5 pb-4 pt-5 md:top-16 md:h-[calc(100svh-4rem)] md:px-10 md:pb-7 md:pt-6 lg:px-16">
         <div className="mx-auto flex h-full max-w-[90rem] flex-col">
           <SectionHeading />
 
-          <div className="relative mt-4 min-h-0 flex-1 md:mt-6">
+          <div className="relative mt-4 min-h-[620px] flex-1 aspect-[3/4] md:mt-6 md:aspect-[16/7]">
             {SERVICE_CARDS.map((card, index) => (
               <StackedServiceCard
                 key={card.title}

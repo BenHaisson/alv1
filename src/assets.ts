@@ -1,4 +1,6 @@
 import alairNoirHero from "./assets/images/alair_noir_hero.png";
+import airportTransfersDesktop from "./assets/images/airport_transfers_desktop.jpg";
+import airportTransfersMobile from "./assets/images/airport_transfers_mobile.jpg";
 import bookingHeroAlairNoir from "./assets/images/booking_hero_alair_noir.png";
 import bookingHeroMobileAlairNoir from "./assets/images/booking_hero_mobile_alair_noir.png";
 import bookingHeroZurichGold from "./assets/images/booking_hero_zurich_gold.png";
@@ -25,6 +27,8 @@ import luxuryAirportWelcome from "./assets/images/luxury_airport_welcome_1782845
 import luxuryBmwI7 from "./assets/images/luxury_bmw_i7_1782845017654.jpg";
 import luxuryVClass from "./assets/images/luxury_v_class_1782845034354.jpg";
 import luxuryVipCabin from "./assets/images/luxury_vip_cabin_1782845049105.jpg";
+import longDistanceRoutesDesktop from "./assets/images/long_distance_routes_desktop.jpg";
+import longDistanceRoutesMobile from "./assets/images/long_distance_routes_mobile.jpg";
 import privateArrivalsDesktop from "./assets/images/private_arrivals_desktop.jpg";
 import privateArrivalsMobile from "./assets/images/private_arrivals_mobile.jpg";
 import sectionNotForEveryoneZurich from "./assets/images/section_02_not_for_everyone_zurich.png";
@@ -57,6 +61,8 @@ const identityPrivateClients = bmwI7Exterior;
 
 export const imageAssets = {
   alairNoirHero,
+  airportTransfersDesktop,
+  airportTransfersMobile,
   bookingHeroAlairNoir,
   bookingHeroMobileAlairNoir,
   bookingHeroZurichGold,
@@ -83,6 +89,8 @@ export const imageAssets = {
   luxuryBmwI7,
   luxuryVClass,
   luxuryVipCabin,
+  longDistanceRoutesDesktop,
+  longDistanceRoutesMobile,
   privateArrivalsDesktop,
   privateArrivalsMobile,
   sectionNotForEveryoneZurich,
