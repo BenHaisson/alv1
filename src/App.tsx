@@ -239,9 +239,7 @@ export default function App() {
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
           <div className="relative z-[2] md:-mt-[100svh]">
-            <StackedChapter zIndex={2}>
-              <NotForEveryone />
-            </StackedChapter>
+            <NotForEveryone />
           </div>
 
           {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin

@@ -214,8 +214,8 @@ export default function NotForEveryone() {
     >
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
 
-      <div className="mobility-section__viewport sticky top-14 h-[calc(100svh-3.5rem)] overflow-visible md:top-16 md:h-[calc(100svh-4rem)]">
-        <div className="mx-auto flex h-full max-w-[90rem] flex-col">
+      <div className="mobility-section__viewport sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-3.5rem)]">
+        <div className="mobility-section__layout mx-auto h-full max-w-[90rem]">
           <SectionHeading />
 
           <div className="mobility-card-stage relative">
