@@ -97,7 +97,10 @@
   .mobility-section__header-overlay {
     position: absolute;
     z-index: 12;
-    inset: clamp(24px, 4vh, 42px) 0 auto;
+    inset: 0 0 auto;
+    padding: clamp(20px, 3vh, 32px) 0 clamp(26px, 4vh, 40px);
+    background: #050706;
+    border-bottom: 1px solid rgba(234, 222, 206, 0.1);
     pointer-events: none;
   }
 
@@ -207,28 +210,6 @@
     line-height: 1.55;
   }
 
-  .mobility-section__pagination {
-    position: absolute;
-    z-index: 14;
-    top: 50%;
-    left: clamp(8px, 1.4vw, 22px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-
-  .mobility-section__pagination-marker {
-    display: block;
-    width: 2px;
-    min-height: 18px;
-    border-radius: 999px;
-    background: rgba(212, 169, 67, 0.92);
-    transform-origin: center;
-  }
-
   .mobility-card-grid {
     margin-bottom: clamp(48px, 7vh, 96px);
   }
@@ -264,10 +245,6 @@
 
     .mobility-card-stage {
       max-height: none;
-    }
-
-    .mobility-section__header-overlay {
-      inset-block-start: 20px;
     }
 
     .mobility-section--static .mobility-card {
@@ -308,10 +285,6 @@
 
     .mobility-section__viewport--gallery {
       padding-block: 0;
-    }
-
-    .mobility-section__header-overlay {
-      inset: 20px 0 auto;
     }
 
     .mobility-section__layout {
@@ -357,15 +330,6 @@
       margin-bottom: 48px;
     }
 
-    .mobility-section__pagination {
-      display: none;
-    }
-  }
-
-  @media (max-width: 1100px) and (min-width: 768px) {
-    .mobility-section__pagination {
-      display: none;
-    }
   }
 
   .booking-type-toggle {

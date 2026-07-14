@@ -170,45 +170,6 @@ function SectionHeading() {
   );
 }
 
-function GalleryPagination({ progress }: { progress: MotionValue<number> }) {
-  return (
-    <div className="mobility-section__pagination" aria-label="Service gallery progress">
-      {SERVICE_CARDS.map((card, index) => (
-        <GalleryPaginationMarker key={card.title} index={index} progress={progress} />
-      ))}
-    </div>
-  );
-}
-
-function GalleryPaginationMarker({
-  index,
-  progress
-}: {
-  index: number;
-  progress: MotionValue<number>;
-}) {
-  const outgoingCards = SERVICE_CARDS.length - 1;
-  const movementRange = 1 - FINAL_CARD_HOLD;
-  const segment = movementRange / outgoingCards;
-  const start = index * segment;
-  const end = index === outgoingCards ? 1 : start + segment;
-  const activeStart = index === 0 ? segment * 0.02 : start;
-  const opacity = useTransform(
-    progress,
-    [Math.max(0, start - segment * 0.35), activeStart, end],
-    [0.38, 1, 0.38]
-  );
-  const height = useTransform(progress, [start, end], [18, 34]);
-
-  return (
-    <motion.span
-      aria-hidden="true"
-      className="mobility-section__pagination-marker"
-      style={{ opacity, height }}
-    />
-  );
-}
-
 function ReducedMotionCards() {
   return (
     <section className="mobility-section mobility-section--static relative border-b border-brand-cream/10 bg-brand-black">
@@ -280,7 +241,6 @@ export default function NotForEveryone() {
             ))}
           </div>
 
-          <GalleryPagination progress={progress} />
         </div>
       </div>
     </section>
