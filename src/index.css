@@ -56,6 +56,219 @@
     @apply block text-[10px] font-mono uppercase tracking-widest text-brand-stone;
   }
 
+  .mobility-section {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+
+  .mobility-section--static {
+    padding-inline: clamp(24px, 4.5vw, 72px);
+    padding-top: clamp(36px, 5vh, 72px);
+    padding-bottom: clamp(48px, 7vh, 96px);
+  }
+
+  .mobility-section__viewport {
+    padding-inline: clamp(24px, 4.5vw, 72px);
+    padding-top: clamp(36px, 5vh, 72px);
+    padding-bottom: clamp(48px, 7vh, 96px);
+  }
+
+  .mobility-section__header {
+    margin-bottom: clamp(24px, 4vh, 48px);
+  }
+
+  .mobility-card-stage {
+    width: 100%;
+    height: clamp(430px, 62vh, 680px);
+    max-height: calc(100vh - 190px);
+    flex: 0 0 auto;
+  }
+
+  .mobility-card {
+    height: 100%;
+  }
+
+  .mobility-card__media {
+    z-index: 0;
+  }
+
+  .mobility-card__image {
+    object-position: var(--desktop-position, center 56%);
+    transform-origin: center center;
+  }
+
+  .mobility-card::before,
+  .mobility-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .mobility-card::before {
+    z-index: 1;
+    background: linear-gradient(
+      90deg,
+      rgba(4, 7, 5, 0.48) 0%,
+      rgba(4, 7, 5, 0.12) 38%,
+      transparent 67%
+    );
+  }
+
+  .mobility-card::after {
+    z-index: 2;
+    background: linear-gradient(
+      180deg,
+      transparent 35%,
+      rgba(4, 7, 5, 0.12) 52%,
+      rgba(4, 7, 5, 0.74) 82%,
+      rgba(4, 7, 5, 0.96) 100%
+    );
+  }
+
+  .mobility-card__content {
+    position: absolute;
+    z-index: 3;
+    left: clamp(24px, 4vw, 56px);
+    right: clamp(24px, 4vw, 56px);
+    bottom: clamp(26px, 5vh, 52px);
+    max-width: 430px;
+  }
+
+  .mobility-card__eyebrow {
+    font-size: clamp(10px, 0.8vw, 12px);
+    letter-spacing: 0.24em;
+  }
+
+  .mobility-card__title {
+    margin-top: 14px;
+    font-size: clamp(38px, 4.5vw, 62px);
+    line-height: 0.95;
+  }
+
+  .mobility-card__divider {
+    width: 48px;
+    margin-top: 22px;
+  }
+
+  .mobility-card__description {
+    max-width: 390px;
+    margin-top: 20px;
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.55;
+  }
+
+  .mobility-card-grid {
+    margin-bottom: clamp(48px, 7vh, 96px);
+  }
+
+  .mobility-section--static .mobility-card {
+    height: clamp(430px, 62vh, 680px);
+  }
+
+  @media (min-width: 1024px) and (min-height: 850px) {
+    .mobility-card-stage {
+      height: clamp(560px, 66vh, 720px);
+    }
+  }
+
+  @media (min-width: 1024px) and (max-height: 800px) {
+    .mobility-section--static {
+      padding-top: 32px;
+      padding-bottom: 56px;
+    }
+
+    .mobility-section__viewport {
+      padding-top: 32px;
+      padding-bottom: 56px;
+    }
+
+    .mobility-section__header {
+      margin-bottom: 24px;
+    }
+
+    .mobility-card-stage {
+      height: clamp(400px, 57vh, 500px);
+      max-height: 500px;
+    }
+
+    .mobility-section--static .mobility-card {
+      height: clamp(400px, 57vh, 500px);
+      max-height: 500px;
+    }
+
+    .mobility-card__image {
+      object-position: center 62%;
+    }
+
+    .mobility-card__content {
+      bottom: 30px;
+    }
+
+    .mobility-card__title {
+      font-size: clamp(38px, 4vw, 52px);
+    }
+
+    .mobility-card__description {
+      margin-top: 14px;
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .mobility-section--static {
+      padding-inline: 18px;
+      padding-top: 40px;
+      padding-bottom: 48px;
+    }
+
+    .mobility-section__viewport {
+      padding-inline: 18px;
+      padding-top: 40px;
+      padding-bottom: 32px;
+    }
+
+    .mobility-section__header {
+      margin-bottom: 28px;
+    }
+
+    .mobility-card-stage {
+      height: min(72svh, 680px);
+      min-height: 540px;
+      max-height: 680px;
+    }
+
+    .mobility-section--static .mobility-card {
+      height: min(72svh, 680px);
+      min-height: 540px;
+      max-height: 680px;
+    }
+
+    .mobility-card__image {
+      object-position: var(--mobile-position, center 45%);
+    }
+
+    .mobility-card__content {
+      left: 24px;
+      right: 24px;
+      bottom: 28px;
+      max-width: 320px;
+    }
+
+    .mobility-card__title {
+      font-size: clamp(36px, 11vw, 48px);
+    }
+
+    .mobility-card__description {
+      font-size: 15px;
+    }
+
+    .mobility-card-grid {
+      margin-bottom: 48px;
+    }
+  }
+
   .booking-type-toggle {
     width: 280px;
     max-width: 100%;
