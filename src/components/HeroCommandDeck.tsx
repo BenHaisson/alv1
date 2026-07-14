@@ -106,7 +106,7 @@ export default function HeroCommandDeck({
   }, [booking.tripType]);
 
   useEffect(() => {
-    if (!isBookingExpanded) return;
+    if (!isBookingExpanded || isMobileBooking) return;
 
     const previousBookingExpanded = document.body.getAttribute("data-booking-expanded");
     const previousOverflow = document.body.style.overflow;
@@ -135,7 +135,11 @@ export default function HeroCommandDeck({
       }
       document.body.style.overflow = previousOverflow;
     };
-  }, [isBookingExpanded]);
+  }, [isBookingExpanded, isMobileBooking]);
+
+  useEffect(() => {
+    if (isMobileBooking && isBookingExpanded) setIsBookingExpanded(false);
+  }, [isBookingExpanded, isMobileBooking]);
 
   const openMap = (target: Exclude<MapTarget, null>) => {
     setIsBookingExpanded(false);

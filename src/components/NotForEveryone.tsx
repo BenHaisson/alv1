@@ -10,6 +10,7 @@ interface ServiceCard {
   title: string;
   description: string;
   image: string;
+  mobileImage?: string;
   icon: LucideIcon;
   imagePosition?: string;
 }
@@ -19,7 +20,8 @@ const SERVICE_CARDS: ServiceCard[] = [
     label: "Private",
     title: "Private arrivals",
     description: "Your chauffeur is already waiting. No queues, no uncertainty, no delay.",
-    image: imageAssets.chauffeurDoorHotelNight,
+    image: imageAssets.privateArrivalsDesktop,
+    mobileImage: imageAssets.privateArrivalsMobile,
     icon: DoorOpen,
     imagePosition: "center"
   },
@@ -27,7 +29,8 @@ const SERVICE_CARDS: ServiceCard[] = [
     label: "Precision",
     title: "Executive schedules",
     description: "Built around your agenda, with discreet waiting and flexible departures.",
-    image: imageAssets.bmwI7Departure,
+    image: imageAssets.executiveSchedulesDesktop,
+    mobileImage: imageAssets.executiveSchedulesMobile,
     icon: CalendarClock,
     imagePosition: "62% center"
   },
@@ -60,15 +63,21 @@ function ServiceCardContent({ card }: ServiceCardContentProps) {
 
   return (
     <>
-      <img
-        src={card.image}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        referrerPolicy="no-referrer"
-        className="absolute inset-0 h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
-        style={{ objectPosition: card.imagePosition }}
-      />
+      <picture className="absolute inset-0 block">
+        {card.mobileImage && <source media="(max-width: 767px)" srcSet={card.mobileImage} />}
+        <motion.img
+          src={card.image}
+          alt=""
+          loading="eager"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          initial={{ clipPath: "inset(0 0 100% 0)" }}
+          animate={{ clipPath: "inset(0 0 0% 0)" }}
+          transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
+          className="h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
+          style={{ objectPosition: card.imagePosition }}
+        />
+      </picture>
 
       <div
         aria-hidden="true"

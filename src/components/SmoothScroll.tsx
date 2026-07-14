@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { ReactLenis, type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { useReducedMotionPref } from "./MotionProvider";
+import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 import { setLenisInstance } from "../lib/smoothScroll";
 
 /**
@@ -12,15 +12,20 @@ import { setLenisInstance } from "../lib/smoothScroll";
  */
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const isReduced = useReducedMotionPref();
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const useNativeScroll = isReduced || isMobile;
   const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {
-    if (isReduced) return;
+    if (useNativeScroll) {
+      setLenisInstance(null);
+      return;
+    }
     setLenisInstance(lenisRef.current?.lenis ?? null);
     return () => setLenisInstance(null);
-  }, [isReduced]);
+  }, [useNativeScroll]);
 
-  if (isReduced) return <>{children}</>;
+  if (useNativeScroll) return <>{children}</>;
 
   return (
     <ReactLenis
