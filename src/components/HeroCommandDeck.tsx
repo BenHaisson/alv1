@@ -207,16 +207,16 @@ export default function HeroCommandDeck({
   );
   const mobileHeadlineOpacity = useTransform(
     stagedProgress,
-    [0.08, 0.2, 0.42, 0.54],
-    [0, 1, 1, 0]
+    [0.08, 0.2],
+    [0, 1]
   );
-  const mobileHeadlineY = useTransform(stagedProgress, [0.08, 0.2, 0.54], [30, 0, -22]);
+  const mobileHeadlineY = useTransform(stagedProgress, [0.08, 0.2], [30, 0]);
   const mobileCopyOpacity = useTransform(
     stagedProgress,
-    [0.14, 0.26, 0.42, 0.52],
-    [0, 1, 1, 0]
+    [0.14, 0.26],
+    [0, 1]
   );
-  const mobileCopyY = useTransform(stagedProgress, [0.14, 0.26, 0.52], [22, 0, -16]);
+  const mobileCopyY = useTransform(stagedProgress, [0.14, 0.26], [22, 0]);
   const mobileCardOpacity = useTransform(stagedProgress, [0.42, 0.6], [0, 1]);
   const mobileCardY = useTransform(stagedProgress, [0.42, 0.62], [64, 0]);
   const mobileCardScale = useTransform(stagedProgress, [0.42, 0.62], [0.985, 1]);
