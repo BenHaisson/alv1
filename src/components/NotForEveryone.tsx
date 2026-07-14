@@ -53,13 +53,13 @@ const SERVICE_CARDS: ServiceCard[] = [
 ];
 
 const FINAL_CARD_HOLD = 0.16;
+const HEADING_REVEAL_END = 0.14;
 
 interface ServiceCardContentProps {
   card: ServiceCard;
-  contentOpacity?: MotionValue<number>;
 }
 
-function ServiceCardContent({ card, contentOpacity }: ServiceCardContentProps) {
+function ServiceCardContent({ card }: ServiceCardContentProps) {
   const isReduced = useReducedMotionPref();
 
   return (
@@ -82,7 +82,6 @@ function ServiceCardContent({ card, contentOpacity }: ServiceCardContentProps) {
 
       <motion.div
         className="mobility-card__content"
-        style={contentOpacity ? { opacity: contentOpacity } : undefined}
         whileHover={isReduced ? undefined : { y: -5 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
@@ -105,10 +104,9 @@ interface StackedServiceCardProps {
   card: ServiceCard;
   index: number;
   progress: MotionValue<number>;
-  contentOpacity: MotionValue<number>;
 }
 
-function StackedServiceCard({ card, index, progress, contentOpacity }: StackedServiceCardProps) {
+function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) {
   const isReduced = useReducedMotionPref();
   const outgoingCards = SERVICE_CARDS.length - 1;
   const movementRange = 1 - FINAL_CARD_HOLD;
@@ -140,7 +138,7 @@ function StackedServiceCard({ card, index, progress, contentOpacity }: StackedSe
       transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
       className="mobility-card absolute inset-0 isolate overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)] md:rounded-[28px]"
     >
-      <ServiceCardContent card={card} contentOpacity={contentOpacity} />
+      <ServiceCardContent card={card} />
     </motion.article>
   );
 }
@@ -207,9 +205,11 @@ export default function NotForEveryone() {
     mass: 0.72,
     restDelta: 0.001
   });
-  const headingOpacity = useTransform(progress, [0, 0.06, 0.14], [1, 1, 0]);
-  const headingY = useTransform(progress, [0, 0.14], [0, -28]);
-  const contentOpacity = useTransform(progress, [0, 0.05, 0.13], [1, 1, 0]);
+  const headingOpacity = useTransform(progress, [0, 0.06, HEADING_REVEAL_END], [1, 1, 0]);
+  const headingY = useTransform(progress, [0, HEADING_REVEAL_END], [0, -28]);
+  // Hold the first card in place until the section heading has fully cleared.
+  // The cards then consume the remaining scroll range as one continuous gallery.
+  const galleryProgress = useTransform(progress, [0, HEADING_REVEAL_END, 1], [0, 0, 1]);
 
   if (isReduced) return <ReducedMotionCards />;
 
@@ -235,8 +235,7 @@ export default function NotForEveryone() {
                 key={card.title}
                 card={card}
                 index={index}
-                progress={progress}
-                contentOpacity={contentOpacity}
+                progress={galleryProgress}
               />
             ))}
           </div>
