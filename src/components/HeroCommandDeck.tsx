@@ -318,7 +318,7 @@ export default function HeroCommandDeck({
           className={
             isBookingExpanded
               ? "fixed inset-x-4 top-[clamp(6.5rem,16vh,9rem)] z-50 mx-auto flex w-[calc(100vw-2rem)] max-w-[1180px] flex-col items-center text-left md:inset-x-8 md:top-[clamp(7rem,18vh,10rem)]"
-              : "absolute inset-x-0 bottom-[max(14px,env(safe-area-inset-bottom))] mx-auto flex w-[min(390px,calc(100vw-32px))] max-w-[1120px] flex-col items-center text-center md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
+              : "absolute inset-x-0 bottom-[clamp(7rem,18svh,10rem)] mx-auto flex w-[min(390px,calc(100vw-32px))] max-w-[1120px] flex-col items-center text-center md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
           }
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
