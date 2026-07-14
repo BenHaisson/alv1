@@ -56,9 +56,10 @@ const FINAL_CARD_HOLD = 0.16;
 
 interface ServiceCardContentProps {
   card: ServiceCard;
+  contentOpacity?: MotionValue<number>;
 }
 
-function ServiceCardContent({ card }: ServiceCardContentProps) {
+function ServiceCardContent({ card, contentOpacity }: ServiceCardContentProps) {
   const isReduced = useReducedMotionPref();
 
   return (
@@ -81,6 +82,7 @@ function ServiceCardContent({ card }: ServiceCardContentProps) {
 
       <motion.div
         className="mobility-card__content"
+        style={contentOpacity ? { opacity: contentOpacity } : undefined}
         whileHover={isReduced ? undefined : { y: -5 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
@@ -103,9 +105,10 @@ interface StackedServiceCardProps {
   card: ServiceCard;
   index: number;
   progress: MotionValue<number>;
+  contentOpacity: MotionValue<number>;
 }
 
-function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) {
+function StackedServiceCard({ card, index, progress, contentOpacity }: StackedServiceCardProps) {
   const isReduced = useReducedMotionPref();
   const outgoingCards = SERVICE_CARDS.length - 1;
   const movementRange = 1 - FINAL_CARD_HOLD;
@@ -137,7 +140,7 @@ function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) 
       transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
       className="mobility-card absolute inset-0 isolate overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)] md:rounded-[28px]"
     >
-      <ServiceCardContent card={card} />
+      <ServiceCardContent card={card} contentOpacity={contentOpacity} />
     </motion.article>
   );
 }
@@ -164,6 +167,45 @@ function SectionHeading() {
         </p>
       </div>
     </div>
+  );
+}
+
+function GalleryPagination({ progress }: { progress: MotionValue<number> }) {
+  return (
+    <div className="mobility-section__pagination" aria-label="Service gallery progress">
+      {SERVICE_CARDS.map((card, index) => (
+        <GalleryPaginationMarker key={card.title} index={index} progress={progress} />
+      ))}
+    </div>
+  );
+}
+
+function GalleryPaginationMarker({
+  index,
+  progress
+}: {
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  const outgoingCards = SERVICE_CARDS.length - 1;
+  const movementRange = 1 - FINAL_CARD_HOLD;
+  const segment = movementRange / outgoingCards;
+  const start = index * segment;
+  const end = index === outgoingCards ? 1 : start + segment;
+  const activeStart = index === 0 ? segment * 0.02 : start;
+  const opacity = useTransform(
+    progress,
+    [Math.max(0, start - segment * 0.35), activeStart, end],
+    [0.38, 1, 0.38]
+  );
+  const height = useTransform(progress, [start, end], [18, 34]);
+
+  return (
+    <motion.span
+      aria-hidden="true"
+      className="mobility-section__pagination-marker"
+      style={{ opacity, height }}
+    />
   );
 }
 
@@ -204,6 +246,9 @@ export default function NotForEveryone() {
     mass: 0.72,
     restDelta: 0.001
   });
+  const headingOpacity = useTransform(progress, [0, 0.06, 0.14], [1, 1, 0]);
+  const headingY = useTransform(progress, [0, 0.14], [0, -28]);
+  const contentOpacity = useTransform(progress, [0, 0.05, 0.13], [1, 1, 0]);
 
   if (isReduced) return <ReducedMotionCards />;
 
@@ -214,9 +259,14 @@ export default function NotForEveryone() {
     >
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
 
-      <div className="mobility-section__viewport sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-3.5rem)]">
-        <div className="mobility-section__layout mx-auto h-full max-w-[90rem]">
-          <SectionHeading />
+      <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-3.5rem)]">
+        <div className="mobility-section__layout mobility-section__layout--gallery relative mx-auto h-full max-w-[90rem]">
+          <motion.div
+            className="mobility-section__header-overlay"
+            style={{ opacity: headingOpacity, y: headingY }}
+          >
+            <SectionHeading />
+          </motion.div>
 
           <div className="mobility-card-stage relative">
             {SERVICE_CARDS.map((card, index) => (
@@ -225,9 +275,12 @@ export default function NotForEveryone() {
                 card={card}
                 index={index}
                 progress={progress}
+                contentOpacity={contentOpacity}
               />
             ))}
           </div>
+
+          <GalleryPagination progress={progress} />
         </div>
       </div>
     </section>
