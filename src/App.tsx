@@ -238,10 +238,8 @@ export default function App() {
               cover previously pinned sheets. z ascends down the page. */}
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <div className="relative z-[2] md:-mt-[100svh]">
-            <StackedChapter zIndex={2}>
-              <NotForEveryone />
-            </StackedChapter>
+          <div className="relative z-[2] -mt-[100svh]">
+            <NotForEveryone />
           </div>
 
           {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin

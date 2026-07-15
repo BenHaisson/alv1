@@ -27,8 +27,10 @@ import luxuryAirportWelcome from "./assets/images/luxury_airport_welcome_1782845
 import luxuryBmwI7 from "./assets/images/luxury_bmw_i7_1782845017654.jpg";
 import luxuryVClass from "./assets/images/luxury_v_class_1782845034354.jpg";
 import luxuryVipCabin from "./assets/images/luxury_vip_cabin_1782845049105.jpg";
-import longDistanceRoutesDesktop from "./assets/images/long_distance_routes_desktop.jpg";
-import longDistanceRoutesMobile from "./assets/images/long_distance_routes_mobile.jpg";
+// The supplied long-distance frames arrived with their filenames reversed:
+// the landscape frame is the desktop crop and the portrait frame is mobile.
+import longDistanceRoutesDesktop from "./assets/images/long_distance_routes_mobile.jpg";
+import longDistanceRoutesMobile from "./assets/images/long_distance_routes_desktop.jpg";
 import privateArrivalsDesktop from "./assets/images/private_arrivals_desktop.jpg";
 import privateArrivalsMobile from "./assets/images/private_arrivals_mobile.jpg";
 import sectionNotForEveryoneZurich from "./assets/images/section_02_not_for_everyone_zurich.png";

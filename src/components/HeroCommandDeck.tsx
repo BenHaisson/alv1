@@ -471,7 +471,7 @@ export default function HeroCommandDeck({
           {!isBookingExpanded && (
             <motion.div
               style={isReduced ? undefined : { opacity: trustOpacity, y: trustY }}
-              className="mt-5 hidden w-full max-w-[960px] items-center justify-center gap-y-3 text-center md:flex md:gap-x-0 md:pb-0"
+              className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0"
             >
               {TRUST_LINE.map((item, index) => {
                 const TrustIcon = item.icon;

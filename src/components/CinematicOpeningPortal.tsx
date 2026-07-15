@@ -51,7 +51,9 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
           >
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-7 text-center">
               <motion.div
-                {...reveal(0.12, 12)}
+                initial={isReduced ? false : { opacity: 0, y: 16, scale: 0.82, filter: "blur(8px)" }}
+                animate={isReduced ? undefined : { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                transition={{ duration: MOTION_DURATION.cinematic, delay: 0.12, ease: MOTION_EASE }}
                 className="mb-10 flex items-center justify-center gap-6 text-brand-cream"
                 aria-label="Alair Noir monogram"
               >
@@ -66,21 +68,21 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
               </motion.div>
 
               <motion.h1
-                {...reveal(0.62, 24)}
+                {...reveal(0.72, 24)}
                 className="select-none font-serif text-4xl font-light tracking-[0.3em] text-white glow-subtle md:text-7xl"
               >
                 ALAIR NOIR
               </motion.h1>
 
               <motion.p
-                {...reveal(0.96, 24)}
+                {...reveal(1.08, 24)}
                 className="mt-6 text-[11px] font-sans uppercase tracking-[0.32em] text-brand-gold/55 md:text-xs"
               >
                 {LOCATION_LINE}
               </motion.p>
 
               <motion.p
-                {...reveal(1.28, 24)}
+                {...reveal(1.4, 24)}
                 className="mt-9 font-serif text-2xl font-light italic leading-[1.15] text-[#fcf3c8] md:text-4xl"
               >
                 {SIGNATURE_LINES.map((line) => (
@@ -92,7 +94,7 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
             </div>
 
             <motion.div
-              {...reveal(1.7, 10)}
+              {...reveal(1.82, 10)}
               className="absolute bottom-9 left-0 right-0 z-30 flex flex-col items-center gap-4"
             >
               <span className="text-[10px] font-mono uppercase tracking-[0.32em] text-brand-gold/55">
