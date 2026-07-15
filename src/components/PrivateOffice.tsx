@@ -1,122 +1,93 @@
 import { motion } from "motion/react";
+import { ArrowRight, Check } from "lucide-react";
+import { imageAssets } from "../assets";
+import { useReducedMotionPref } from "./MotionProvider";
 
 interface PrivateOfficeProps {
   onRequestScroll: () => void;
 }
 
+const support = [
+  "Named booking contact",
+  "Multi-passenger coordination",
+  "Vehicle and chauffeur confirmation",
+  "Itinerary changes handled directly",
+  "Consolidated journey records",
+  "Discreet principal and guest handling"
+];
+
 export default function PrivateOffice({ onRequestScroll }: PrivateOfficeProps) {
-  const cards = [
-    {
-      title: "For Executive Assistants",
-      desc: "Clear communication, confirmed details, and professional coordination without unnecessary back-and-forth."
-    },
-    {
-      title: "For Family Offices",
-      desc: "Discreet movement for principals, relatives, guests, private schedules, and recurring travel."
-    },
-    {
-      title: "For Corporate Bookers",
-      desc: "Professional handling for executives, visiting clients, investors, board members, and event guests."
-    },
-    {
-      title: "For Concierge Teams",
-      desc: "Private mobility for hotel guests requiring composed airport, city, and long-distance travel."
-    }
-  ];
+  const isReduced = useReducedMotionPref();
 
   return (
-    <section className="relative py-24 md:py-36 px-6 md:px-12 lg:px-24 bg-brand-black overflow-hidden luxury-noise border-b border-brand-cream/10">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-          
-          {/* Left Column: Context & Bullet List (6 cols) */}
-          <div className="lg:col-span-6">
-            <span className="text-xs font-mono uppercase tracking-[0.3em] text-brand-cream block mb-4">
-              Bespoke Booking Desk
-            </span>
-            <h2 className="text-3xl md:text-5xl font-serif font-light text-brand-ivory tracking-tight leading-tight mb-8">
-              For those arranging movement <br />
-              <span className="italic text-brand-stone font-light">on behalf of someone important.</span>
-            </h2>
+    <section id="office-section" className="scroll-mt-[72px] bg-brand-black px-4 py-24 md:px-8 md:py-32 lg:px-12">
+      <div className="mx-auto grid max-w-[1440px] overflow-hidden border border-brand-cream/12 lg:grid-cols-2">
+        <motion.div
+          className="relative min-h-[52svh] overflow-hidden lg:min-h-[720px]"
+          initial={isReduced ? false : { clipPath: "inset(0 100% 0 0)" }}
+          whileInView={{ clipPath: "inset(0 0% 0 0)" }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: isReduced ? 0 : 0.95, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <motion.img
+            src={imageAssets.journeyPrivateOffice}
+            alt="ALAIR NOIR chauffeur coordinating a private office itinerary beside a Mercedes-Benz V-Class"
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+            initial={isReduced ? false : { scale: 1.035 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: isReduced ? 0 : 1.1, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-black/55 via-transparent to-transparent" />
+        </motion.div>
 
-            <div className="w-12 h-[1px] bg-brand-cream/20 mb-8" />
+        <motion.div
+          className="flex flex-col justify-center bg-brand-deep-forest p-7 md:p-12 lg:p-16"
+          initial={isReduced ? false : { opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: isReduced ? 0 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className="text-[10px] font-mono uppercase tracking-[0.26em] text-brand-gold">Private Office</span>
+          <h2 className="mt-5 max-w-xl font-serif text-4xl font-light leading-[1.02] text-brand-ivory md:text-6xl">
+            For those arranging movement for someone important.
+          </h2>
+          <p className="mt-6 max-w-lg text-sm font-light leading-relaxed text-brand-body md:text-base">
+            A direct booking desk for executive assistants, family offices, hotels and concierge teams coordinating principals, guests and private schedules.
+          </p>
 
-            <p className="text-sm md:text-base text-brand-stone font-light leading-relaxed mb-8">
-              The passenger may not be the person making the request. ALAIR NOIR works directly with executive assistants, family offices, corporate bookers, concierge teams, and private offices arranging travel for CEOs, principals, guests, and families.
-            </p>
+          <ul className="mt-9 grid gap-4 border-t border-brand-cream/15 pt-7 sm:grid-cols-2">
+            {support.map((item, index) => (
+              <motion.li
+                key={item}
+                className="flex items-start gap-3 text-xs font-light leading-relaxed text-brand-cream/80"
+                initial={isReduced ? false : { opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: isReduced ? 0 : 0.4, delay: isReduced ? 0 : index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-gold" strokeWidth={1.5} aria-hidden="true" />
+                {item}
+              </motion.li>
+            ))}
+          </ul>
 
-            {/* List of sub-groups */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              {cards.map((card, idx) => (
-                <div key={card.title} className="p-5 border border-brand-cream/10 bg-brand-deep-forest/10">
-                  <h3 className="text-sm font-mono uppercase tracking-wider text-brand-cream mb-2">
-                    {card.title}
-                  </h3>
-                  <p className="text-xs text-brand-stone leading-relaxed font-light">
-                    {card.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={onRequestScroll}
-              className="px-8 py-4 bg-brand-cream text-brand-black text-xs font-mono uppercase tracking-[0.2em] hover:bg-brand-ivory hover:text-brand-deep-forest transition-all duration-300"
-            >
-              Book for a Client
-            </button>
-          </div>
-
-          {/* Right Column: Premium Request Summary Card Layout (6 cols) */}
-          <div className="lg:col-span-6 relative">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="p-8 md:p-10 bg-brand-deep-forest/40 border border-brand-cream/15 backdrop-blur-sm relative"
-            >
-              {/* Premium watermark overlay */}
-              <div className="absolute top-4 right-4 text-[10px] font-mono text-brand-stone/40">
-                ALAIR // ADVISORY
-              </div>
-
-              <h3 className="text-xs font-mono tracking-widest text-brand-cream uppercase mb-8 pb-3 border-b border-brand-cream/10">
-                Mandatory Booking Parameters
-              </h3>
-
-              <div className="space-y-6">
-                {[
-                  { field: "01 / Journey Routing", value: "Pickup point, intermediate destinations, arrival stop." },
-                  { field: "02 / Temporal Coordinates", value: "Precise date, scheduled time, takeoff/landing flight details." },
-                  { field: "03 / Spatial Requirements", value: "Passenger count, specific luggage metrics, security clearances." },
-                  { field: "04 / Vehicle Selection", value: "BMW i7 2026 or Mercedes V-Class 2026 requirement." },
-                  { field: "05 / Special Directives", value: "Discretion level, cabin settings, secure key handover." }
-                ].map((item) => (
-                  <div key={item.field} className="flex flex-col">
-                    <span className="text-[10px] font-mono text-brand-cream uppercase tracking-widest">
-                      {item.field}
-                    </span>
-                    <span className="text-sm font-serif text-brand-ivory font-light italic mt-1">
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-brand-cream/10 flex items-center space-x-3">
-                <span className="w-2 h-2 rounded-full bg-brand-moss animate-pulse" />
-                <span className="text-[10px] font-mono text-brand-stone uppercase tracking-widest">
-                  CONFIRMATION DELIVERED WITHIN 15 MINUTES BY DEFAULT
-                </span>
-              </div>
-            </motion.div>
-          </div>
-
-        </div>
-
+          <motion.button
+            type="button"
+            onClick={onRequestScroll}
+            whileHover={isReduced ? undefined : "hover"}
+            whileTap={isReduced ? undefined : { scale: 0.985 }}
+            transition={{ type: "spring", stiffness: 360, damping: 34 }}
+            className="mt-10 flex h-12 w-fit items-center gap-5 bg-brand-gold px-6 text-[10px] font-mono font-semibold uppercase tracking-[0.17em] text-brand-black"
+          >
+            Book for a client
+            <motion.span variants={{ hover: { x: 4 } }} transition={{ type: "spring", stiffness: 360, damping: 32 }}>
+              <ArrowRight className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+            </motion.span>
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );

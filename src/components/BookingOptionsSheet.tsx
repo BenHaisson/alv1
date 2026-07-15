@@ -193,13 +193,15 @@ export default function BookingOptionsSheet({
                 <CornerMarkers tone="cream" />
                 <BrandLockup size="compact" align="center" />
                 <div className="flex items-center gap-5">
-                  <button
+                  <motion.button
                     type="button"
                     onClick={onClose}
-                    className="hidden cursor-pointer text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone hover:text-brand-cream sm:inline"
+                    whileHover={isReduced ? undefined : { color: "#EADECE" }}
+                    transition={PREMIUM_SPRING}
+                    className="hidden cursor-pointer text-[10px] font-mono uppercase tracking-[0.2em] text-brand-stone sm:inline"
                   >
                     Hide options
-                  </button>
+                  </motion.button>
                   <motion.button
                     ref={closeButtonRef}
                     type="button"
@@ -255,12 +257,19 @@ export default function BookingOptionsSheet({
                   {/* Left — vehicle choice + passenger details. */}
                   <div>
                     <h2 className="font-serif text-2xl font-light tracking-tight text-brand-ivory md:text-4xl">
-                      Choose your ALAIR NOIR experience
+                      Requirements and quotation
                     </h2>
                     <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-brand-body md:text-base">
-                      Select the vehicle that matches your transfer. Your request will be confirmed
-                      personally.
+                      Add the passenger details, choose the vehicle and send the route for a fixed quotation.
                     </p>
+
+                    <div className="mt-6 grid grid-cols-2 gap-px border border-brand-cream/12 bg-brand-cream/12 sm:grid-cols-4">
+                      {["Airport handling included", "Flight monitoring included", "Complimentary waiting period", "Taxes & standard fees included"].map((item) => (
+                        <div key={item} className="bg-brand-deep-forest px-3 py-4 text-[9px] font-mono uppercase leading-relaxed tracking-[0.12em] text-brand-cream/72">
+                          {item}
+                        </div>
+                      ))}
+                    </div>
 
                     <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
                       {Object.entries(VEHICLE_META).map(([id, meta]) => {
@@ -269,7 +278,7 @@ export default function BookingOptionsSheet({
                           <article
                             key={id}
                             className={`flex flex-col overflow-hidden border bg-brand-black/40 ${
-                              isActive ? "border-brand-gold" : "border-brand-cream/12 hover:border-brand-cream/25"
+                              isActive ? "border-brand-gold" : "border-brand-cream/12"
                             }`}
                           >
                             <div className="relative aspect-[16/10] overflow-hidden">
@@ -306,7 +315,7 @@ export default function BookingOptionsSheet({
                                 className={`mt-auto cursor-pointer border py-3 text-center text-[10px] font-mono font-semibold uppercase tracking-[0.18em] focus:outline-none focus-visible:border-brand-gold ${
                                   isActive
                                     ? "border-brand-gold bg-brand-gold text-brand-black"
-                                    : "border-brand-cream/25 text-brand-cream hover:border-brand-cream/50 hover:bg-brand-cream/5"
+                                    : "border-brand-cream/25 text-brand-cream"
                                 }`}
                               >
                                 {isActive ? "Selected" : meta.cta}
@@ -357,22 +366,40 @@ export default function BookingOptionsSheet({
                       </div>
 
                       <div>
-                        <label htmlFor="sheet-contact" className={labelClass}>
-                          Contact (Email / Phone)
+                        <label htmlFor="sheet-flight" className={labelClass}>
+                          Flight number (when relevant)
                         </label>
                         <input
-                          id="sheet-contact"
+                          id="sheet-flight"
                           type="text"
-                          placeholder="name@office.com or +41…"
-                          value={booking.contact}
-                          onChange={(event) => onBookingChange({ contact: event.target.value })}
+                          placeholder="e.g. LX 2806"
+                          value={booking.flightNumber}
+                          onChange={(event) => onBookingChange({ flightNumber: event.target.value })}
                           className={inputClass}
                         />
                       </div>
 
+                      <div className="border-t border-brand-cream/10 pt-7">
+                        <span className="mb-5 block text-[10px] font-mono uppercase tracking-[0.2em] text-brand-cream">Contact and quotation</span>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="sm:col-span-2">
+                            <label htmlFor="sheet-name" className={labelClass}>Name</label>
+                            <input id="sheet-name" type="text" placeholder="Full name" value={booking.name} onChange={(event) => onBookingChange({ name: event.target.value })} className={inputClass} />
+                          </div>
+                          <div>
+                            <label htmlFor="sheet-phone" className={labelClass}>Phone or WhatsApp</label>
+                            <input id="sheet-phone" type="tel" placeholder="+41…" value={booking.phone} onChange={(event) => onBookingChange({ phone: event.target.value })} className={inputClass} />
+                          </div>
+                          <div>
+                            <label htmlFor="sheet-email" className={labelClass}>Email</label>
+                            <input id="sheet-email" type="email" placeholder="name@office.com" value={booking.email} onChange={(event) => onBookingChange({ email: event.target.value })} className={inputClass} />
+                          </div>
+                        </div>
+                      </div>
+
                       <div>
                         <label htmlFor="sheet-notes" className={labelClass}>
-                          Notes / planned stops
+                          Child seat, special instructions or planned stops
                         </label>
                         <textarea
                           id="sheet-notes"
@@ -417,34 +444,43 @@ export default function BookingOptionsSheet({
                       </dl>
 
                       <p className="mt-5 text-[11px] font-light leading-relaxed text-brand-stone">
-                        All requests are reviewed and confirmed personally by ALAIR NOIR.
+                        Route received. A fixed quotation will be confirmed before the journey.
                       </p>
 
                       <div className="mt-6 space-y-3">
-                        <a
+                        <motion.a
                           href={whatsappLink(booking)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black hover:bg-brand-ivory"
+                          whileHover={isReduced ? undefined : { y: -1, backgroundColor: "#FAF8F5" }}
+                          whileTap={isReduced ? undefined : { scale: 0.985 }}
+                          transition={PREMIUM_SPRING}
+                          className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black"
                         >
                           Request by WhatsApp
-                        </a>
-                        <a
+                        </motion.a>
+                        <motion.a
                           href={emailLink(booking)}
-                          className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream hover:border-brand-cream/60 hover:bg-brand-cream/5"
+                          whileHover={isReduced ? undefined : { y: -1, borderColor: "rgba(234,222,206,0.6)" }}
+                          whileTap={isReduced ? undefined : { scale: 0.985 }}
+                          transition={PREMIUM_SPRING}
+                          className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream"
                         >
                           Request by Email
-                        </a>
+                        </motion.a>
                       </div>
 
                       <div className="mt-4 flex items-center justify-between gap-3">
-                        <button
+                        <motion.button
                           type="button"
                           onClick={handleCopy}
-                          className="cursor-pointer text-[10px] font-mono uppercase tracking-[0.16em] text-brand-stone hover:text-brand-cream focus:outline-none"
+                          whileHover={isReduced ? undefined : { color: "#EADECE" }}
+                          whileTap={isReduced ? undefined : { scale: 0.985 }}
+                          transition={PREMIUM_SPRING}
+                          className="cursor-pointer text-[10px] font-mono uppercase tracking-[0.16em] text-brand-stone focus:outline-none"
                         >
                           {isCopied ? "Request Copied" : "Copy Request"}
-                        </button>
+                        </motion.button>
                       </div>
                     </div>
                   </aside>
@@ -455,20 +491,24 @@ export default function BookingOptionsSheet({
             {/* Mobile — sticky request actions at the bottom (desktop has them in the rail). */}
             <div className="border-t border-brand-cream/10 bg-brand-deep-forest px-6 py-4 lg:hidden">
               <div className="grid grid-cols-2 gap-3">
-                <a
+                <motion.a
                   href={whatsappLink(booking)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black hover:bg-brand-ivory"
+                  whileTap={isReduced ? undefined : { scale: 0.985 }}
+                  transition={PREMIUM_SPRING}
+                  className="block bg-brand-gold py-3.5 text-center text-xs font-mono font-semibold uppercase tracking-[0.14em] text-brand-black"
                 >
                   Request by WhatsApp
-                </a>
-                <a
+                </motion.a>
+                <motion.a
                   href={emailLink(booking)}
-                  className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream hover:border-brand-cream/60 hover:bg-brand-cream/5"
+                  whileTap={isReduced ? undefined : { scale: 0.985 }}
+                  transition={PREMIUM_SPRING}
+                  className="block border border-brand-cream/30 py-3.5 text-center text-xs font-mono uppercase tracking-[0.14em] text-brand-cream"
                 >
                   Request by Email
-                </a>
+                </motion.a>
               </div>
             </div>
           </motion.div>

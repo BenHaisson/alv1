@@ -39,6 +39,17 @@ import vclassInterior from "./assets/images/vclass_interior_1782843650116.jpg";
 import vclassRearCabinNight from "./assets/images/vclass_rear_cabin_night.png";
 import zurichAirportArrival from "./assets/images/zurich_airport_arrival_1782843665364.jpg";
 import zurichLuxuryArrival from "./assets/images/zurich_luxury_arrival_1782843679390.jpg";
+import journeyCharacters from "./assets/images/journey/journey_characters_v1.png";
+import journeyHeroDesktop from "./assets/images/journey/journey_hero_desktop_v1.png";
+import journeyHeroMobile from "./assets/images/journey/journey_hero_mobile_v1.png";
+import journeyPrivateArrivals from "./assets/images/journey/journey_private_arrivals_v1.png";
+import journeyExecutiveDay from "./assets/images/journey/journey_executive_day_v1.png";
+import journeyPrivateRoutes from "./assets/images/journey/journey_private_routes_v1.png";
+import journeyGroupFamily from "./assets/images/journey/journey_group_family_v1.png";
+import journeyBmwI7Exterior from "./assets/images/journey/journey_bmw_i7_exterior_v1.png";
+import journeyVclass2026Exterior from "./assets/images/journey/journey_vclass_2026_exterior_v1.png";
+import journeyRoutesMap from "./assets/images/journey/journey_routes_map_v1.png";
+import journeyPrivateOffice from "./assets/images/journey/journey_private_office_v1.png";
 
 // ── Section 02 · "NOT FOR EVERYONE. FOR YOU." — identity frames ──────────────
 // Bespoke OpenArt (GPT Image 2) frames were generated for these five client
@@ -106,4 +117,15 @@ export const imageAssets = {
   identityDiplomaticGuests,
   identityPremiumHospitality,
   identityPrivateClients,
+  journeyCharacters,
+  journeyHeroDesktop,
+  journeyHeroMobile,
+  journeyPrivateArrivals,
+  journeyExecutiveDay,
+  journeyPrivateRoutes,
+  journeyGroupFamily,
+  journeyBmwI7Exterior,
+  journeyVclass2026Exterior,
+  journeyRoutesMap,
+  journeyPrivateOffice,
 };

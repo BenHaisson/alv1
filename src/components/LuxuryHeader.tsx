@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import BrandLockup from "./BrandLockup";
+import { useReducedMotionPref } from "./MotionProvider";
 
 interface LuxuryHeaderProps {
   onNavClick: (sectionId: string) => void;
@@ -8,60 +9,59 @@ interface LuxuryHeaderProps {
 }
 
 const links = [
-  { label: "Book", target: "hero" },
+  { label: "Services", target: "services" },
   { label: "Fleet", target: "fleet" },
   { label: "Routes", target: "routes" },
-  { label: "Standard", target: "standards" }
+  { label: "Private Office", target: "office" }
 ];
 
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const SPRING = { type: "spring" as const, stiffness: 360, damping: 36, mass: 0.8 };
 
-export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryHeaderProps) {
+export default function LuxuryHeader({ onNavClick, activeSection = "hero" }: LuxuryHeaderProps) {
+  const isReduced = useReducedMotionPref();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLinkClick = (target: string) => {
+  const choose = (target: string) => {
     onNavClick(target);
     setMobileMenuOpen(false);
   };
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 h-[76px] border-b border-[rgba(246,242,233,0.08)] bg-[rgba(5,8,6,0.72)] backdrop-blur-md md:h-14 md:bg-brand-black/28 md:supports-[backdrop-filter]:bg-brand-black/20 luxury-noise">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 md:px-8 lg:px-14">
+      <header className="fixed inset-x-0 top-0 z-50 h-[72px] border-b border-brand-cream/10 bg-brand-black/72 backdrop-blur-xl">
+        <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 md:px-8 lg:px-12">
           <motion.button
             type="button"
-            onClick={() => handleLinkClick("hero")}
-            whileHover={{ opacity: 0.82 }}
-            whileTap={{ scale: 0.985 }}
-            transition={{ type: "spring", stiffness: 420, damping: 34 }}
-            className="flex cursor-pointer flex-col items-start text-left focus:outline-none"
+            onClick={() => choose("hero")}
+            whileHover={isReduced ? undefined : { opacity: 0.78 }}
+            whileTap={isReduced ? undefined : { scale: 0.985 }}
+            transition={SPRING}
+            className="cursor-pointer text-left"
+            aria-label="ALAIR NOIR — booking"
           >
             <BrandLockup size="nav" />
           </motion.button>
 
-          <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary journey">
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
             {links.map((link) => {
-              const isActive = activeSection === link.target;
-
+              const active = activeSection === link.target;
               return (
                 <motion.button
-                  key={link.label}
+                  key={link.target}
                   type="button"
-                  onClick={() => handleLinkClick(link.target)}
-                  aria-current={isActive ? "page" : undefined}
-                  whileHover={{ y: -1, opacity: 0.92 }}
-                  whileTap={{ scale: 0.975 }}
-                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className={`relative cursor-pointer py-1.5 text-[9px] font-mono uppercase tracking-[0.18em] focus:outline-none ${
-                    isActive ? "text-brand-cream" : "text-brand-stone hover:text-brand-cream"
-                  }`}
+                  onClick={() => choose(link.target)}
+                  whileHover={isReduced ? undefined : { y: -1, color: "#FAF8F5" }}
+                  whileTap={isReduced ? undefined : { scale: 0.98 }}
+                  transition={SPRING}
+                  className="relative cursor-pointer py-2 text-[10px] font-mono uppercase tracking-[0.18em] text-brand-stone"
+                  aria-current={active ? "page" : undefined}
                 >
-                  <span>{link.label}</span>
-                  {isActive && (
+                  {link.label}
+                  {active && (
                     <motion.span
-                      layoutId="nav-active-line"
-                      className="absolute bottom-0 left-0 right-0 h-px bg-brand-gold"
-                      transition={{ type: "spring", stiffness: 420, damping: 38, mass: 0.75 }}
+                      layoutId="nav-current"
+                      className="absolute inset-x-0 bottom-0 h-px bg-brand-gold"
+                      transition={SPRING}
                     />
                   )}
                 </motion.button>
@@ -69,95 +69,71 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             })}
           </nav>
 
-          <div className="hidden lg:block">
+          <div className="flex items-center gap-2">
             <motion.button
               type="button"
-              onClick={() => handleLinkClick("hero")}
-              whileHover={{ y: -1, borderColor: "rgba(205, 162, 80, 0.9)" }}
-              whileTap={{ scale: 0.975 }}
-              transition={{ type: "spring", stiffness: 420, damping: 34 }}
-              className={`cursor-pointer border px-4 py-2 text-[9px] font-mono uppercase tracking-[0.2em] ${
-                activeSection === "hero"
-                  ? "border-brand-gold bg-brand-gold-muted text-brand-cream"
-                  : "border-brand-gold/30 text-brand-gold hover:bg-brand-gold-muted"
-              }`}
+              onClick={() => choose("hero")}
+              whileHover={isReduced ? undefined : { y: -1, backgroundColor: "#FAF8F5" }}
+              whileTap={isReduced ? undefined : { scale: 0.985 }}
+              transition={SPRING}
+              className="h-10 cursor-pointer bg-brand-gold px-4 text-[9px] font-mono font-semibold uppercase tracking-[0.15em] text-brand-black md:px-5 md:text-[10px]"
             >
-              Request Chauffeur
+              Book
+              <span className="hidden sm:inline"> a chauffeur</span>
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              whileTap={isReduced ? undefined : { scale: 0.97 }}
+              transition={SPRING}
+              className="flex h-11 w-11 items-center justify-center border border-brand-cream/15 lg:hidden"
+              aria-label="Open menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <span className="relative h-4 w-5" aria-hidden="true">
+                <motion.span
+                  className="absolute left-0 top-1 h-px w-5 bg-brand-ivory"
+                  animate={mobileMenuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: isReduced ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+                />
+                <motion.span
+                  className="absolute bottom-1 left-0 h-px w-5 bg-brand-ivory"
+                  animate={mobileMenuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: isReduced ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </span>
             </motion.button>
           </div>
-
-          <motion.button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-end space-y-1.5 p-1.5 focus:outline-none lg:hidden"
-            aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            <motion.span
-              className="h-px bg-brand-cream"
-              animate={mobileMenuOpen ? { width: 24, rotate: 45, y: 7 } : { width: 24, rotate: 0, y: 0 }}
-              transition={{ duration: 0.32, ease: EASE }}
-            />
-            <motion.span
-              className="h-px bg-brand-cream"
-              animate={mobileMenuOpen ? { width: 0, opacity: 0 } : { width: 16, opacity: 1 }}
-              transition={{ duration: 0.28, ease: EASE }}
-            />
-            <motion.span
-              className="h-px bg-brand-cream"
-              animate={mobileMenuOpen ? { width: 24, rotate: -45, y: -7 } : { width: 20, rotate: 0, y: 0 }}
-              transition={{ duration: 0.32, ease: EASE }}
-            />
-          </motion.button>
         </div>
       </header>
 
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="fixed inset-0 z-30 flex flex-col justify-between bg-brand-black px-6 pb-8 pt-20 lg:hidden luxury-noise"
+            className="fixed inset-0 z-40 flex flex-col bg-brand-deep-forest px-6 pb-10 pt-28 lg:hidden"
+            initial={isReduced ? { opacity: 0 } : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={isReduced ? { opacity: 0 } : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: isReduced ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex flex-col space-y-5 pt-8">
-              {links.map((link) => {
-                const isActive = activeSection === link.target;
-
-                return (
-                  <motion.button
-                    key={link.label}
-                    type="button"
-                    onClick={() => handleLinkClick(link.target)}
-                    whileHover={{ x: 6 }}
-                    whileTap={{ scale: 0.985 }}
-                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                    className={`border-b border-brand-cream/5 py-2 text-left text-xl font-serif tracking-wider ${
-                      isActive ? "text-brand-gold" : "text-brand-ivory hover:text-brand-cream"
-                    }`}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {link.label}
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            <div className="space-y-4 border-t border-brand-cream/10 pt-12">
-              <motion.button
-                type="button"
-                onClick={() => handleLinkClick("hero")}
-                whileTap={{ scale: 0.985 }}
-                className="w-full bg-brand-gold py-4 text-center text-xs font-mono font-semibold uppercase tracking-[0.2em] text-brand-black hover:bg-brand-ivory"
-              >
-                Request Chauffeur
-              </motion.button>
-              <div className="flex justify-between text-[9px] font-mono uppercase text-brand-stone">
-                <span>booking@alairnoir.ch</span>
-                <span>+41 77 287 09 56</span>
-              </div>
+            <nav className="flex flex-1 flex-col justify-center" aria-label="Mobile navigation">
+              {links.map((link, index) => (
+                <motion.button
+                  key={link.target}
+                  type="button"
+                  onClick={() => choose(link.target)}
+                  initial={isReduced ? false : { opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.42, delay: isReduced ? 0 : 0.08 + index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                  className="min-h-16 border-b border-brand-cream/10 text-left font-serif text-3xl font-light text-brand-ivory"
+                >
+                  {link.label}
+                </motion.button>
+              ))}
+            </nav>
+            <div className="grid grid-cols-2 gap-4 border-t border-brand-cream/10 pt-6 text-[10px] font-mono uppercase tracking-[0.12em] text-brand-stone">
+              <a href="tel:+41772870956">+41 77 287 09 56</a>
+              <a href="mailto:booking@alairnoir.ch" className="text-right">Email booking</a>
             </div>
           </motion.div>
         )}

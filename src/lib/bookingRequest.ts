@@ -73,6 +73,9 @@ export interface BookingState {
   passengers: string;
   luggage: string;
   vehicle: string;
+  name: string;
+  phone: string;
+  email: string;
   contact: string;
   notes: string;
 }
@@ -88,6 +91,9 @@ export const EMPTY_BOOKING: BookingState = {
   passengers: "1",
   luggage: "2",
   vehicle: "bmw-i7",
+  name: "",
+  phone: "",
+  email: "",
   contact: "",
   notes: ""
 };
@@ -146,7 +152,7 @@ export const VEHICLE_META: Record<string, VehicleMeta> = {
     capacity: "1–3 passengers · 2 bags",
     description: "Best for airport arrivals, executive meetings, hotels, and private city transfers.",
     cta: "Select BMW i7",
-    image: imageAssets.luxuryBmwI7
+    image: imageAssets.journeyBmwI7Exterior
   },
   "v-class": {
     label: "Mercedes-Benz V-Class",
@@ -154,7 +160,7 @@ export const VEHICLE_META: Record<string, VehicleMeta> = {
     capacity: "1–6 passengers · 5 bags",
     description: "Best for families, delegations, luggage-heavy transfers, events, and long-distance routes.",
     cta: "Select V-Class",
-    image: imageAssets.luxuryVClass
+    image: imageAssets.journeyVclass2026Exterior
   }
 };
 
@@ -205,6 +211,9 @@ export function buildRequestText(booking: BookingState): string {
     `Vehicle     : ${vehicle.label}`
   );
 
+  if (booking.name.trim()) lines.push(`Name        : ${booking.name.trim()}`);
+  if (booking.phone.trim()) lines.push(`Phone       : ${booking.phone.trim()}`);
+  if (booking.email.trim()) lines.push(`Email       : ${booking.email.trim()}`);
   if (booking.contact.trim()) lines.push(`Contact     : ${booking.contact.trim()}`);
   if (booking.notes.trim()) lines.push(`Notes       : ${booking.notes.trim()}`);
 

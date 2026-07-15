@@ -1,161 +1,61 @@
+import { motion } from "motion/react";
 import BrandLockup from "./BrandLockup";
+import { useReducedMotionPref } from "./MotionProvider";
 
 interface LuxuryFooterProps {
   onNavClick: (sectionId: string) => void;
 }
 
+const links = [
+  ["Services", "services"],
+  ["Fleet", "fleet"],
+  ["Routes", "routes"],
+  ["Private Office", "office"]
+];
+
 export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
-  const company = [
-    { label: "Book", target: "hero" },
-    { label: "Fleet", target: "fleet" },
-    { label: "Routes", target: "routes" },
-    { label: "Standard", target: "standards" }
-  ];
-
-  const services = [
-    "Private Chauffeur Zürich",
-    "Executive Chauffeur Zürich",
-    "Zürich Airport Transfer",
-    "Private Driver Zürich",
-    "Luxury Chauffeur Zürich",
-    "BMW i7 Chauffeur Zürich",
-    "Mercedes V-Class Chauffeur Zürich",
-    "Family Office Chauffeur Switzerland",
-    "Hotel Transfer Zürich",
-    "Long-Distance Chauffeur Switzerland"
-  ];
-
-  const routes = [
-    "Zürich Airport",
-    "Zürich City",
-    "Zürich to Zug",
-    "Zürich to Lucerne",
-    "Zürich to Basel",
-    "Zürich to Bern",
-    "Zürich to Geneva",
-    "Zürich to Davos",
-    "Zürich to St. Moritz",
-    "Zürich to Gstaad",
-    "Zürich to Lugano"
-  ];
+  const isReduced = useReducedMotionPref();
+  const spring = { type: "spring" as const, stiffness: 360, damping: 34 };
 
   return (
-    <footer className="relative bg-brand-black pt-24 pb-28 px-6 md:px-12 lg:px-24 border-t border-brand-cream/10 luxury-noise">
-      <div className="max-w-7xl mx-auto">
-        {/* Main Footer Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-          {/* Brand */}
-          <div className="md:col-span-3">
-            <BrandLockup size="footer" className="mb-6" />
-            <p className="text-xs text-brand-stone font-light leading-relaxed max-w-sm">
-              ALAIR NOIR GmbH is a Zürich-based private chauffeur service for executives, private
-              clients, family offices, hotels, diplomatic guests, airport transfers, and
-              Switzerland-wide journeys.
+    <footer className="bg-brand-black px-4 pb-28 pt-14 md:px-8 md:pb-14 lg:px-12">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="grid gap-10 border-b border-brand-cream/12 pb-12 md:grid-cols-[1.4fr_1fr_1fr] md:items-start">
+          <div>
+            <BrandLockup size="footer" />
+            <p className="mt-5 max-w-sm text-xs font-light leading-relaxed text-brand-stone">
+              Zürich-based private chauffeur service for airport arrivals, executives, families and private offices.
             </p>
           </div>
 
-          {/* Company */}
-          <div className="md:col-span-2">
-            <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
-              Company
-            </h3>
-            <ul className="space-y-3">
-              {company.map((link) => (
-                <li key={link.label}>
-                  <button
-                    onClick={() => onNavClick(link.target)}
-                    className="text-xs font-mono tracking-wider text-brand-stone hover:text-brand-cream transition-colors duration-300 uppercase cursor-pointer text-left"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav className="grid grid-cols-2 gap-x-5 gap-y-4" aria-label="Footer navigation">
+            {links.map(([label, target]) => (
+              <motion.button
+                key={target}
+                type="button"
+                onClick={() => onNavClick(target)}
+                whileHover={isReduced ? undefined : { x: 2, color: "#FAF8F5" }}
+                transition={spring}
+                className="text-left text-[10px] font-mono uppercase tracking-[0.14em] text-brand-stone"
+              >
+                {label}
+              </motion.button>
+            ))}
+          </nav>
 
-          {/* Services */}
-          <div className="md:col-span-4">
-            <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
-              Services
-            </h3>
-            <ul className="space-y-3">
-              {services.map((service) => (
-                <li key={service}>
-                  <button
-                    onClick={() => onNavClick("hero")}
-                    className="text-[11px] font-mono tracking-wider text-brand-stone hover:text-brand-cream transition-colors duration-300 cursor-pointer text-left"
-                  >
-                    {service}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Routes */}
-          <div className="md:col-span-3">
-            <h3 className="text-[10px] font-mono tracking-widest text-brand-cream uppercase mb-6">
-              Routes
-            </h3>
-            <ul className="space-y-3">
-              {routes.map((route) => (
-                <li key={route}>
-                  <button
-                    onClick={() => onNavClick("routes")}
-                    className="text-[11px] font-mono tracking-wider text-brand-stone hover:text-brand-cream transition-colors duration-300 cursor-pointer text-left"
-                  >
-                    {route}
-                  </button>
-                </li>
-              ))}
-            </ul>
+          <div className="grid gap-3 text-[10px] font-mono uppercase tracking-[0.12em] text-brand-stone md:text-right">
+            <motion.a href="tel:+41772870956" whileHover={isReduced ? undefined : { color: "#FAF8F5" }} transition={spring}>+41 77 287 09 56</motion.a>
+            <motion.a href="mailto:booking@alairnoir.ch" whileHover={isReduced ? undefined : { color: "#FAF8F5" }} transition={spring}>booking@alairnoir.ch</motion.a>
+            <motion.a href="https://instagram.com/alairnoir" target="_blank" rel="noopener noreferrer" whileHover={isReduced ? undefined : { color: "#FAF8F5" }} transition={spring}>@alairnoir</motion.a>
           </div>
         </div>
 
-        {/* Contact strip */}
-        <div className="grid grid-cols-1 gap-6 border-t border-brand-cream/10 pt-10 mb-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Email</span>
-            <a href="mailto:booking@alairnoir.ch" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
-              booking@alairnoir.ch
-            </a>
-          </div>
-          <div>
-            <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Phone</span>
-            <a href="tel:+41772870956" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
-              +41 77 287 09 56
-            </a>
-          </div>
-          <div>
-            <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">WhatsApp</span>
-            <a href="https://wa.me/41772870956" target="_blank" rel="noopener noreferrer" className="text-xs font-mono font-medium text-brand-cream hover:text-white transition-colors">
-              +41 77 287 09 56
-            </a>
-          </div>
-          <div>
-            <span className="text-[9px] font-mono uppercase tracking-[0.24em] text-brand-stone block mb-2">Instagram</span>
-            <a href="https://instagram.com/alairnoir" target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-brand-cream hover:text-brand-ivory transition-colors">
-              @alairnoir
-            </a>
-          </div>
-        </div>
-
-        {/* Sub-Footer Legal & Closing */}
-        <div className="border-t border-brand-cream/10 pt-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="text-[10px] font-mono text-brand-stone uppercase tracking-widest leading-relaxed">
-            ALAIR NOIR GmbH<br />
-            Private Chauffeur Service Zürich<br />
-            Switzerland
-          </div>
-          <div className="text-right">
-            <BrandLockup size="compact" align="right" className="mb-3" />
-            <div className="flex justify-start gap-4 text-[10px] font-mono text-brand-stone uppercase tracking-widest sm:justify-end">
-              <span className="cursor-pointer hover:text-brand-cream transition-colors">Impressum</span>
-              <span>·</span>
-              <span className="cursor-pointer hover:text-brand-cream transition-colors">Privacy Policy</span>
-              <span>·</span>
-              <span>© 2026 ALAIR NOIR GmbH</span>
-            </div>
+        <div className="flex flex-col gap-4 pt-7 text-[9px] font-mono uppercase tracking-[0.13em] text-brand-muted-stone sm:flex-row sm:items-center sm:justify-between">
+          <span>ALAIR NOIR GmbH · Zürich · Switzerland</span>
+          <div className="flex flex-wrap gap-5">
+            <span>Impressum</span>
+            <span>Privacy</span>
+            <span>© 2026 ALAIR NOIR GmbH</span>
           </div>
         </div>
       </div>
