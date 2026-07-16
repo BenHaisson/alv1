@@ -107,7 +107,7 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
         };
 
   return (
-    <section aria-label="Alair Noir welcome" className="relative z-0 h-[100svh] bg-brand-black">
+    <div aria-label="Alair Noir welcome" className="pointer-events-none fixed inset-0 z-[5] h-[100svh] bg-brand-black">
       <AnimatePresence initial={false}>
         {isPortalVisible && (
           <motion.div
@@ -192,6 +192,6 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </div>
   );
 }
