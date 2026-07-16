@@ -272,10 +272,10 @@ export default function HeroCommandDeck({
           ref={bookingShellRef}
           layout
           layoutDependency={isBookingExpanded}
-          {...reveal(1.22, isMobileBooking ? 64 : 86)}
+          {...reveal(0.24, isMobileBooking ? 64 : 86)}
           transition={{
             layout: { duration: 0.34, ease: EASE },
-            default: { duration: 1.08, delay: 1.22, ease: EASE }
+            default: { duration: 0.96, delay: 0.24, ease: EASE }
           }}
           className={
             isBookingExpanded
@@ -447,7 +447,7 @@ export default function HeroCommandDeck({
 
           {!isBookingExpanded && (
             <motion.div
-              {...reveal(1.68, 18)}
+              {...reveal(0.82, 18)}
               className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0"
             >
               {TRUST_LINE.map((item, index) => {
