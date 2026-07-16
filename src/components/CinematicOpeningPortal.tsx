@@ -1,34 +1,100 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { useLenis } from "lenis/react";
 import { useReducedMotionPref } from "./MotionProvider";
 import { MOTION_DURATION, MOTION_EASE } from "../lib/motion";
+import { scrollWindowTo } from "../lib/smoothScroll";
 
 interface CinematicOpeningPortalProps {
   onComplete: (isComplete: boolean) => void;
 }
 
 const LOCATION_LINE = "ZÜRICH · SWITZERLAND";
-const SIGNATURE_LINES = ["Not for Everyone,", "For you."];
+const SIGNATURE_LINES = ["Not for Everyone.", "For you."];
 
 export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningPortalProps) {
   const isReduced = useReducedMotionPref();
+  const lenis = useLenis();
   const [isPortalVisible, setIsPortalVisible] = useState(true);
+  const hasAutoAdvancedRef = useRef(false);
+  const touchStartYRef = useRef<number | null>(null);
 
   useEffect(() => {
+    const advanceToBooking = () => {
+      if (hasAutoAdvancedRef.current) return;
+      hasAutoAdvancedRef.current = true;
+      onComplete(true);
+      setIsPortalVisible(false);
+      const hero = document.getElementById("hero-section");
+      const target = hero
+        ? Math.max(0, hero.getBoundingClientRect().top + window.scrollY)
+        : window.innerHeight;
+      if (lenis && !isReduced) {
+        lenis.scrollTo(target, {
+          duration: 1.15,
+          force: true,
+          lock: false,
+          programmatic: true
+        });
+      } else {
+        scrollWindowTo(target, { immediate: isReduced, duration: isReduced ? 0 : 1.15 });
+      }
+    };
+
     const handleScroll = () => {
+      if (window.scrollY > 8 && !hasAutoAdvancedRef.current) {
+        advanceToBooking();
+        return;
+      }
+
       onComplete(window.scrollY > window.innerHeight * 0.42);
       setIsPortalVisible(window.scrollY < window.innerHeight * 0.92);
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (event.deltaY <= 0 || hasAutoAdvancedRef.current) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      advanceToBooking();
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const startY = touchStartYRef.current;
+      const currentY = event.touches[0]?.clientY;
+      if (startY === null || currentY === undefined || startY - currentY < 8) return;
+      event.preventDefault();
+      touchStartYRef.current = null;
+      advanceToBooking();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        advanceToBooking();
+      }
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll);
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onComplete]);
+  }, [isReduced, lenis, onComplete]);
 
   const reveal = (delay: number, y = 22) =>
     isReduced
@@ -95,11 +161,17 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
 
             <motion.div
               {...reveal(1.82, 10)}
-              className="absolute bottom-9 left-0 right-0 z-30 flex flex-col items-center gap-4"
+              className="absolute bottom-8 left-0 right-0 z-30 flex flex-col items-center gap-3"
             >
-              <span className="text-[10px] font-mono uppercase tracking-[0.32em] text-brand-gold/55">
-                Enter the arrival
+              <span className="text-[10px] font-mono uppercase tracking-[0.32em] text-brand-gold/65">
+                Scroll to enter
               </span>
+              <motion.span
+                aria-hidden="true"
+                animate={isReduced ? undefined : { y: [0, 5, 0], opacity: [0.45, 1, 0.45] }}
+                transition={isReduced ? undefined : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="h-8 w-px bg-brand-gold/60"
+              />
             </motion.div>
           </motion.div>
         )}

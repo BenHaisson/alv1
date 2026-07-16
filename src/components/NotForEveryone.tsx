@@ -20,8 +20,10 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Your chauffeur is already waiting. No queues, no uncertainty, no delay.",
     image: imageAssets.privateArrivalsDesktop,
     mobileImage: imageAssets.privateArrivalsMobile,
-    desktopPosition: "center 56%",
-    mobilePosition: "center 48%"
+    // Keep the chauffeur and the BMW together in the wide crop; on portrait
+    // screens bias right so the driver's face and open rear door remain clear.
+    desktopPosition: "58% 38%",
+    mobilePosition: "68% 50%"
   },
   {
     label: "Precision",
@@ -29,8 +31,8 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Built around your agenda, with discreet waiting and flexible departures.",
     image: imageAssets.executiveSchedulesDesktop,
     mobileImage: imageAssets.executiveSchedulesMobile,
-    desktopPosition: "62% 50%",
-    mobilePosition: "center 46%"
+    desktopPosition: "center 42%",
+    mobilePosition: "58% 50%"
   },
   {
     label: "Flight-aware",
@@ -53,7 +55,6 @@ const SERVICE_CARDS: ServiceCard[] = [
 ];
 
 const FINAL_CARD_HOLD = 0.16;
-const HEADING_REVEAL_END = 0.14;
 
 interface ServiceCardContentProps {
   card: ServiceCard;
@@ -193,10 +194,10 @@ function ReducedMotionCards() {
 }
 
 export default function NotForEveryone() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotionPref();
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: galleryRef,
     offset: ["start start", "end end"]
   });
   const progress = useSpring(scrollYProgress, {
@@ -205,41 +206,32 @@ export default function NotForEveryone() {
     mass: 0.72,
     restDelta: 0.001
   });
-  const headingOpacity = useTransform(progress, [0, 0.06, HEADING_REVEAL_END], [1, 1, 0]);
-  const headingY = useTransform(progress, [0, HEADING_REVEAL_END], [0, -28]);
-  // Hold the first card in place until the section heading has fully cleared.
-  // The cards then consume the remaining scroll range as one continuous gallery.
-  const galleryProgress = useTransform(progress, [0, HEADING_REVEAL_END, 1], [0, 0, 1]);
-
   if (isReduced) return <ReducedMotionCards />;
 
   return (
-    <section
-      ref={sectionRef}
-      className="mobility-section relative h-[400svh] border-b border-brand-cream/10 bg-brand-black luxury-noise"
-    >
+    <section className="mobility-section relative border-b border-brand-cream/10 bg-brand-black luxury-noise">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
 
-      <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-3.5rem)]">
-        <div className="mobility-section__layout mobility-section__layout--gallery relative mx-auto h-full max-w-[90rem]">
-          <motion.div
-            className="mobility-section__header-overlay"
-            style={{ opacity: headingOpacity, y: headingY }}
-          >
-            <SectionHeading />
-          </motion.div>
+      <div className="mobility-section__entry">
+        <div className="mx-auto w-full max-w-[90rem]">
+          <SectionHeading />
+        </div>
+      </div>
 
-          <div className="mobility-card-stage relative">
-            {SERVICE_CARDS.map((card, index) => (
-              <StackedServiceCard
-                key={card.title}
-                card={card}
-                index={index}
-                progress={galleryProgress}
-              />
-            ))}
+      <div ref={galleryRef} className="mobility-section__gallery relative h-[400svh]">
+        <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-0 h-[100svh] overflow-hidden">
+          <div className="mobility-section__layout mobility-section__layout--gallery relative mx-auto h-full max-w-[90rem]">
+            <div className="mobility-card-stage relative">
+              {SERVICE_CARDS.map((card, index) => (
+                <StackedServiceCard
+                  key={card.title}
+                  card={card}
+                  index={index}
+                  progress={progress}
+                />
+              ))}
+            </div>
           </div>
-
         </div>
       </div>
     </section>

@@ -227,6 +227,7 @@ export default function App() {
             <HeroCommandDeck
               booking={booking}
               onBookingChange={updateBooking}
+              isIntroComplete={isIntroComplete}
             />
           </div>
 
@@ -238,7 +239,7 @@ export default function App() {
               cover previously pinned sheets. z ascends down the page. */}
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <div className="relative z-[2] -mt-[100svh]">
+          <div className="relative z-[2] -mt-[64svh] md:-mt-[80svh]">
             <NotForEveryone />
           </div>
 
