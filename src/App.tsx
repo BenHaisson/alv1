@@ -239,21 +239,21 @@ export default function App() {
               cover previously pinned sheets. z ascends down the page. */}
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <div className="relative z-[2] -mt-[64svh] md:-mt-[80svh]">
+          <div className="relative z-[2]">
             <NotForEveryone />
           </div>
 
           {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin
               gallery below. FleetRevealMotion drives its own scroll progress but
               has no internal sticky, so it survives the stacked wrapper. */}
-          <StackedChapter zIndex={3} id="fleet-section">
+          <StackedChapter zIndex={3} id="fleet-section" stacked={false}>
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </StackedChapter>
 
           {/* Private Interval: the approved cabin video moment — cabin visuals
               preserved. */}
-          <StackedChapter zIndex={4}>
+          <StackedChapter zIndex={4} stacked={false}>
             <PrivateIntervalMotion />
           </StackedChapter>
 
@@ -265,7 +265,7 @@ export default function App() {
           </div>
 
           {/* 05 — The ALAIR Standard — premium positioning. */}
-          <StackedChapter zIndex={6} id="standards-section">
+          <StackedChapter zIndex={6} id="standards-section" stacked={false}>
             <StandardsSection />
           </StackedChapter>
 
