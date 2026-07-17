@@ -21,7 +21,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export default function LuxuryHeader({ onNavClick, activeSection = "hero" }: LuxuryHeaderProps) {
   const isReduced = useReducedMotionPref();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isHero = activeSection === "hero" && !mobileMenuOpen;
+  const isHero = activeSection === "booking" && !mobileMenuOpen;
   const tone = isHero ? "light" : "dark";
 
   const choose = (target: string) => {
@@ -42,7 +42,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "hero" }: Lux
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 md:px-8 lg:px-12">
           <motion.button
             type="button"
-            onClick={() => choose("hero")}
+            onClick={() => choose("booking")}
             whileHover={isReduced ? undefined : { opacity: 0.78 }}
             whileTap={isReduced ? undefined : { scale: 0.985 }}
             transition={SPRING}

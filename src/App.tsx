@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { MotionProvider, useReducedMotionPref } from "./components/MotionProvider";
 import LuxuryHeader from "./components/LuxuryHeader";
-import EditorialHero from "./components/EditorialHero";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import ServiceSelection from "./components/ServiceSelection";
 import OperatingStandard from "./components/OperatingStandard";
@@ -13,12 +12,12 @@ import FinalRouteRequest from "./components/FinalRouteRequest";
 import LuxuryFooter from "./components/LuxuryFooter";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
-const SECTION_IDS = ["hero", "booking", "services", "fleet", "routes", "office"] as const;
+const SECTION_IDS = ["booking", "services", "fleet", "routes", "office"] as const;
 
 function Homepage() {
   const isReduced = useReducedMotionPref();
   const [booking, setBooking] = useState<BookingState>(EMPTY_BOOKING);
-  const [activeSection, setActiveSection] = useState("hero");
+  const [activeSection, setActiveSection] = useState("booking");
   const [showMobileBooking, setShowMobileBooking] = useState(false);
 
   const updateBooking = (patch: Partial<BookingState>) => {
@@ -34,7 +33,7 @@ function Homepage() {
     const onScroll = () => {
       setShowMobileBooking(window.scrollY > window.innerHeight * 0.82);
       const marker = window.scrollY + window.innerHeight * 0.32;
-      let next = "hero";
+      let next = "booking";
       for (const section of SECTION_IDS) {
         const element = document.getElementById(`${section}-section`);
         if (element && element.offsetTop <= marker) next = section;
@@ -64,7 +63,6 @@ function Homepage() {
       <LuxuryHeader onNavClick={scrollToSection} activeSection={activeSection} />
 
       <main>
-        <EditorialHero onRequest={() => scrollToSection("booking")} />
         <HeroCommandDeck booking={booking} onBookingChange={updateBooking} />
         <ServiceSelection onSelect={() => scrollToSection("booking")} />
         <OperatingStandard />

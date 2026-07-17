@@ -78,55 +78,54 @@ export default function HeroCommandDeck({ booking, onBookingChange }: HeroComman
   return (
     <section
       id="booking-section"
-      className="relative overflow-hidden border-y border-brand-cream/10 bg-brand-black px-4 py-20 text-brand-ivory md:px-8 md:py-28 lg:px-12"
+      className="relative min-h-[100svh] scroll-mt-0 overflow-hidden border-b border-brand-cream/10 bg-brand-black px-4 pb-8 pt-[72px] text-brand-ivory md:px-8 md:pb-10 lg:px-12"
     >
       <motion.picture
         aria-hidden="true"
-        className="absolute inset-0"
-        initial={isReduced ? false : { opacity: 0, clipPath: "inset(100% 0 0 0)" }}
-        whileInView={{ opacity: 0.34, clipPath: "inset(0 0 0 0)" }}
-        viewport={{ once: true, amount: 0.28 }}
-        transition={{ duration: isReduced ? 0 : 0.92, ease: EASE }}
+        className="absolute inset-x-0 top-[72px] h-[28svh] min-h-[190px] overflow-hidden md:h-[36svh] md:min-h-[260px] lg:h-[38svh]"
+        initial={isReduced ? false : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+        animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+        transition={{ duration: isReduced ? 0 : 0.95, ease: EASE }}
       >
         <img
-          src={imageAssets.bookingHeroZurichGold}
+          src={imageAssets.alairNoirCoastalHeroDesktop}
           alt=""
+          fetchPriority="high"
           decoding="async"
-          className="h-full w-full object-cover object-[center_58%] brightness-[0.62] saturate-[0.86]"
+          className="h-full w-full object-cover object-[30%_100%] brightness-[0.72] contrast-[1.04] md:object-[center_bottom]"
         />
       </motion.picture>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(205,162,80,0.14),rgba(10,10,10,0)_42%),linear-gradient(180deg,#0a0a0a_0%,rgba(8,19,13,0.92)_42%,#0a0a0a_100%)]" />
+      <div className="absolute inset-x-0 top-[72px] h-[28svh] min-h-[190px] bg-[linear-gradient(180deg,rgba(239,228,216,0.08)_0%,rgba(10,10,10,0.18)_44%,rgba(10,10,10,0.94)_100%)] md:h-[36svh] md:min-h-[260px] lg:h-[38svh]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(205,162,80,0.12),rgba(10,10,10,0)_42%),linear-gradient(180deg,rgba(239,228,216,0.08)_0%,rgba(10,10,10,0)_24%,#050806_58%,#0a0a0a_100%)]" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1220px] gap-10 md:gap-12">
+      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-72px)] w-full max-w-[1220px] content-end gap-5 pb-2 pt-[calc(28svh+24px)] md:gap-7 md:pt-[calc(36svh+26px)] lg:gap-8 lg:pt-[calc(38svh+28px)]">
         <motion.div
           className="mx-auto max-w-3xl text-center"
           initial={isReduced ? false : { opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.42 }}
-          transition={{ duration: isReduced ? 0 : 0.64, ease: EASE }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: isReduced ? 0 : 0.64, delay: isReduced ? 0 : 0.22, ease: EASE }}
         >
-          <p className="mb-4 text-[10px] font-mono uppercase tracking-[0.24em] text-brand-gold md:text-[11px]">
+          <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.24em] text-brand-gold md:mb-4 md:text-[11px]">
             Private request
           </p>
           <motion.h2
             layoutId="booking-section-title"
-            className="font-editorial text-[clamp(3.3rem,9vw,7.25rem)] font-normal leading-[0.82] text-brand-ivory"
+            className="font-editorial text-[clamp(3rem,8vw,6.4rem)] font-normal leading-[0.82] text-brand-ivory"
             transition={{ layout: { type: "spring", stiffness: 82, damping: 24, mass: 1.05 } }}
           >
             Your chauffeur is ready.
           </motion.h2>
-          <p className="mx-auto mt-5 max-w-[54ch] text-[14px] font-light leading-6 text-brand-body md:text-[16px] md:leading-7">
+          <p className="mx-auto mt-4 max-w-[54ch] text-[13px] font-light leading-6 text-brand-body md:mt-5 md:text-[15px] md:leading-7">
             Share the first details. We prepare the right vehicle, confirm timing, and return a fixed private quote with discretion.
           </p>
         </motion.div>
 
         <motion.div
           className="mx-auto flex w-full max-w-[1180px] flex-col items-center"
-          initial={isReduced ? false : { opacity: 0, y: 72 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.24 }}
-          transition={{ duration: isReduced ? 0 : 0.78, delay: isReduced ? 0 : 0.08, ease: EASE }}
+          initial={isReduced ? false : { opacity: 0, y: 44 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: isReduced ? 0 : 0.78, delay: isReduced ? 0 : 0.34, ease: EASE }}
           aria-label="Journey booking"
         >
           <SegmentedControl value={bookingType} onChange={changeTripType} />

@@ -521,7 +521,7 @@ body[data-booking-expanded="true"] {
   overflow: hidden;
 }
 
-body[data-booking-expanded="true"] #hero-section {
+body[data-booking-expanded="true"] #booking-section {
   z-index: 35;
 }
 
