@@ -43,6 +43,12 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
     };
 
     const handleScroll = () => {
+      if (hasAutoAdvancedRef.current) {
+        onComplete(true);
+        setIsPortalVisible(false);
+        return;
+      }
+
       if (window.scrollY > 8 && !hasAutoAdvancedRef.current) {
         advanceToBooking();
         return;
@@ -107,15 +113,15 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
         };
 
   return (
-    <div aria-label="Alair Noir welcome" className="pointer-events-none fixed inset-0 z-[5] h-[100svh] bg-brand-black">
-      <AnimatePresence initial={false}>
-        {isPortalVisible && (
-          <motion.div
-            key="opening-portal-visual"
-            exit={isReduced ? undefined : { opacity: 0, scale: 1.04, filter: "blur(10px)" }}
-            transition={{ duration: 0.9, ease: MOTION_EASE }}
-            className="fixed inset-0 z-[5] h-[100svh] overflow-hidden bg-brand-black"
-          >
+    <AnimatePresence initial={false}>
+      {isPortalVisible && (
+        <motion.div
+          key="opening-portal-visual"
+          aria-label="Alair Noir welcome"
+          exit={isReduced ? undefined : { opacity: 0, scale: 1.04, filter: "blur(10px)" }}
+          transition={{ duration: 0.9, ease: MOTION_EASE }}
+          className="pointer-events-none fixed inset-0 z-[5] h-[100svh] overflow-hidden bg-brand-black"
+        >
             <motion.img
               src={HERO_VIDEO.poster}
               alt=""
@@ -189,9 +195,8 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
                 className="h-8 w-px bg-brand-gold/60"
               />
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
