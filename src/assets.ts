@@ -1,4 +1,5 @@
 import alairNoirHero from "./assets/images/alair_noir_hero.png";
+import alairNoirCoastalHeroDesktop from "./assets/images/alair_noir_coastal_hero_desktop.jpg";
 import airportTransfersDesktop from "./assets/images/airport_transfers_desktop.jpg";
 import airportTransfersMobile from "./assets/images/airport_transfers_mobile.jpg";
 import bookingHeroAlairNoir from "./assets/images/booking_hero_alair_noir.png";
@@ -74,6 +75,7 @@ const identityPrivateClients = bmwI7Exterior;
 
 export const imageAssets = {
   alairNoirHero,
+  alairNoirCoastalHeroDesktop,
   airportTransfersDesktop,
   airportTransfersMobile,
   bookingHeroAlairNoir,

@@ -7,6 +7,7 @@ type BrandLockupAlign = "left" | "center" | "right";
 interface BrandLockupProps {
   size?: BrandLockupSize;
   align?: BrandLockupAlign;
+  tone?: "light" | "dark";
   className?: string;
 }
 
@@ -47,16 +48,18 @@ const alignClass: Record<BrandLockupAlign, string> = {
 export default function BrandLockup({
   size = "nav",
   align = "left",
+  tone = "dark",
   className = ""
 }: BrandLockupProps) {
   const classes = sizeClasses[size];
+  const textClass = tone === "light" ? "text-brand-black" : "text-brand-cream";
 
   return (
     <div className={`flex flex-col ${classes.gap} ${alignClass[align]} ${className}`}>
-      <span className={`block select-none font-serif font-light uppercase leading-none text-brand-cream ${classes.name}`}>
+      <span className={`block select-none font-serif font-light uppercase leading-none ${textClass} ${classes.name}`}>
         {BRAND_NAME}
       </span>
-      <span className={`block font-serif font-light italic leading-none text-brand-cream ${classes.slogan}`}>
+      <span className={`block font-serif font-light italic leading-none ${textClass} ${classes.slogan}`}>
         {BRAND_SLOGAN}
       </span>
     </div>

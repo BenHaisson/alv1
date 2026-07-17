@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { MotionProvider, useReducedMotionPref } from "./components/MotionProvider";
 import LuxuryHeader from "./components/LuxuryHeader";
+import EditorialHero from "./components/EditorialHero";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import ServiceSelection from "./components/ServiceSelection";
 import OperatingStandard from "./components/OperatingStandard";
@@ -12,7 +13,7 @@ import FinalRouteRequest from "./components/FinalRouteRequest";
 import LuxuryFooter from "./components/LuxuryFooter";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
 
-const SECTION_IDS = ["hero", "services", "fleet", "routes", "office"] as const;
+const SECTION_IDS = ["hero", "booking", "services", "fleet", "routes", "office"] as const;
 
 function Homepage() {
   const isReduced = useReducedMotionPref();
@@ -48,13 +49,13 @@ function Homepage() {
 
   const selectVehicle = (vehicleName: string) => {
     updateBooking({ vehicle: vehicleIdFromName(vehicleName) });
-    scrollToSection("hero");
+    scrollToSection("booking");
   };
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-brand-black text-brand-ivory selection:bg-brand-gold selection:text-brand-black">
       <a
-        href="#hero-section"
+        href="#booking-section"
         className="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:block focus:bg-brand-ivory focus:px-4 focus:py-3 focus:text-brand-black"
       >
         Skip to booking
@@ -63,13 +64,14 @@ function Homepage() {
       <LuxuryHeader onNavClick={scrollToSection} activeSection={activeSection} />
 
       <main>
+        <EditorialHero onRequest={() => scrollToSection("booking")} />
         <HeroCommandDeck booking={booking} onBookingChange={updateBooking} />
-        <ServiceSelection onSelect={() => scrollToSection("hero")} />
+        <ServiceSelection onSelect={() => scrollToSection("booking")} />
         <OperatingStandard />
         <ProductFleet onSelect={selectVehicle} />
-        <RouteNetwork onRequest={() => scrollToSection("hero")} />
-        <PrivateOffice onRequestScroll={() => scrollToSection("hero")} />
-        <FinalRouteRequest onRequest={() => scrollToSection("hero")} />
+        <RouteNetwork onRequest={() => scrollToSection("booking")} />
+        <PrivateOffice onRequestScroll={() => scrollToSection("booking")} />
+        <FinalRouteRequest onRequest={() => scrollToSection("booking")} />
       </main>
 
       <LuxuryFooter onNavClick={scrollToSection} />
@@ -85,7 +87,7 @@ function Homepage() {
           >
             <motion.button
               type="button"
-              onClick={() => scrollToSection("hero")}
+              onClick={() => scrollToSection("booking")}
               whileTap={isReduced ? undefined : { scale: 0.985 }}
               transition={{ type: "spring", stiffness: 420, damping: 38 }}
               className="h-13 w-full border border-brand-gold/60 bg-brand-gold px-6 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-brand-black shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
