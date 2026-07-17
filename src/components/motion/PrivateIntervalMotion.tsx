@@ -33,9 +33,6 @@ export default function PrivateIntervalMotion() {
             transition={{ duration: 0.9, ease: EASE }}
             className="max-w-xl"
           >
-            <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
-              The Private Interval
-            </span>
             <h2 className="font-serif text-3xl font-light leading-[1.1] tracking-tight text-brand-ivory md:text-5xl">
               A room between obligations,
               <span className="italic text-brand-stone"> not a ride.</span>

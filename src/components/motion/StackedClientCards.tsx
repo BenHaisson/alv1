@@ -8,8 +8,9 @@ import {
 } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "../MotionProvider";
 import { scrollWindowTo } from "../../lib/smoothScroll";
+import { MOTION_EASE, PREMIUM_SPRING } from "../../lib/motion";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = MOTION_EASE;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -240,14 +241,17 @@ export default function StackedClientCards({
 
             <div className="absolute -bottom-12 left-1/2 flex -translate-x-1/2 items-center gap-2.5 lg:hidden">
               {cards.map((card, index) => (
-                <button
+                <motion.button
                   key={card.id}
                   type="button"
                   onClick={() => goTo(index)}
                   aria-label={`View ${card.title}`}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    index === active ? "w-7 bg-brand-gold" : "w-1.5 bg-brand-cream/25"
-                  }`}
+                  animate={{
+                    width: index === active ? 28 : 6,
+                    backgroundColor: index === active ? "#CDA250" : "rgba(246,242,233,0.25)"
+                  }}
+                  transition={PREMIUM_SPRING}
+                  className="h-1.5 rounded-full"
                 />
               ))}
             </div>

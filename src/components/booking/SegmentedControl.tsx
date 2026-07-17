@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { useReducedMotionPref } from "../MotionProvider";
+import { PREMIUM_SPRING } from "../../lib/motion";
 
 export type BookingType = "oneWay" | "hourly";
 
@@ -58,7 +59,7 @@ export function SegmentedControl({ value, onChange }: SegmentedControlProps) {
             transition={
               isReduced
                 ? { duration: 0 }
-                : { type: "spring", stiffness: 420, damping: 38, mass: 0.75 }
+                : PREMIUM_SPRING
             }
           >
             {option.label}

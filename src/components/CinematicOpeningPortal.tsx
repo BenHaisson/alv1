@@ -145,19 +145,19 @@ export default function CinematicOpeningPortal({ onComplete }: CinematicOpeningP
                 className="mb-10 flex items-center justify-center gap-6 text-brand-cream"
                 aria-label="Alair Noir monogram"
               >
-                <span className="font-serif text-5xl font-light tracking-[0.08em] md:text-7xl">A</span>
+                <span className="font-serif text-5xl font-light tracking-[0.18em] md:text-7xl">A</span>
                 <motion.span
                   initial={isReduced ? false : { scaleY: 0, opacity: 0 }}
                   animate={{ scaleY: 1, opacity: 1 }}
                   transition={{ duration: MOTION_DURATION.settle, delay: 0.24, ease: MOTION_EASE }}
                   className="h-16 w-px origin-top bg-brand-ivory shadow-[0_0_12px_rgba(246,242,233,0.2)] md:h-24"
                 />
-                <span className="font-serif text-5xl font-light tracking-[0.08em] md:text-7xl">N</span>
+                <span className="font-serif text-5xl font-light tracking-[0.18em] md:text-7xl">N</span>
               </motion.div>
 
               <motion.h1
                 {...reveal(0.32, 24)}
-                className="select-none font-serif text-4xl font-light tracking-[0.3em] text-white glow-subtle md:text-7xl"
+                className="select-none font-serif text-4xl font-light tracking-[0.18em] text-brand-cream glow-subtle md:text-7xl"
               >
                 ALAIR NOIR
               </motion.h1>

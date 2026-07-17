@@ -191,12 +191,16 @@ export default function HeroCommandDeck({
   });
   const backgroundScale = useTransform(stagedProgress, [0, 0.22, 0.62, 1], [1.01, 1.03, 1.12, 1.08]);
   const backgroundY = useTransform(stagedProgress, [0, 0.62, 1], ["2.5%", "-1.5%", "-3.5%"]);
+  const heroBackdropOpacity = useTransform(stagedProgress, [0, 0.42, 0.78, 1], [1, 0.86, 0.38, 0]);
+  const heroContentOpacity = useTransform(stagedProgress, [0, 0.32, 0.68, 0.92], [1, 0.9, 0.36, 0]);
   const gradientOpacity = useTransform(stagedProgress, [0, 0.42, 1], [0.28, 0.86, 1]);
   const mobileBackgroundY = useTransform(
     stagedProgress,
     [0, 0.34, 0.62, 1],
     ["1%", "-2%", "-10%", "-12%"]
   );
+  const bookingScrollY = useTransform(stagedProgress, [0, 0.42, 0.78, 1], [0, -24, -104, -148]);
+  const bookingScrollOpacity = useTransform(stagedProgress, [0, 0.36, 0.72, 0.9], [1, 1, 0.48, 0]);
   const reveal = (delay: number, y: number) => ({
     initial: isReduced ? false : { opacity: 0, y, filter: "blur(8px)" },
     animate:
@@ -234,8 +238,8 @@ export default function HeroCommandDeck({
             isReduced
               ? undefined
               : isMobileBooking
-                ? { scale: backgroundScale, y: mobileBackgroundY }
-                : { scale: backgroundScale, y: backgroundY }
+                ? { scale: backgroundScale, y: mobileBackgroundY, opacity: heroBackdropOpacity }
+                : { scale: backgroundScale, y: backgroundY, opacity: heroBackdropOpacity }
           }
         >
           <motion.div {...carReveal} className="absolute inset-0">
@@ -254,7 +258,10 @@ export default function HeroCommandDeck({
         style={isReduced ? undefined : { opacity: gradientOpacity }}
       />
 
-      <div className="relative z-20 h-full px-4 pb-[max(14px,env(safe-area-inset-bottom))] text-center md:px-12">
+      <motion.div
+        className="relative z-20 h-full px-4 pb-[max(14px,env(safe-area-inset-bottom))] text-center md:px-12"
+        style={isReduced ? undefined : { opacity: heroContentOpacity }}
+      >
         <AnimatePresence>
           {isBookingExpanded && (
             <motion.div
@@ -272,10 +279,13 @@ export default function HeroCommandDeck({
           ref={bookingShellRef}
           layout
           layoutDependency={isBookingExpanded}
-          {...reveal(0.24, isMobileBooking ? 64 : 86)}
+          style={
+            isReduced || isBookingExpanded
+              ? undefined
+              : { y: bookingScrollY, opacity: bookingScrollOpacity }
+          }
           transition={{
-            layout: { duration: 0.34, ease: EASE },
-            default: { duration: 0.96, delay: 0.24, ease: EASE }
+            layout: { duration: 0.34, ease: EASE }
           }}
           className={
             isBookingExpanded
@@ -285,6 +295,10 @@ export default function HeroCommandDeck({
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
         >
+          <motion.div
+            {...reveal(0.24, isMobileBooking ? 64 : 86)}
+            className="flex w-full flex-col items-center"
+          >
           <div className="mb-4 w-full text-center md:mb-5">
             <motion.p
               {...reveal(0.08, isMobileBooking ? 24 : 30)}
@@ -474,8 +488,9 @@ export default function HeroCommandDeck({
               })}
             </motion.div>
           )}
+          </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {hasOpenedMap && (
         <Suspense fallback={null}>

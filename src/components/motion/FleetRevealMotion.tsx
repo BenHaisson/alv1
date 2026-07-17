@@ -4,7 +4,7 @@ import { FLEET_REVEAL } from "../../data/visualJourney";
 import { useMediaQuery, useReducedMotionPref, CornerMarkers } from "../MotionProvider";
 import MotionImage from "./MotionImage";
 import CinematicVideoBackground from "./CinematicVideoBackground";
-import { PREMIUM_SPRING } from "../../lib/motion";
+import { MOTION_EASE, PREMIUM_SPRING, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../../lib/motion";
 
 interface FleetRevealMotionProps {
   onRequestScroll?: (vehicleName?: string) => void;
@@ -43,21 +43,33 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
       aria-label="The ALAIR NOIR fleet"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="max-w-2xl">
-          <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
-            Fleet
-          </span>
-          <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl">
+        <motion.div
+          className="max-w-2xl"
+          initial={isReduced ? false : "hidden"}
+          whileInView="show"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={STAGGER_GROUP_VARIANTS}
+        >
+          <motion.h2
+            variants={REVEAL_VARIANTS}
+            className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl"
+          >
             Choose your cabin.
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
           {FLEET_REVEAL.map((vehicle, index) => {
             const isFirst = index === 0;
             return (
-              <motion.article
+              <motion.div
                 key={vehicle.id}
+                initial={isReduced ? false : { opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.9, delay: isReduced ? 0 : index * 0.12, ease: MOTION_EASE }}
+              >
+                <motion.article
                 whileHover={isReduced ? undefined : { y: -4 }}
                 transition={PREMIUM_SPRING}
                 style={
@@ -146,7 +158,8 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
                     </motion.button>
                   )}
                 </div>
-              </motion.article>
+                </motion.article>
+              </motion.div>
             );
           })}
         </div>

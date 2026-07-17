@@ -2,6 +2,7 @@ import { motion, useScroll, useSpring, useTransform, type MotionValue } from "mo
 import { useRef, type CSSProperties } from "react";
 import { imageAssets } from "../assets";
 import { useReducedMotionPref } from "./MotionProvider";
+import { MOTION_EASE } from "../lib/motion";
 
 interface ServiceCard {
   label: string;
@@ -55,6 +56,26 @@ const SERVICE_CARDS: ServiceCard[] = [
 ];
 
 const FINAL_CARD_HOLD = 0.16;
+
+const introGroup = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.14,
+      delayChildren: 0.08
+    }
+  }
+};
+
+const introReveal = {
+  hidden: { opacity: 0, y: 58, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 1, ease: MOTION_EASE }
+  }
+};
 
 interface ServiceCardContentProps {
   card: ServiceCard;
@@ -145,27 +166,31 @@ function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) 
 }
 
 function SectionHeading() {
-  return (
-    <div className="mobility-section__header shrink-0 border-b border-brand-cream/10 pb-5 md:pb-6">
-      <div className="flex items-center gap-4 self-start md:pt-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-gold">
-          02
-        </span>
-        <span className="h-px w-12 bg-brand-cream/25" aria-hidden="true" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-stone">
-          Private mobility
-        </span>
-      </div>
+  const isReduced = useReducedMotionPref();
 
-      <div className="mt-4 max-w-3xl text-left md:mt-5">
-        <h2 className="font-serif text-[2.65rem] font-light leading-[0.94] text-brand-ivory md:text-5xl lg:text-[3.35rem]">
+  return (
+    <motion.div
+      className="mobility-section__header flex shrink-0 flex-col items-center justify-center text-center"
+      initial={isReduced ? false : "hidden"}
+      whileInView={isReduced ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.5 }}
+      variants={introGroup}
+    >
+      <motion.div
+        className="mx-auto max-w-[92rem]"
+        variants={introReveal}
+      >
+        <h2 className="font-serif text-[clamp(3.15rem,5.45vw,5.45rem)] font-light leading-[0.9] text-brand-ivory md:whitespace-nowrap">
           Not for everyone. <span className="italic text-brand-stone">For you.</span>
         </h2>
-        <p className="mt-3 max-w-[48ch] text-[13px] font-light leading-5 text-brand-body md:text-sm md:leading-6">
+        <motion.p
+          className="mx-auto mt-7 max-w-[54ch] text-[15px] font-light leading-6 text-brand-body md:text-lg md:leading-8"
+          variants={introReveal}
+        >
           Four ways to move with certainty, prepared around your time, privacy, and destination.
-        </p>
-      </div>
-    </div>
+        </motion.p>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -194,8 +219,22 @@ function ReducedMotionCards() {
 }
 
 export default function NotForEveryone() {
+  const introRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotionPref();
+  const { scrollYProgress: introProgress } = useScroll({
+    target: introRef,
+    offset: ["start 78%", "end 18%"]
+  });
+  const easedIntroProgress = useSpring(introProgress, {
+    stiffness: 88,
+    damping: 28,
+    mass: 0.9,
+    restDelta: 0.001
+  });
+  const introOpacity = useTransform(easedIntroProgress, [0, 0.24, 0.62, 1], [0, 1, 1, 0]);
+  const introY = useTransform(easedIntroProgress, [0, 0.24, 0.72, 1], [64, 0, 0, -72]);
+  const introScale = useTransform(easedIntroProgress, [0, 0.28, 0.72, 1], [0.96, 1, 1, 0.985]);
   const { scrollYProgress } = useScroll({
     target: galleryRef,
     offset: ["start start", "end end"]
@@ -210,18 +249,25 @@ export default function NotForEveryone() {
 
   return (
     <section className="mobility-section relative border-b border-brand-cream/10 bg-brand-black luxury-noise">
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
-
-      <div className="mobility-section__entry">
-        <div className="mx-auto w-full max-w-[90rem]">
+      <div ref={introRef} className="mobility-section__entry">
+        <motion.div
+          className="mx-auto w-full max-w-[90rem]"
+          style={isReduced ? undefined : { opacity: introOpacity, y: introY, scale: introScale }}
+        >
           <SectionHeading />
-        </div>
+        </motion.div>
       </div>
 
       <div ref={galleryRef} className="mobility-section__gallery relative h-[400svh]">
-        <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-0 h-[100svh] overflow-hidden">
+        <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-56px)]">
           <div className="mobility-section__layout mobility-section__layout--gallery relative mx-auto h-full max-w-[90rem]">
-            <div className="mobility-card-stage relative">
+            <motion.div
+              className="mobility-card-stage relative"
+              initial={{ opacity: 0, y: 64 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 1.05, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            >
               {SERVICE_CARDS.map((card, index) => (
                 <StackedServiceCard
                   key={card.title}
@@ -230,7 +276,7 @@ export default function NotForEveryone() {
                   progress={progress}
                 />
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

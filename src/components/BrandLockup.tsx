@@ -17,22 +17,22 @@ const sizeClasses: Record<BrandLockupSize, { name: string; slogan: string; gap: 
     gap: "gap-1"
   },
   compact: {
-    name: "text-[11px] tracking-[0.24em] md:text-xs",
+    name: "text-[11px] tracking-[0.18em] md:text-xs",
     slogan: "text-[8px] tracking-[0.04em] md:text-[9px]",
     gap: "gap-1"
   },
   opening: {
-    name: "text-4xl tracking-[0.3em] md:text-7xl",
+    name: "text-4xl tracking-[0.18em] md:text-7xl",
     slogan: "text-2xl tracking-[0.02em] md:text-4xl",
     gap: "gap-6"
   },
   footer: {
-    name: "text-3xl tracking-[0.15em] md:text-4xl",
+    name: "text-3xl tracking-[0.18em] md:text-4xl",
     slogan: "text-lg tracking-[0.02em]",
     gap: "gap-3"
   },
   curtain: {
-    name: "text-2xl tracking-[0.35em]",
+    name: "text-2xl tracking-[0.18em]",
     slogan: "text-sm tracking-[0.02em]",
     gap: "gap-3"
   }
