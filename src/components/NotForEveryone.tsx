@@ -180,11 +180,11 @@ function SectionHeading() {
         className="mx-auto max-w-[92rem]"
         variants={introReveal}
       >
-        <h2 className="font-serif text-[clamp(3.25rem,6.4vw,6.75rem)] font-light leading-[0.86] tracking-[-0.015em] text-brand-ivory md:whitespace-nowrap">
-          Not for everyone. <span className="italic text-brand-stone">For you.</span>
+        <h2 className="section-heading md:whitespace-nowrap">
+          Not for everyone. <span className="section-heading-muted">For you.</span>
         </h2>
         <motion.p
-          className="mx-auto mt-8 max-w-2xl text-base font-light leading-8 text-brand-cream/86 md:text-lg"
+          className="section-subtitle mx-auto mt-8 max-w-2xl"
           variants={introReveal}
         >
           Four ways to move with certainty, prepared around your time, privacy, and destination.
@@ -245,10 +245,18 @@ export default function NotForEveryone() {
     mass: 0.72,
     restDelta: 0.001
   });
+  const sectionBackground = useTransform(
+    progress,
+    [0, 0.2, 0.36],
+    ["#08130D", "#08130D", "#0A0A0A"]
+  );
   if (isReduced) return <ReducedMotionCards />;
 
   return (
-    <section className="mobility-section relative border-b border-brand-cream/10 bg-brand-black luxury-noise">
+    <motion.section
+      className="mobility-section relative border-b border-brand-cream/10 luxury-noise"
+      style={{ backgroundColor: sectionBackground }}
+    >
       <div ref={introRef} className="mobility-section__entry bg-brand-deep-forest">
         <motion.div
           className="mx-auto w-full max-w-[90rem]"
@@ -280,6 +288,6 @@ export default function NotForEveryone() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

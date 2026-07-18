@@ -22,10 +22,10 @@ export default function BeforeRequestFAQ() {
           viewport={{ once: true, amount: 0.4 }}
           transition={isReduced ? { duration: 0 } : { duration: 0.8, ease: MOTION_EASE }}
         >
-          <h2 className="mb-4 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl">
-            Private chauffeur service, <span className="italic text-brand-stone">clearly arranged.</span>
+          <h2 className="section-heading mb-6">
+            Private chauffeur service, <span className="section-heading-muted">clearly arranged.</span>
           </h2>
-          <p className="text-sm font-light text-brand-stone">
+          <p className="section-subtitle max-w-xl">
             For anything not covered here, ask directly.
           </p>
         </motion.div>

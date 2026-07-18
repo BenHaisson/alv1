@@ -225,7 +225,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       {/* Compact header — the chapter title lives in FleetRevealMotion above */}
       <div className="mx-auto mb-10 flex max-w-7xl flex-col gap-5 md:mb-12 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
+          <p className="section-subtitle max-w-xl">
             A closer look <span className="italic text-brand-stone">— both cabins.</span>
           </p>
         </div>

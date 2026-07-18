@@ -52,7 +52,7 @@ export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotion
         >
           <motion.h2
             variants={REVEAL_VARIANTS}
-            className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl"
+            className="section-heading"
           >
             Choose your cabin.
           </motion.h2>

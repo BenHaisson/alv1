@@ -18,11 +18,11 @@ export default function StandardsSection() {
         >
           <motion.h2
             variants={REVEAL_VARIANTS}
-            className="mb-6 font-serif text-3xl font-light tracking-tight text-brand-ivory md:text-5xl lg:text-6xl"
+            className="section-heading mb-6"
           >
-            Five principles <span className="font-light italic text-brand-stone">behind every journey.</span>
+            Five principles <span className="section-heading-muted">behind every journey.</span>
           </motion.h2>
-          <motion.p variants={REVEAL_VARIANTS} className="text-base font-light leading-relaxed text-brand-body">
+          <motion.p variants={REVEAL_VARIANTS} className="section-subtitle max-w-2xl">
             The difference is not only the vehicle. It is the preparation, discretion, and
             consistency around it.
           </motion.p>

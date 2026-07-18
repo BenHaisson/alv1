@@ -28,15 +28,15 @@ export default function PreFooterRequest({ onRequestRoute }: PreFooterRequestPro
       >
         <motion.h2
           variants={REVEAL_VARIANTS}
-          className="mx-auto max-w-5xl font-serif text-[clamp(3.25rem,6.4vw,6.75rem)] font-light leading-[0.86] tracking-[-0.015em] text-brand-ivory"
+          className="section-heading mx-auto max-w-5xl"
         >
           Tell us where and when.
-          <span className="block italic text-brand-stone">We will prepare the rest.</span>
+          <span className="section-heading-muted block">We will prepare the rest.</span>
         </motion.h2>
 
         <motion.p
           variants={REVEAL_VARIANTS}
-          className="mx-auto mt-8 max-w-2xl text-base font-light leading-8 text-brand-cream/86 md:text-lg"
+          className="section-subtitle mx-auto mt-8 max-w-2xl"
         >
           Receive a fixed quotation before confirmation, with no taxi-style live meter
           and no uncertainty at arrival.

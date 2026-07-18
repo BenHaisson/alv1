@@ -51,7 +51,7 @@ export default function DestinationStackMotion({ onArrange }: DestinationStackMo
         >
           <motion.h2
             variants={REVEAL_VARIANTS}
-            className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl lg:text-6xl"
+            className="section-heading"
           >
             Where we drive
           </motion.h2>

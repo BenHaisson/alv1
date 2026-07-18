@@ -53,6 +53,27 @@
     @apply mx-auto max-w-7xl;
   }
 
+  .section-heading {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 5.2vw, 5.75rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    color: var(--color-brand-ivory);
+  }
+
+  .section-heading-muted {
+    color: var(--color-brand-stone);
+    font-style: italic;
+  }
+
+  .section-subtitle {
+    font-size: clamp(1rem, 1.35vw, 1.125rem);
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--color-brand-body);
+  }
+
   .panel-hairline {
     @apply border border-brand-cream/18 bg-brand-deep-forest/58;
   }
