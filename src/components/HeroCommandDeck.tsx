@@ -111,9 +111,7 @@ export default function HeroCommandDeck({
     if (!isBookingExpanded || isMobileBooking) return;
 
     const previousBookingExpanded = document.body.getAttribute("data-booking-expanded");
-    const previousOverflow = document.body.style.overflow;
     document.body.setAttribute("data-booking-expanded", "true");
-    document.body.style.overflow = "hidden";
 
     const handlePointerDown = (event: PointerEvent) => {
       if (bookingShellRef.current?.contains(event.target as Node)) return;
@@ -135,7 +133,6 @@ export default function HeroCommandDeck({
       } else {
         document.body.setAttribute("data-booking-expanded", previousBookingExpanded);
       }
-      document.body.style.overflow = previousOverflow;
     };
   }, [isBookingExpanded, isMobileBooking]);
 
@@ -320,7 +317,7 @@ export default function HeroCommandDeck({
             <BookingField
               id="hero-pickup"
               label="Pickup location"
-              className="md:px-6 md:py-5"
+              className="md:px-5 md:py-3"
               onActivate={() => activateBookingField("pickup")}
               validationMessage={showValidation && pickupMissing ? "Enter a pickup location." : undefined}
             >
@@ -335,7 +332,7 @@ export default function HeroCommandDeck({
               />
             </BookingField>
 
-            <div className="grid min-h-[48px] border-b border-brand-cream/20 md:min-h-[90px] md:border-b-0 md:border-r md:border-brand-cream/48">
+            <div className="grid min-h-[34px] border-b border-brand-cream/20 md:min-h-[53px] md:border-b-0 md:border-r md:border-brand-cream/48">
               <AnimatePresence initial={false} mode="sync">
                 {bookingType === "hourly" ? (
                   <BookingField
@@ -343,7 +340,7 @@ export default function HeroCommandDeck({
                     id="hero-duration"
                     label="Duration"
                     replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
                     onActivate={() => activateBookingField("duration")}
                     validationMessage={showValidation && secondFieldMissing ? "Select a duration." : undefined}
                   >
@@ -362,7 +359,7 @@ export default function HeroCommandDeck({
                     id="hero-destination"
                     label="Drop-off location"
                     replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
                     onActivate={() => activateBookingField("destination")}
                     validationMessage={showValidation && secondFieldMissing ? "Enter a drop-off location." : undefined}
                   >
@@ -382,7 +379,7 @@ export default function HeroCommandDeck({
             <BookingField
               id="hero-date"
               label="Date"
-              className="md:px-6 md:py-5"
+              className="md:px-5 md:py-3"
               onActivate={() => activateBookingField("date")}
               validationMessage={showValidation && dateMissing ? "Select a date." : undefined}
             >
@@ -399,7 +396,7 @@ export default function HeroCommandDeck({
             <BookingField
               id="hero-time"
               label="Pickup time"
-              className="md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
+              className="md:border-r md:border-brand-cream/48 md:px-5 md:py-3"
               onActivate={() => activateBookingField("time")}
               validationMessage={showValidation && timeMissing ? "Select a pickup time." : undefined}
             >
@@ -414,7 +411,7 @@ export default function HeroCommandDeck({
               />
             </BookingField>
 
-            <div className="hero-booking-cta flex items-center md:p-5">
+            <div className="hero-booking-cta flex items-center md:p-3">
               <motion.button
                 type="button"
                 onClick={() => {
@@ -426,7 +423,7 @@ export default function HeroCommandDeck({
                 whileHover={isReduced ? undefined : { backgroundColor: "#FAF8F5" }}
                 whileTap={isReduced ? undefined : { opacity: 0.88 }}
                 transition={isReduced ? { duration: 0 } : { duration: 0.15, ease: "easeInOut" }}
-                className="flex h-11 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-brand-black md:h-auto md:w-auto md:py-3.5"
+                className="flex h-8 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-[11px] font-sans font-semibold uppercase tracking-[0.12em] text-brand-black md:h-auto md:w-auto md:py-2"
               >
                 View options
               </motion.button>

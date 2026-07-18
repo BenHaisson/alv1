@@ -180,11 +180,11 @@ function SectionHeading() {
         className="mx-auto max-w-[92rem]"
         variants={introReveal}
       >
-        <h2 className="font-serif text-[clamp(3.15rem,5.45vw,5.45rem)] font-light leading-[0.9] text-brand-ivory md:whitespace-nowrap">
+        <h2 className="font-serif text-[clamp(3.25rem,6.4vw,6.75rem)] font-light leading-[0.86] tracking-[-0.015em] text-brand-ivory md:whitespace-nowrap">
           Not for everyone. <span className="italic text-brand-stone">For you.</span>
         </h2>
         <motion.p
-          className="mx-auto mt-7 max-w-[54ch] text-[15px] font-light leading-6 text-brand-body md:text-lg md:leading-8"
+          className="mx-auto mt-8 max-w-2xl text-base font-light leading-8 text-brand-cream/86 md:text-lg"
           variants={introReveal}
         >
           Four ways to move with certainty, prepared around your time, privacy, and destination.
@@ -196,7 +196,7 @@ function SectionHeading() {
 
 function ReducedMotionCards() {
   return (
-    <section className="mobility-section mobility-section--static relative border-b border-brand-cream/10 bg-brand-black">
+    <section className="mobility-section mobility-section--static relative border-b border-brand-cream/10 bg-brand-deep-forest">
       <div className="mx-auto max-w-[90rem]">
         <SectionHeading />
         <div className="mobility-card-grid mt-0 grid gap-5 md:grid-cols-2">
@@ -249,7 +249,7 @@ export default function NotForEveryone() {
 
   return (
     <section className="mobility-section relative border-b border-brand-cream/10 bg-brand-black luxury-noise">
-      <div ref={introRef} className="mobility-section__entry">
+      <div ref={introRef} className="mobility-section__entry bg-brand-deep-forest">
         <motion.div
           className="mx-auto w-full max-w-[90rem]"
           style={isReduced ? undefined : { opacity: introOpacity, y: introY, scale: introScale }}
