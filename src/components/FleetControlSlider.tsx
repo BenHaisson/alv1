@@ -31,20 +31,32 @@ function ConveyorFrame({
   index,
   total,
   vehicleName,
-  ariaHidden
+  ariaHidden,
+  active,
+  neighbor
 }: {
   frame: VehicleGalleryFrame;
   index: number;
   total: number;
   vehicleName: string;
   ariaHidden?: boolean;
+  active: boolean;
+  neighbor: boolean;
 }) {
   return (
     <motion.figure
       aria-hidden={ariaHidden}
-      whileHover={{ borderColor: "rgba(205,162,80,0.7)" }}
+      {...(ariaHidden ? { inert: true } : {})}
+      animate={{
+        scale: active ? 1 : 0.96,
+        opacity: active ? 1 : neighbor ? 0.65 : 0.42,
+        borderColor: active ? "rgba(205,162,80,0.92)" : "rgba(246,242,233,0.12)"
+      }}
+      whileHover={ariaHidden ? undefined : { borderColor: "rgba(205,162,80,0.7)" }}
       transition={PREMIUM_SPRING}
-      className="relative flex-none overflow-hidden border border-brand-cream/12 bg-brand-black max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
+      data-frame-copy={ariaHidden ? 1 : 0}
+      data-frame-index={index}
+      className="relative flex-none overflow-hidden border bg-brand-black max-md:mb-5 max-md:aspect-[4/5] max-md:w-full md:mr-6 md:h-full"
     >
       <img
         src={frame.image}
@@ -64,7 +76,7 @@ function ConveyorFrame({
       </span>
 
       {/* Caption etched into the lower edge of the frame */}
-      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-black/85 via-brand-black/35 to-transparent p-4 pt-12 md:p-5 md:pt-14">
+      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-black/88 via-brand-black/38 to-transparent p-5 pb-7 pt-14 md:p-6 md:pb-8 md:pt-16">
         <h3 className="font-serif text-base font-light tracking-wide text-brand-ivory md:text-lg">
           {frame.title}
         </h3>
@@ -106,6 +118,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   });
   const [isDragging, setIsDragging] = useState(false);
   const [isHeld, setIsHeld] = useState(false);
+  const [activeFrameIdx, setActiveFrameIdx] = useState(0);
 
   const frames = activeVehicle.gallery ?? [
     { image: activeVehicle.image, title: activeVehicle.name, caption: activeVehicle.subTitle }
@@ -117,8 +130,37 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   useEffect(() => {
     offsetRef.current = 0;
     heldRef.current = false;
+    setActiveFrameIdx(0);
     setIsHeld(false);
   }, [selectedIdx]);
+
+  const updateActiveFrame = () => {
+    const track = trackRef.current;
+    const viewport = track?.parentElement;
+    if (!track || !viewport) return;
+    const viewportRect = viewport.getBoundingClientRect();
+    const viewportCenter = isWide
+      ? viewportRect.left + viewportRect.width / 2
+      : viewportRect.top + viewportRect.height / 2;
+    const frameElements = Array.from(
+      track.querySelectorAll<HTMLElement>('[data-frame-copy="0"]')
+    );
+    if (!frameElements.length) return;
+
+    let nearestIndex = 0;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    frameElements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      const frameCenter = isWide ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+      const distance = Math.abs(frameCenter - viewportCenter);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = Number(element.dataset.frameIndex ?? 0);
+      }
+    });
+
+    setActiveFrameIdx((current) => (current === nearestIndex ? current : nearestIndex));
+  };
 
   // The drift engine: advance unless held, hovered, or being dragged; wrap
   // at half the track so the duplicated run hands off invisibly.
@@ -134,6 +176,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     track.style.transform = isWide
       ? `translate3d(${-offsetRef.current}px, 0, 0)`
       : `translate3d(0, ${-offsetRef.current}px, 0)`;
+    updateActiveFrame();
   });
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -149,12 +192,14 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     dragRef.current.last = event.clientX;
     dragRef.current.moved += Math.abs(delta);
     offsetRef.current -= delta;
+    updateActiveFrame();
   };
 
   const handlePointerEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (dragRef.current.pointerId !== event.pointerId) return;
     dragRef.current.pointerId = null;
     setIsDragging(false);
+    updateActiveFrame();
   };
 
   // Mobile: a tap holds the strip; another releases it.
@@ -163,6 +208,12 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
     heldRef.current = !heldRef.current;
     setIsHeld(heldRef.current);
   };
+
+  const progressLabel = `${String(activeFrameIdx + 1).padStart(2, "0")} / ${String(frames.length).padStart(2, "0")}`;
+  const isNeighborFrame = (index: number) =>
+    Math.abs(index - activeFrameIdx) === 1 ||
+    (activeFrameIdx === 0 && index === frames.length - 1) ||
+    (activeFrameIdx === frames.length - 1 && index === 0);
 
   return (
     <motion.section
@@ -174,10 +225,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
       {/* Compact header — the chapter title lives in FleetRevealMotion above */}
       <div className="mx-auto mb-10 flex max-w-7xl flex-col gap-5 md:mb-12 md:flex-row md:items-end md:justify-between">
         <div>
-          <span className="mb-4 block text-xs font-mono uppercase tracking-[0.3em] text-brand-gold">
-            Inside the Cabins
-          </span>
-          <p className="max-w-xl font-serif text-xl font-light leading-relaxed text-brand-ivory md:text-2xl">
+          <p className="section-subtitle max-w-xl">
             A closer look <span className="italic text-brand-stone">— both cabins.</span>
           </p>
         </div>
@@ -241,7 +289,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                   : `overflow-hidden ${isWide ? (isDragging ? "cursor-grabbing" : "cursor-grab") : ""}`
               }`}
             >
-              <div ref={trackRef} className="fleet-conveyor-track max-md:px-6 md:py-0">
+              <div ref={trackRef} className="motion-carousel-track fleet-conveyor-track max-md:px-6 md:py-0">
                 {copies.map((copy) =>
                   frames.map((frame, idx) => (
                     <ConveyorFrame
@@ -251,6 +299,8 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                       total={frames.length}
                       vehicleName={activeVehicle.name}
                       ariaHidden={copy === 1}
+                      active={idx === activeFrameIdx}
+                      neighbor={isNeighborFrame(idx)}
                     />
                   ))
                 )}
@@ -261,6 +311,26 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-24 bg-gradient-to-l from-brand-black to-transparent md:block lg:w-36" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-brand-black to-transparent md:hidden" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-black to-transparent md:hidden" />
+
+              <div className="pointer-events-none absolute left-5 top-5 z-30 flex items-center gap-4 border border-brand-cream/15 bg-brand-black/78 px-4 py-3 backdrop-blur-sm md:left-10 md:top-8 lg:left-16">
+                <span className="min-w-[4.5rem] text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream">
+                  {progressLabel}
+                </span>
+                <div className="flex items-center gap-2" aria-hidden="true">
+                  {frames.map((frame, index) => (
+                    <motion.span
+                      key={`${activeVehicle.id}-dot-${frame.title}`}
+                      animate={{
+                        width: index === activeFrameIdx ? 22 : 6,
+                        opacity: index === activeFrameIdx ? 1 : 0.42,
+                        backgroundColor: index === activeFrameIdx ? "#CDA250" : "rgba(246,242,233,0.42)"
+                      }}
+                      transition={PREMIUM_SPRING}
+                      className="h-1.5 rounded-full"
+                    />
+                  ))}
+                </div>
+              </div>
 
               {isHeld && (
                 <span className="pointer-events-none absolute bottom-5 right-5 z-30 border border-brand-cream/30 bg-brand-black/80 px-3 py-1.5 text-[9px] font-mono uppercase tracking-[0.2em] text-brand-cream md:hidden">

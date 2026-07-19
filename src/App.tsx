@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { MotionProvider, useMediaQuery } from "./components/MotionProvider";
 import SmoothScroll from "./components/SmoothScroll";
 import { scrollWindowTo } from "./lib/smoothScroll";
@@ -11,11 +11,10 @@ import FleetControlSlider from "./components/FleetControlSlider";
 import FleetRevealMotion from "./components/motion/FleetRevealMotion";
 import DestinationStackMotion from "./components/motion/DestinationStackMotion";
 import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
-import SectionTransition from "./components/motion/SectionTransition";
 import StackedChapter from "./components/motion/StackedChapter";
 import StandardsSection from "./components/StandardsSection";
-import TrustStrip from "./components/TrustStrip";
 import BeforeRequestFAQ from "./components/BeforeRequestFAQ";
+import PreFooterRequest from "./components/PreFooterRequest";
 import LuxuryFooter from "./components/LuxuryFooter";
 import BrandLockup from "./components/BrandLockup";
 import { EMPTY_BOOKING, vehicleIdFromName, type BookingState } from "./lib/bookingRequest";
@@ -26,54 +25,6 @@ const SECTIONS = [
   { key: "routes", id: "routes-section", label: "03 // THE ROUTES", navLabel: "Routes" },
   { key: "standards", id: "standards-section", label: "04 // THE STANDARD", navLabel: "Standard" }
 ];
-
-function JourneyRail({
-  activeKey,
-  onSelect
-}: {
-  activeKey: string;
-  onSelect: (key: string) => void;
-}) {
-  return (
-    <nav
-      aria-label="Alair Noir interface chapters"
-      className="fixed left-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
-    >
-      {SECTIONS.map((section, index) => {
-        const isActive = activeKey === section.key;
-
-        return (
-          <button
-            key={section.key}
-            type="button"
-            onClick={() => onSelect(section.key)}
-            className="group flex items-center gap-3 text-left focus:outline-none"
-            aria-current={isActive ? "step" : undefined}
-          >
-            <span
-              className={`h-px transition-all duration-300 ${
-                isActive
-                  ? "w-8 bg-brand-gold"
-                  : "w-4 bg-brand-cream/25 group-hover:w-6 group-hover:bg-brand-cream/55"
-              }`}
-            />
-            {/* Label reveals on hover/focus only. Kept collapsed at rest so the
-                persistent active label never overlaps section body text as the
-                page scrolls under this fixed rail. Active state stays legible
-                through the wider gold tick above. */}
-            <span
-              className={`overflow-hidden whitespace-nowrap text-[9px] font-mono uppercase tracking-[0.22em] opacity-0 transition-all duration-300 w-0 group-hover:w-24 group-hover:opacity-100 group-focus-visible:w-24 group-focus-visible:opacity-100 ${
-                isActive ? "text-brand-cream" : "text-brand-stone"
-              }`}
-            >
-              {String(index + 1).padStart(2, "0")} {section.navLabel}
-            </span>
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
 
 export default function App() {
   const isMobileViewport = useMediaQuery("(max-width: 767px)");
@@ -94,13 +45,6 @@ export default function App() {
     }
     window.scrollTo(0, 0);
   }, []);
-
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -158,15 +102,6 @@ export default function App() {
         >
           Skip to content
         </a>
-        {isIntroComplete && (
-          <motion.div
-            className="fixed left-0 right-0 top-0 z-[100] h-[2px] origin-left bg-brand-gold"
-            style={{ scaleX }}
-          />
-        )}
-
-        {isIntroComplete && <JourneyRail activeKey={activeKey} onSelect={scrollToSection} />}
-
         <AnimatePresence>
           {isIntroComplete && showBackToTop && (!isMobileViewport || activeKey !== "hero") && (
             <motion.button
@@ -227,6 +162,7 @@ export default function App() {
             <HeroCommandDeck
               booking={booking}
               onBookingChange={updateBooking}
+              isIntroComplete={isIntroComplete}
             />
           </div>
 
@@ -238,21 +174,21 @@ export default function App() {
               cover previously pinned sheets. z ascends down the page. */}
 
           {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <div className="relative z-[2] -mt-[100svh]">
+          <div className="relative z-[2] -mt-[64svh]">
             <NotForEveryone />
           </div>
 
           {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin
               gallery below. FleetRevealMotion drives its own scroll progress but
               has no internal sticky, so it survives the stacked wrapper. */}
-          <StackedChapter zIndex={3} id="fleet-section">
+          <StackedChapter zIndex={3} id="fleet-section" stacked={false}>
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
             <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </StackedChapter>
 
           {/* Private Interval: the approved cabin video moment — cabin visuals
               preserved. */}
-          <StackedChapter zIndex={4}>
+          <StackedChapter zIndex={4} stacked={false}>
             <PrivateIntervalMotion />
           </StackedChapter>
 
@@ -260,17 +196,15 @@ export default function App() {
               (sticky pin — stays in plain flow). */}
           <div id="routes-section" className="relative z-[5] scroll-mt-20">
             <DestinationStackMotion onArrange={() => scrollToSection("hero")} />
-            <SectionTransition />
           </div>
 
           {/* 05 — The ALAIR Standard — premium positioning. */}
-          <StackedChapter zIndex={6} id="standards-section">
+          <StackedChapter zIndex={6} id="standards-section" stacked={false}>
             <StandardsSection />
           </StackedChapter>
 
-          {/* Compact trust strip — five quiet proof points before the request. */}
-          <div className="relative z-[7]">
-            <TrustStrip />
+          <div className="relative z-[8]">
+            <PreFooterRequest onRequestRoute={() => scrollToSection("hero")} />
           </div>
 
           {/* Final covering sheet — not stacked: the footer is shorter than a

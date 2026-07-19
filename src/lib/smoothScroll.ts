@@ -12,10 +12,26 @@ export function setLenisInstance(lenis: Lenis | null) {
   lenisInstance = lenis;
 }
 
-export function scrollWindowTo(top: number, { immediate = false } = {}) {
-  if (lenisInstance) {
-    lenisInstance.scrollTo(top, { immediate, force: true });
-    return;
+export function scrollWindowTo(top: number, { immediate = false, duration = 1.2 } = {}) {
+  const run = () => {
+    if (lenisInstance) {
+      lenisInstance.scrollTo(top, {
+        immediate,
+        force: true,
+        lock: !immediate,
+        duration
+      });
+      return;
+    }
+    window.scrollTo({ top, behavior: immediate ? "auto" : "smooth" });
+  };
+
+  // Let Lenis finish the current native gesture before replacing its target.
+  // Calling scrollTo in the same wheel/scroll dispatch can otherwise be
+  // overwritten by the gesture's final native position.
+  if (typeof window !== "undefined") {
+    window.requestAnimationFrame(run);
+  } else {
+    run();
   }
-  window.scrollTo({ top, behavior: immediate ? "auto" : "smooth" });
 }

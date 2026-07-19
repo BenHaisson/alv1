@@ -1,0 +1,205 @@
+.mobility-section__viewport--gallery {
+  padding: 0;
+}
+
+.mobility-showcase {
+  background: #061009;
+}
+
+.mobility-showcase__visuals,
+.mobility-showcase__visual,
+.mobility-showcase__image {
+  width: 100%;
+  height: 100%;
+}
+
+.mobility-showcase__visual {
+  transform-origin: center center;
+}
+
+.mobility-showcase__image {
+  object-fit: cover;
+  object-position: var(--desktop-position, center center);
+  filter: brightness(0.72) saturate(0.72) contrast(1.06);
+}
+
+.mobility-showcase__shade {
+  background:
+    linear-gradient(90deg, rgba(3, 12, 7, 0.98) 0%, rgba(3, 12, 7, 0.9) 22%, rgba(3, 12, 7, 0.5) 46%, rgba(3, 9, 6, 0.1) 72%),
+    linear-gradient(180deg, rgba(2, 7, 4, 0.22) 0%, transparent 42%, rgba(2, 7, 4, 0.48) 100%);
+  pointer-events: none;
+}
+
+.mobility-showcase__content {
+  top: 45%;
+  left: clamp(34px, 7.5vw, 124px);
+  width: min(36vw, 500px);
+  transform: translateY(-50%);
+}
+
+.mobility-showcase__accent {
+  width: 52px;
+  transform-origin: left center;
+}
+
+.mobility-showcase__copy-frame {
+  height: clamp(210px, 30vh, 290px);
+  margin-top: clamp(24px, 3.5vh, 38px);
+}
+
+.mobility-showcase__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.mobility-showcase__title {
+  max-width: 500px;
+  font-size: clamp(3.4rem, 5.4vw, 5.8rem);
+  line-height: 0.95;
+}
+
+.mobility-showcase__description {
+  max-width: 420px;
+  margin-top: clamp(22px, 3vh, 34px);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.65;
+}
+
+.mobility-showcase__nav {
+  right: auto;
+  bottom: clamp(24px, 4vh, 44px);
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(430px, 46vw);
+  height: 64px;
+  transform: translateX(-50%);
+}
+
+.mobility-showcase__nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: rgba(246, 242, 233, 0.45);
+}
+
+.mobility-showcase__nav-item[aria-current="step"] {
+  color: var(--color-brand-cream);
+}
+
+.mobility-showcase__nav-item:focus-visible {
+  outline: none;
+}
+
+.mobility-showcase__nav-item:focus-visible .mobility-showcase__nav-icon {
+  border-radius: 999px;
+  outline: 1px solid var(--color-brand-cream);
+  outline-offset: 5px;
+}
+
+.mobility-showcase__nav-icon {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  will-change: transform, opacity, filter;
+}
+
+.mobility-showcase__nav-icon svg {
+  width: 29px;
+  height: 29px;
+}
+
+@media (max-width: 767px) {
+  .mobility-showcase__image {
+    object-position: var(--mobile-position, center 45%);
+    filter: brightness(0.64) saturate(0.68) contrast(1.04);
+  }
+
+  .mobility-showcase__shade {
+    background:
+      linear-gradient(180deg, rgba(3, 10, 6, 0.22) 0%, rgba(3, 10, 6, 0.15) 32%, rgba(3, 10, 6, 0.86) 73%, rgba(3, 10, 6, 0.98) 100%),
+      linear-gradient(90deg, rgba(3, 10, 6, 0.64) 0%, rgba(3, 10, 6, 0.12) 82%);
+  }
+
+  .mobility-showcase__content {
+    top: auto;
+    right: 24px;
+    bottom: 126px;
+    left: 24px;
+    width: auto;
+    transform: none;
+  }
+
+  .mobility-showcase__accent {
+    width: 38px;
+  }
+
+  .mobility-showcase__copy-frame {
+    height: 144px;
+    margin-top: 20px;
+  }
+
+  .mobility-showcase__title {
+    max-width: min(88vw, 420px);
+    font-size: clamp(2.55rem, 11.5vw, 4rem);
+    line-height: 0.96;
+  }
+
+  .mobility-showcase__description {
+    max-width: min(82vw, 360px);
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .mobility-showcase__nav {
+    right: auto;
+    bottom: 14px;
+    left: 50%;
+    width: min(82vw, 300px);
+    height: 58px;
+  }
+
+  .mobility-showcase__nav-item {
+    padding: 7px;
+  }
+
+  .mobility-showcase__nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mobility-showcase__nav-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-height: 680px) and (min-width: 768px) {
+  .mobility-showcase__content {
+    top: 42%;
+  }
+
+  .mobility-showcase__copy-frame {
+    height: 190px;
+    margin-top: 20px;
+  }
+
+  .mobility-showcase__title {
+    font-size: clamp(3rem, 4.8vw, 4.6rem);
+  }
+
+  .mobility-showcase__description {
+    margin-top: 18px;
+  }
+
+  .mobility-showcase__nav {
+    bottom: 18px;
+    height: 58px;
+  }
+}

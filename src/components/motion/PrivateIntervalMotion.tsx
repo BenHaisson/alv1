@@ -33,14 +33,11 @@ export default function PrivateIntervalMotion() {
             transition={{ duration: 0.9, ease: EASE }}
             className="max-w-xl"
           >
-            <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
-              The Private Interval
-            </span>
-            <h2 className="font-serif text-3xl font-light leading-[1.1] tracking-tight text-brand-ivory md:text-5xl">
+            <h2 className="section-heading">
               A room between obligations,
-              <span className="italic text-brand-stone"> not a ride.</span>
+              <span className="section-heading-muted"> not a ride.</span>
             </h2>
-            <p className="mt-6 max-w-md text-sm font-light leading-relaxed text-brand-ivory/80 md:text-base">
+            <p className="section-subtitle mt-8 max-w-md">
               Work, call, read, or say nothing at all. The cabin stays quiet
               enough to think, and private enough that none of it leaves
               the car.
