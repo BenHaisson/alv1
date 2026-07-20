@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { useReducedMotionPref, CornerMarkers } from "./MotionProvider";
 import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
+import DateField from "./DateField";
+import TimeField from "./TimeField";
 import BookingOptionsSheet from "./BookingOptionsSheet";
 import { HERO_VIDEO } from "../data/visualJourney";
 import { DURATION_OPTIONS, type BookingState, type TripType } from "../lib/bookingRequest";
@@ -14,6 +16,7 @@ interface HeroCommandDeckProps {
 }
 
 type MapTarget = "pickup" | "destination" | null;
+type ActiveField = "pickup" | "destination" | "date" | "time" | null;
 
 // Leaflet (+ OSM tiles) only downloads once someone actually opens the map
 // picker — a rare interaction — instead of bundling it into the initial load.
@@ -49,11 +52,18 @@ export default function HeroCommandDeck({
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const [hasOpenedMap, setHasOpenedMap] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [activeField, setActiveField] = useState<ActiveField>(null);
 
   const openMap = (target: Exclude<MapTarget, null>) => {
     setHasOpenedMap(true);
     setMapTarget(target);
   };
+
+  const setFieldOpen = (field: Exclude<ActiveField, null>) => (open: boolean) =>
+    setActiveField((current) => (open ? field : current === field ? null : current));
+
+  const fieldUnderlineClass = (field: Exclude<ActiveField, null>) =>
+    activeField === field ? "border-brand-gold" : "border-transparent";
 
   const reveal = (delay: number) =>
     isReduced
@@ -149,7 +159,7 @@ export default function HeroCommandDeck({
               second slot swaps between Destination (one-way) and Duration
               (hourly) with the trip type tabs above. */}
           <div className="mt-4 grid grid-cols-1 divide-y divide-brand-cream/10 border-t border-brand-cream/10 md:grid-cols-[1.05fr_1.05fr_0.8fr_0.9fr_0.8fr_auto] md:divide-x md:divide-y-0">
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <div className={`group border-b-2 px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4 ${fieldUnderlineClass("pickup")}`}>
               <label htmlFor="hero-pickup" className={fieldLabelClass}>
                 Pickup location
               </label>
@@ -162,12 +172,14 @@ export default function HeroCommandDeck({
                   onOpenMap={() => openMap("pickup")}
                   showCurrentLocation
                   inputClassName={fieldInputClass}
+                  isOpen={activeField === "pickup"}
+                  onOpenChange={setFieldOpen("pickup")}
                 />
               </div>
             </div>
 
             {booking.tripType === "hourly" ? (
-              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <div className="group border-b-2 border-transparent px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
                 <label htmlFor="hero-duration" className={fieldLabelClass}>
                   Duration
                 </label>
@@ -185,7 +197,7 @@ export default function HeroCommandDeck({
                 </select>
               </div>
             ) : (
-              <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+              <div className={`group border-b-2 px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4 ${fieldUnderlineClass("destination")}`}>
                 <label htmlFor="hero-destination" className={fieldLabelClass}>
                   Destination
                 </label>
@@ -197,26 +209,31 @@ export default function HeroCommandDeck({
                     onChange={(location) => onBookingChange({ destination: location })}
                     onOpenMap={() => openMap("destination")}
                     inputClassName={fieldInputClass}
+                    isOpen={activeField === "destination"}
+                    onOpenChange={setFieldOpen("destination")}
                   />
                 </div>
               </div>
             )}
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <div className={`group border-b-2 px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4 ${fieldUnderlineClass("date")}`}>
               <label htmlFor="hero-date" className={fieldLabelClass}>
                 Date
               </label>
-              <input
-                id="hero-date"
-                type="date"
-                placeholder="Select date"
-                value={booking.date}
-                onChange={(e) => onBookingChange({ date: e.target.value })}
-                className={`${fieldInputClass} mt-1.5`}
-              />
+              <div className="mt-1.5">
+                <DateField
+                  id="hero-date"
+                  placeholder="Select date"
+                  value={booking.date}
+                  onChange={(date) => onBookingChange({ date })}
+                  isOpen={activeField === "date"}
+                  onOpenChange={setFieldOpen("date")}
+                  buttonClassName={fieldInputClass}
+                />
+              </div>
             </div>
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <div className="group border-b-2 border-transparent px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
               <label htmlFor="hero-flight" className={fieldLabelClass}>
                 Flight number
               </label>
@@ -230,18 +247,21 @@ export default function HeroCommandDeck({
               />
             </div>
 
-            <div className="group px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4">
+            <div className={`group border-b-2 px-4 py-3.5 transition-colors duration-200 focus-within:bg-brand-cream/[0.03] md:px-5 md:py-4 ${fieldUnderlineClass("time")}`}>
               <label htmlFor="hero-time" className={fieldLabelClass}>
                 Pickup time
               </label>
-              <input
-                id="hero-time"
-                type="time"
-                placeholder="Select time"
-                value={booking.time}
-                onChange={(e) => onBookingChange({ time: e.target.value })}
-                className={`${fieldInputClass} mt-1.5`}
-              />
+              <div className="mt-1.5">
+                <TimeField
+                  id="hero-time"
+                  placeholder="Select time"
+                  value={booking.time}
+                  onChange={(time) => onBookingChange({ time })}
+                  isOpen={activeField === "time"}
+                  onOpenChange={setFieldOpen("time")}
+                  buttonClassName={fieldInputClass}
+                />
+              </div>
             </div>
 
             <div className="flex items-center p-3 md:p-2.5">

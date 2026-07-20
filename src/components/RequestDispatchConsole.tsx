@@ -2,6 +2,8 @@ import { lazy, Suspense, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
+import DateField from "./DateField";
+import TimeField from "./TimeField";
 import {
   VEHICLE_META,
   DURATION_OPTIONS,
@@ -19,6 +21,7 @@ const TRIP_TABS: { id: TripType; label: string }[] = [
 ];
 
 type MapTarget = "pickup" | "destination" | null;
+type ActiveField = "pickup" | "destination" | "date" | "time" | null;
 
 // Leaflet (+ OSM tiles) only downloads once someone actually opens the map
 // picker — a rare interaction — instead of bundling it into the initial load.
@@ -44,12 +47,16 @@ export default function RequestDispatchConsole({
   const [isCopied, setIsCopied] = useState(false);
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const [hasOpenedMap, setHasOpenedMap] = useState(false);
+  const [activeField, setActiveField] = useState<ActiveField>(null);
   const isReduced = useReducedMotionPref();
 
   const openMap = (target: Exclude<MapTarget, null>) => {
     setHasOpenedMap(true);
     setMapTarget(target);
   };
+
+  const setFieldOpen = (field: Exclude<ActiveField, null>) => (open: boolean) =>
+    setActiveField((current) => (open ? field : current === field ? null : current));
 
   const vehicleMeta = vehicleMetaFor(booking.vehicle);
   const requestText = buildRequestText(booking);
@@ -126,6 +133,8 @@ export default function RequestDispatchConsole({
                     showCurrentLocation
                     warningInFlow
                     inputClassName={inputClass}
+                    isOpen={activeField === "pickup"}
+                    onOpenChange={setFieldOpen("pickup")}
                   />
                 </div>
                 {booking.tripType === "hourly" ? (
@@ -159,6 +168,8 @@ export default function RequestDispatchConsole({
                       onOpenMap={() => openMap("destination")}
                       warningInFlow
                       inputClassName={inputClass}
+                      isOpen={activeField === "destination"}
+                      onOpenChange={setFieldOpen("destination")}
                     />
                   </div>
                 )}
@@ -169,24 +180,28 @@ export default function RequestDispatchConsole({
                   <label htmlFor="req-date" className={labelClass}>
                     Date
                   </label>
-                  <input
+                  <DateField
                     id="req-date"
-                    type="date"
+                    placeholder="Select date"
                     value={booking.date}
-                    onChange={(e) => onBookingChange({ date: e.target.value })}
-                    className={inputClass}
+                    onChange={(date) => onBookingChange({ date })}
+                    isOpen={activeField === "date"}
+                    onOpenChange={setFieldOpen("date")}
+                    buttonClassName={inputClass}
                   />
                 </div>
                 <div>
                   <label htmlFor="req-time" className={labelClass}>
                     Time (Zürich local)
                   </label>
-                  <input
+                  <TimeField
                     id="req-time"
-                    type="time"
+                    placeholder="Select time"
                     value={booking.time}
-                    onChange={(e) => onBookingChange({ time: e.target.value })}
-                    className={inputClass}
+                    onChange={(time) => onBookingChange({ time })}
+                    isOpen={activeField === "time"}
+                    onOpenChange={setFieldOpen("time")}
+                    buttonClassName={inputClass}
                   />
                 </div>
               </div>

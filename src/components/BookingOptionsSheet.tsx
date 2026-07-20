@@ -9,6 +9,7 @@ import {
   whatsappLink,
   type BookingState
 } from "../lib/bookingRequest";
+import { formatDateDisplay, formatTimeDisplay } from "../lib/dateTime";
 import { CornerMarkers, useMediaQuery, useReducedMotionPref } from "./MotionProvider";
 
 interface BookingOptionsSheetProps {
@@ -54,8 +55,8 @@ export default function BookingOptionsSheet({
   const pickupText = locationText(booking.pickup) || TO_BE_CONFIRMED;
   const destinationText = locationText(booking.destination) || TO_BE_CONFIRMED;
   const routeText = isHourly ? pickupText : `${pickupText} → ${destinationText}`;
-  const dateText = booking.date || TO_BE_CONFIRMED;
-  const timeText = booking.time || TO_BE_CONFIRMED;
+  const dateText = formatDateDisplay(booking.date) || TO_BE_CONFIRMED;
+  const timeText = formatTimeDisplay(booking.time) || TO_BE_CONFIRMED;
   const vehicleMeta = VEHICLE_META[booking.vehicle] ?? VEHICLE_META["bmw-i7"];
 
   // Lock page scroll behind the panel while it's open; internal scroll stays local.

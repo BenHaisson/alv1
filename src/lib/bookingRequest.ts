@@ -1,4 +1,5 @@
 import { imageAssets } from "../assets";
+import { formatDateDisplay, formatTimeDisplay } from "./dateTime";
 
 /**
  * Shared booking state + request-text builder.
@@ -174,9 +175,11 @@ export function buildRequestText(booking: BookingState): string {
     if (destinationMapsLink) lines.push(`Dest. Maps  : ${destinationMapsLink}`);
   }
 
+  const dateDisplay = formatDateDisplay(booking.date);
+  const timeDisplay = formatTimeDisplay(booking.time);
   lines.push(
-    `Date        : ${booking.date || "To be confirmed"}`,
-    `Time        : ${booking.time ? `${booking.time} (Zürich local)` : "To be confirmed"}`
+    `Date        : ${dateDisplay || "To be confirmed"}`,
+    `Time        : ${timeDisplay ? `${timeDisplay} (Zürich local)` : "To be confirmed"}`
   );
 
   if (booking.flightNumber.trim()) lines.push(`Flight      : ${booking.flightNumber.trim()}`);

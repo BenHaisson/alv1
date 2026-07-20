@@ -11,6 +11,10 @@ interface PlaceAutocompleteFieldProps {
   onChange: (location: LocationValue) => void;
   onOpenMap: () => void;
   inputClassName: string;
+  /** Controlled open state — lets the parent enforce "only one picker open
+   *  at a time" across pickup/destination/date/time. */
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
   /** "Use current location" only makes sense for a pickup field. */
   showCurrentLocation?: boolean;
   /** Bar cells are a fixed-height grid row (absolute overlay); the form
@@ -47,6 +51,8 @@ export default function PlaceAutocompleteField({
   onChange,
   onOpenMap,
   inputClassName,
+  isOpen,
+  onOpenChange,
   showCurrentLocation = false,
   warningInFlow = false
 }: PlaceAutocompleteFieldProps) {
@@ -54,7 +60,6 @@ export default function PlaceAutocompleteField({
   const isReduced = useReducedMotionPref();
   const [suggestions, setSuggestions] = useState<PhotonSuggestion[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
-  const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -65,7 +70,7 @@ export default function PlaceAutocompleteField({
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        onOpenChange(false);
       }
     };
     document.addEventListener("mousedown", handlePointerDown);
@@ -80,7 +85,7 @@ export default function PlaceAutocompleteField({
     onChange({ ...EMPTY_LOCATION, description: text });
     setLocationError(null);
     setActiveIndex(-1);
-    setIsOpen(true);
+    onOpenChange(true);
 
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     if (!text.trim()) {
@@ -105,7 +110,7 @@ export default function PlaceAutocompleteField({
   };
 
   const handleSelect = (suggestion: PhotonSuggestion) => {
-    setIsOpen(false);
+    onOpenChange(false);
     setSuggestions([]);
     setSearchStatus("idle");
     onChange(suggestion.location);
@@ -140,7 +145,7 @@ export default function PlaceAutocompleteField({
           if (result.status === "error") setLocationError(SERVICE_UNAVAILABLE_MESSAGE);
         }
         setIsLocating(false);
-        setIsOpen(false);
+        onOpenChange(false);
       },
       () => {
         setLocationError(LOCATION_DENIED_MESSAGE);
@@ -152,7 +157,7 @@ export default function PlaceAutocompleteField({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen || suggestions.length === 0) {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") onOpenChange(false);
       return;
     }
     if (event.key === "ArrowDown") {
@@ -165,7 +170,7 @@ export default function PlaceAutocompleteField({
       event.preventDefault();
       handleSelect(suggestions[activeIndex]);
     } else if (event.key === "Escape") {
-      setIsOpen(false);
+      onOpenChange(false);
     }
   };
 
@@ -191,7 +196,7 @@ export default function PlaceAutocompleteField({
         placeholder={placeholder}
         value={value.description}
         onChange={(event) => handleInputChange(event.target.value)}
-        onFocus={() => setIsOpen(true)}
+        onFocus={() => onOpenChange(true)}
         onKeyDown={handleKeyDown}
         className={inputClassName}
         role="combobox"
@@ -249,7 +254,7 @@ export default function PlaceAutocompleteField({
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
-                  setIsOpen(false);
+                  onOpenChange(false);
                   onOpenMap();
                 }}
                 className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[11px] font-mono uppercase tracking-[0.16em] text-brand-cream transition-colors duration-150 hover:bg-brand-cream/5"
