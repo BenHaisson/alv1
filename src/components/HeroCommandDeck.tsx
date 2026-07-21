@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Fragment, lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   CalendarCheck,
   CalendarDays,
@@ -10,9 +10,8 @@ import {
   Timer,
   type LucideIcon
 } from "lucide-react";
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
-import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
 import BookingOptionsSheet from "./BookingOptionsSheet";
 import { BookingCard } from "./booking/BookingCard";
@@ -20,7 +19,7 @@ import { BookingDatePicker } from "./booking/BookingDatePicker";
 import { BookingDropdown } from "./booking/BookingDropdown";
 import { BookingField } from "./booking/BookingField";
 import { SegmentedControl, type BookingType } from "./booking/SegmentedControl";
-import { HERO_VIDEO } from "../data/visualJourney";
+import { imageAssets } from "../assets";
 import {
   DATE_INPUT_PLACEHOLDER,
   DURATION_OPTIONS,
@@ -32,7 +31,6 @@ import {
 interface HeroCommandDeckProps {
   booking: BookingState;
   onBookingChange: (patch: Partial<BookingState>) => void;
-  isIntroComplete: boolean;
 }
 
 type MapTarget = "pickup" | "destination" | null;
@@ -84,14 +82,9 @@ const FIELD_CUES: Record<ActiveBookingField, { icon: LucideIcon; title: string; 
   }
 };
 
-export default function HeroCommandDeck({
-  booking,
-  onBookingChange,
-  isIntroComplete
-}: HeroCommandDeckProps) {
+export default function HeroCommandDeck({ booking, onBookingChange }: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
   const isMobileBooking = useMediaQuery("(max-width: 767px)");
-  const sectionRef = useRef<HTMLElement>(null);
   const bookingShellRef = useRef<HTMLDivElement>(null);
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const [hasOpenedMap, setHasOpenedMap] = useState(false);
@@ -177,88 +170,19 @@ export default function HeroCommandDeck({
   const timeMissing = !booking.time.trim();
   const isBookingValid = !pickupMissing && !secondFieldMissing && !dateMissing && !timeMissing;
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
-  });
-  const stagedProgress = useSpring(scrollYProgress, {
-    stiffness: 76,
-    damping: 24,
-    restDelta: 0.001
-  });
-  const backgroundScale = useTransform(stagedProgress, [0, 0.22, 0.62, 1], [1.01, 1.03, 1.12, 1.08]);
-  const backgroundY = useTransform(stagedProgress, [0, 0.62, 1], ["2.5%", "-1.5%", "-3.5%"]);
-  const heroBackdropOpacity = useTransform(stagedProgress, [0, 0.42, 0.78, 1], [1, 0.86, 0.38, 0]);
-  const heroContentOpacity = useTransform(stagedProgress, [0, 0.32, 0.68, 0.92], [1, 0.9, 0.36, 0]);
-  const gradientOpacity = useTransform(stagedProgress, [0, 0.42, 1], [0.28, 0.86, 1]);
-  const mobileBackgroundY = useTransform(
-    stagedProgress,
-    [0, 0.34, 0.62, 1],
-    ["1%", "-2%", "-10%", "-12%"]
-  );
-  const bookingScrollY = useTransform(stagedProgress, [0, 0.42, 0.78, 1], [0, -24, -104, -148]);
-  const bookingScrollOpacity = useTransform(stagedProgress, [0, 0.36, 0.72, 0.9], [1, 1, 0.48, 0]);
-  const reveal = (delay: number, y: number) => ({
-    initial: isReduced ? false : { opacity: 0, y, filter: "blur(8px)" },
-    animate:
-      isReduced || isIntroComplete
-        ? { opacity: 1, y: 0, filter: "blur(0px)" }
-        : { opacity: 0, y, filter: "blur(8px)" },
-    transition: isReduced ? undefined : { duration: 1.08, delay, ease: EASE }
-  });
-  const carReveal = {
-    initial: isReduced ? false : { opacity: 0, filter: "blur(6px)" },
-    animate:
-      isReduced || isIntroComplete
-        ? { opacity: 1, filter: "blur(0px)" }
-        : { opacity: 0, filter: "blur(6px)" },
-    transition: isReduced ? undefined : { duration: 1.2, delay: 0, ease: EASE }
-  };
-
   return (
     <section
-      ref={sectionRef}
-      className={`relative border-b border-brand-cream/10 bg-brand-black luxury-noise ${
-        isReduced ? "min-h-[100svh]" : "h-[160svh] md:min-h-[180svh]"
-      }`}
+      className="hero-fixed-bg relative h-[100svh] bg-brand-black luxury-noise"
+      style={
+        {
+          "--hero-bg": `url(${imageAssets.bookingHeroZurichGold})`,
+          "--hero-bg-mobile": `url(${imageAssets.bookingHeroMobileAlairNoir})`
+        } as CSSProperties
+      }
     >
-      <div
-        className={
-          isReduced
-            ? "relative min-h-[100svh] overflow-hidden"
-            : "sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-0 md:h-[100svh]"
-        }
-      >
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={
-            isReduced
-              ? undefined
-              : isMobileBooking
-                ? { scale: backgroundScale, y: mobileBackgroundY, opacity: heroBackdropOpacity }
-                : { scale: backgroundScale, y: backgroundY, opacity: heroBackdropOpacity }
-          }
-        >
-          <motion.div {...carReveal} className="absolute inset-0">
-            <CinematicVideoBackground
-              slot={HERO_VIDEO}
-              overlay={false}
-              priority
-              mediaClassName="scale-[1.14] object-[50%_58%] grayscale-[0.12] brightness-[0.88] contrast-[1.06] md:scale-[1.12] md:object-[50%_54%] md:brightness-[0.82]"
-            />
-          </motion.div>
-        </motion.div>
+      <div aria-hidden="true" className="hero-image-overlay absolute inset-0 z-10" />
 
-      <motion.div
-        aria-hidden="true"
-        className="hero-image-overlay absolute inset-0 z-10"
-        style={isReduced ? undefined : { opacity: gradientOpacity }}
-      />
-
-      <motion.div
-        className="relative z-20 h-full px-4 pb-[max(14px,env(safe-area-inset-bottom))] text-center md:px-12"
-        style={isReduced ? undefined : { opacity: heroContentOpacity }}
-      >
+      <div className="relative z-20 h-full px-4 pb-[max(14px,env(safe-area-inset-bottom))] text-center md:px-12">
         <AnimatePresence>
           {isBookingExpanded && (
             <motion.div
@@ -276,11 +200,6 @@ export default function HeroCommandDeck({
           ref={bookingShellRef}
           layout
           layoutDependency={isBookingExpanded}
-          style={
-            isReduced || isBookingExpanded
-              ? undefined
-              : { y: bookingScrollY, opacity: bookingScrollOpacity }
-          }
           transition={{
             layout: { duration: 0.34, ease: EASE }
           }}
@@ -292,23 +211,14 @@ export default function HeroCommandDeck({
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
         >
-          <motion.div
-            {...reveal(0.24, isMobileBooking ? 64 : 86)}
-            className="flex w-full flex-col items-center"
-          >
+          <div className="hero-card-entrance flex w-full flex-col items-center">
           <div className="mb-4 w-full text-center md:mb-5">
-            <motion.p
-              {...reveal(0.08, isMobileBooking ? 24 : 30)}
-              className="mb-2 font-mono text-[11px] font-normal uppercase leading-none tracking-[0.24em] text-brand-cream/75"
-            >
+            <p className="mb-2 font-mono text-[11px] font-normal uppercase leading-none tracking-[0.24em] text-brand-cream/75">
               Private chauffeur service in Zürich
-            </motion.p>
-            <motion.h1
-              {...reveal(0.24, isMobileBooking ? 30 : 36)}
-              className="mx-auto max-w-full whitespace-nowrap font-serif text-[clamp(1.85rem,8vw,3.55rem)] font-light leading-[0.98] tracking-[-0.025em] text-brand-ivory md:text-[clamp(3rem,4vw,3.5625rem)]"
-            >
+            </p>
+            <h1 className="mx-auto max-w-full whitespace-nowrap font-serif text-[clamp(1.85rem,8vw,3.55rem)] font-light leading-[0.98] tracking-[-0.025em] text-brand-ivory md:text-[clamp(3rem,4vw,3.5625rem)]">
               Your chauffeur <span className="italic text-brand-stone/90">is ready.</span>
-            </motion.h1>
+            </h1>
           </div>
 
           <SegmentedControl value={bookingType} onChange={handleBookingTypeChange} />
@@ -457,10 +367,7 @@ export default function HeroCommandDeck({
           </BookingCard>
 
           {!isBookingExpanded && (
-            <motion.div
-              {...reveal(0.82, 18)}
-              className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0"
-            >
+            <div className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0">
               {TRUST_LINE.map((item, index) => {
                 const TrustIcon = item.icon;
 
@@ -483,11 +390,11 @@ export default function HeroCommandDeck({
                   </Fragment>
                 );
               })}
-            </motion.div>
+            </div>
           )}
-          </motion.div>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
 
       {hasOpenedMap && (
         <Suspense fallback={null}>
@@ -509,7 +416,6 @@ export default function HeroCommandDeck({
         booking={booking}
         onBookingChange={onBookingChange}
       />
-      </div>
     </section>
   );
 }

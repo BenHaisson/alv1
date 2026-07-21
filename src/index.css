@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  --color-background: #0A0A0A;
+  --color-background: #000000;
   --color-surface: #08130D;
   --color-ivory: #FAF8F5;
   --color-cream: #F6F2E9;
@@ -20,7 +20,7 @@
   --font-sans: "Inter", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
 
-  --color-brand-black: #0A0A0A;
+  --color-brand-black: #000000;
   --color-brand-forest: #08130D;
   --color-brand-deep-forest: #08130D;
   /* Slightly lifted forest for nested cards / hover states on green, so
@@ -470,7 +470,7 @@
 
   .booking-type-toggle button.active {
     background: #d4aa43;
-    color: #0a0a0a;
+    color: #000000;
   }
 
   @media (min-width: 768px) and (max-height: 800px) {
@@ -612,7 +612,7 @@
 
 /* General Layout Adjustments */
 body {
-  background-color: #0A0A0A;
+  background-color: #000000;
   color: #FAF8F5;
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -633,7 +633,7 @@ body[data-booking-expanded="true"] #hero-section {
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #000000;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(214, 199, 176, 0.15);
@@ -694,8 +694,56 @@ body[data-booking-expanded="true"] #hero-section {
     rgba(5, 7, 6, 0.22) 0%,
     rgba(5, 7, 6, 0.06) 38%,
     rgba(5, 7, 6, 0.92) 88%,
-    #0A0A0A 100%
+    #000000 100%
   );
+}
+
+/* Fixed-background hero: the image is pinned to the viewport (not the
+   document) and clipped to the hero's box, so it stays still while the
+   page scrolls and disappears once the hero has scrolled past. Pure CSS —
+   no scroll listeners, no parallax libraries. */
+.hero-fixed-bg {
+  background-image: var(--hero-bg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .hero-fixed-bg {
+    background-image: var(--hero-bg-mobile, var(--hero-bg));
+  }
+}
+
+/* iOS Safari ignores/janks background-attachment: fixed with cover —
+   degrade gracefully to a normal scrolling background there. */
+@supports (-webkit-touch-callout: none) {
+  .hero-fixed-bg {
+    background-attachment: scroll;
+  }
+}
+
+/* One-time booking-card entrance on page load (not scroll-linked). */
+@keyframes heroSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-card-entrance {
+  animation: heroSlideUp 0.3s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-card-entrance {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -735,7 +783,7 @@ body[data-booking-expanded="true"] #hero-section {
    (a separate Leaflet pane) stays crisp and untouched. Attribution is kept
    fully visible per OSM's terms, just restyled to read on a dark map. ── */
 .alair-leaflet {
-  background: #0a0a0a;
+  background: #000000;
 }
 .alair-leaflet .leaflet-tile-pane {
   filter: grayscale(0.45) brightness(0.78) contrast(1.12);

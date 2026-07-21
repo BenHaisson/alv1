@@ -1,174 +1,261 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
-import { FLEET_REVEAL } from "../../data/visualJourney";
-import { useMediaQuery, useReducedMotionPref, CornerMarkers } from "../MotionProvider";
-import MotionImage from "./MotionImage";
-import CinematicVideoBackground from "./CinematicVideoBackground";
-import { MOTION_EASE, PREMIUM_SPRING, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../../lib/motion";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform, useSpring } from "motion/react";
+import {
+  Armchair,
+  AudioLines,
+  Luggage,
+  Monitor,
+  ShieldCheck,
+  Smartphone,
+  Snowflake,
+  UserRound,
+  type LucideIcon
+} from "lucide-react";
+import { useReducedMotionPref } from "../MotionProvider";
+import "./fleet-detail.css";
 
 interface FleetRevealMotionProps {
   onRequestScroll?: (vehicleName?: string) => void;
 }
 
+interface Feature {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+const FEATURES: Feature[] = [
+  { icon: Armchair, title: "Executive Rear Lounge", description: "Reclining executive seats with generous legroom." },
+  { icon: AudioLines, title: "Ultra Quiet Cabin", description: "Near-silent electric comfort for a calm journey." },
+  { icon: UserRound, title: "Passenger Capacity", description: "Up to 4 passengers." },
+  { icon: ShieldCheck, title: "Privacy Focused", description: "Tinted rear glass and discreet chauffeur service." },
+  { icon: Luggage, title: "Luggage Space", description: "Up to 3 large suitcases and 1 cabin bag." },
+  { icon: Monitor, title: "BMW Theatre Screen", description: "31-inch rear entertainment experience." },
+  { icon: Snowflake, title: "Four-Zone Climate", description: "Individual climate comfort for every passenger." },
+  { icon: Smartphone, title: "Rear Touch Control", description: "Control seating, lighting, climate and media." }
+];
+
+interface GalleryItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  /** Left undefined until the final photography is delivered — frames stay empty. */
+  image?: string;
+}
+
+const GALLERY_ITEMS: GalleryItem[] = [
+  { id: "exterior-front", title: "Exterior Front", subtitle: "Bold presence. Iconic details.", image: undefined },
+  { id: "exterior-side", title: "Exterior Side", subtitle: "Elegant proportions.", image: undefined },
+  { id: "exterior-rear", title: "Exterior Rear", subtitle: "Distinctive and modern.", image: undefined },
+  { id: "executive-lounge", title: "Executive Lounge", subtitle: "Maximum space and comfort.", image: undefined },
+  { id: "theatre-experience", title: "Theatre Experience", subtitle: "Immersive rear entertainment.", image: undefined },
+  { id: "rear-touch-control", title: "Rear Touch Control", subtitle: "Everything at your fingertips.", image: undefined }
+];
+
+// No real vehicle photography yet — the main frame stays empty until the
+// correct image is uploaded. Keep this undefined, never a placeholder photo.
+const MAIN_VEHICLE_IMAGE: string | undefined = undefined;
+
+function TravelHeadline() {
+  return (
+    <div className="fleet-headline max-w-2xl">
+      <h2 className="section-heading">Travel, Refined</h2>
+      <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-brand-stone md:text-lg">
+        Whether travelling alone or together, every cabin is prepared with the same discreet service, exceptional comfort, and quiet precision.
+      </p>
+    </div>
+  );
+}
+
+interface FleetDetailProps {
+  activeGalleryId: string;
+  onSelectGallery: (id: string) => void;
+  onRequestScroll?: (vehicleName?: string) => void;
+  isReduced: boolean;
+}
+
 /**
- * Section 04 opener — the fleet as a product reveal, not a catalog.
- * The two vehicle cards enter overlapped in the centre and separate into a
- * side-by-side layout as the section scrolls into view (transform/opacity
- * only). Each image reveals through a mask and settles from 1.08 to 1.0.
- * BMW leads, the V-Class follows. Detailed specs remain in FleetControlSlider
- * directly below. Content lives in FLEET_REVEAL (src/data/visualJourney.ts).
+ * The BMW i7 composition, sized to fill its section — vehicle presentation
+ * with an empty studio frame and thumb strip on the left, the "Your Journey"
+ * passenger panel on the right. It sits in normal page flow (no entrance
+ * animation, no scaling) so it reads as part of the page. Every image slot
+ * stays empty until real assets are dropped in.
+ */
+function FleetDetail({ activeGalleryId, onSelectGallery, onRequestScroll, isReduced }: FleetDetailProps) {
+  const active = GALLERY_ITEMS.find((item) => item.id === activeGalleryId) ?? GALLERY_ITEMS[0];
+  const activeIndex = GALLERY_ITEMS.indexOf(active);
+
+  return (
+    <div className="fleet-detail">
+      <div className="bmw-layout">
+        {/* ── Left: vehicle presentation with empty frame + thumb strip ── */}
+        <div className="bmw-vehicle">
+          <span className="bmw-section-label">Our Fleet</span>
+          <div className="bmw-vehicle__heading">
+            <h3 className="bmw-vehicle-title">BMW i7 xDrive60</h3>
+            <span className="bmw-vehicle-year">2026</span>
+          </div>
+          <p className="bmw-vehicle-subtitle">All-electric. Ultra silent. Exceptionally refined.</p>
+          <span className="bmw-vehicle__divider" aria-hidden="true" />
+
+          <div className="main-vehicle-frame" aria-label={`BMW i7 ${active.title} image placeholder`}>
+            {(active.image ?? MAIN_VEHICLE_IMAGE) && (
+              <img src={active.image ?? MAIN_VEHICLE_IMAGE} alt={`BMW i7 xDrive60 — ${active.title}`} />
+            )}
+          </div>
+
+          <div className="fleet-caption-row">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.p
+                key={active.id}
+                className="fleet-caption"
+                initial={isReduced ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={isReduced ? undefined : { opacity: 0, y: -4 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span className="fleet-caption__index">
+                  0{activeIndex + 1} / 0{GALLERY_ITEMS.length}
+                </span>
+                <span className="fleet-caption__title">{active.title}</span>
+                <span className="fleet-caption__subtitle">{active.subtitle}</span>
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          <div className="fleet-thumbs" role="tablist" aria-label="BMW i7 gallery">
+            {GALLERY_ITEMS.map((item) => {
+              const isActive = item.id === activeGalleryId;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  key={item.id}
+                  className={`fleet-thumb${isActive ? " fleet-thumb--active" : ""}`}
+                  onClick={() => onSelectGallery(item.id)}
+                  aria-label={`${item.title} image placeholder`}
+                >
+                  {item.image && <img src={item.image} alt="" loading="lazy" decoding="async" draggable={false} />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Right: passenger experience panel ── */}
+        <div className="bmw-journey bmw-divider">
+          <span className="bmw-section-label">Your Journey</span>
+          <h3 className="bmw-journey-heading">
+            Executive comfort,
+            <br />
+            without compromise.
+          </h3>
+          <p className="bmw-journey-description">
+            Every BMW i7 in our fleet is prepared to deliver a quiet, spacious and refined travel experience for
+            business and private journeys alike.
+          </p>
+
+          <div className="features-grid">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div className="feature-item" key={feature.title}>
+                  <span className="feature-icon" aria-hidden="true">
+                    <Icon strokeWidth={1.2} />
+                  </span>
+                  <div>
+                    <div className="feature-title">{feature.title}</div>
+                    <p className="feature-description">{feature.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="bmw-journey__footer">
+            <p className="bmw-journey__footer-line">
+              Quiet Cabin &bull; Executive Seating &bull; Climate Comfort &bull; Premium Audio
+            </p>
+            <p className="bmw-journey__footer-line--muted">
+              Designed for airport transfers, executive travel and private journeys.
+            </p>
+          </div>
+
+          {onRequestScroll && (
+            <button
+              type="button"
+              className="bmw-journey__cta font-mono"
+              onClick={() => onRequestScroll("BMW i7")}
+            >
+              Reserve this vehicle
+              <span className="bmw-journey__cta-arrow" aria-hidden="true">
+                →
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Section 03 — the fleet. One "Travel, Refined" headline reveals with the
+ * same scroll-linked zoom used by section 02's "Not for everyone." phrase;
+ * beneath it the BMW i7 composition sits in normal page flow, filling the
+ * screen as a plain section — no floating, no scale-in.
  */
 export default function FleetRevealMotion({ onRequestScroll }: FleetRevealMotionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotionPref();
-  const isWide = useMediaQuery("(min-width: 768px)");
+  const [activeGalleryId, setActiveGalleryId] = useState(GALLERY_ITEMS[0].id);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.85", "start 0.25"]
+  // Progress across the whole intro track — from the headline entering at the
+  // bottom (0) to the track fully scrolled past the top (1). The headline is
+  // pinned to the top by CSS sticky; this only drives the zoom: it grows in as
+  // it rises, then shrinks (zooms out) as it settles pinned at the top, and
+  // holds small until the BMW body scrolls up and pushes it away.
+  const { scrollYProgress: introProgress } = useScroll({
+    target: introRef,
+    offset: ["start end", "end start"]
   });
-  const separation = useSpring(scrollYProgress, { stiffness: 70, damping: 24, restDelta: 0.001 });
-
-  // Cards start overlapped toward the centre and separate outward.
-  const leftX = useTransform(separation, [0, 1], ["16%", "0%"]);
-  const rightX = useTransform(separation, [0, 1], ["-16%", "0%"]);
-  const rightOpacity = useTransform(separation, [0, 0.35, 1], [0, 0.2, 1]);
-
-  const animateSeparation = !isReduced && isWide;
+  const easedIntroProgress = useSpring(introProgress, {
+    stiffness: 90,
+    damping: 30,
+    mass: 0.8,
+    restDelta: 0.0005
+  });
+  const introOpacity = useTransform(easedIntroProgress, [0, 0.16, 0.9, 1], [0, 1, 1, 0.6]);
+  const introScale = useTransform(easedIntroProgress, [0, 0.28, 0.46, 1], [0.72, 1.1, 0.82, 0.82]);
 
   return (
     <section
-      ref={sectionRef}
-      className="relative border-b border-brand-cream/10 bg-brand-black px-6 py-24 luxury-noise md:px-12 md:py-32 lg:px-24"
+      className="relative border-b border-brand-cream/10 bg-brand-deep-forest luxury-noise"
       aria-label="The ALAIR NOIR fleet"
     >
-      <div className="mx-auto max-w-7xl">
-        <motion.div
-          className="max-w-2xl"
-          initial={isReduced ? false : "hidden"}
-          whileInView="show"
-          viewport={{ once: true, amount: 0.5 }}
-          variants={STAGGER_GROUP_VARIANTS}
-        >
-          <motion.h2
-            variants={REVEAL_VARIANTS}
-            className="section-heading"
+      <div ref={introRef} className="fleet-intro">
+        <div className="fleet-intro__pin">
+          <motion.div
+            className="fleet-intro__inner"
+            style={
+              isReduced
+                ? undefined
+                : { opacity: introOpacity, scale: introScale, transformOrigin: "left top" }
+            }
           >
-            Travel, Refined
-          </motion.h2>
-          <motion.p
-            variants={REVEAL_VARIANTS}
-            className="mt-6 max-w-xl text-base font-light leading-relaxed text-brand-stone md:text-lg"
-          >
-            Whether travelling alone or together, every cabin is prepared with the same discreet service, exceptional comfort, and quiet precision.
-          </motion.p>
-        </motion.div>
-
-        <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
-          {FLEET_REVEAL.map((vehicle, index) => {
-            const isFirst = index === 0;
-            return (
-              <motion.div
-                key={vehicle.id}
-                initial={isReduced ? false : { opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.9, delay: isReduced ? 0 : index * 0.12, ease: MOTION_EASE }}
-              >
-                <motion.article
-                whileHover={isReduced ? undefined : { y: -4 }}
-                transition={PREMIUM_SPRING}
-                style={
-                  animateSeparation
-                    ? isFirst
-                      ? { x: leftX }
-                      : { x: rightX, opacity: rightOpacity }
-                    : undefined
-                }
-                className="group relative border border-brand-cream/12 bg-brand-deep-forest/40"
-              >
-                <CornerMarkers tone="cream" />
-                {vehicle.video ? (
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <CinematicVideoBackground
-                      slot={vehicle.video}
-                      overlay={false}
-                      mediaClassName="brightness-[0.92] contrast-[1.08]"
-                    />
-                  </div>
-                ) : (
-                  <MotionImage
-                    src={vehicle.image}
-                    alt={vehicle.name}
-                    reveal={isFirst ? "up" : "left"}
-                    delay={isReduced ? 0 : index * 0.18}
-                    className="aspect-[16/10]"
-                    imgClassName="brightness-[0.92] contrast-[1.08]"
-                  />
-                )}
-
-                <div className="flex flex-col gap-4 p-6 md:p-8">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-brand-gold">
-                    {vehicle.role}
-                  </span>
-                  <h3 className="font-serif text-2xl font-light text-brand-ivory md:text-3xl">
-                    {vehicle.name}
-                  </h3>
-                  <p className="max-w-md text-sm font-light leading-relaxed text-brand-stone">
-                    {vehicle.line}
-                  </p>
-
-                  <div className="mt-1">
-                    <span className="mb-3 block text-[9px] font-mono uppercase tracking-[0.24em] text-brand-muted-stone">
-                      Best for
-                    </span>
-                    <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      {vehicle.bestFor.map((item) => (
-                        <li
-                          key={item}
-                          className="flex items-center gap-2.5 text-xs font-light text-brand-ivory/80"
-                        >
-                          <span className="h-px w-3.5 shrink-0 bg-brand-cream/30" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {onRequestScroll && (
-                    <motion.button
-                      type="button"
-                      onClick={() => onRequestScroll(vehicle.name)}
-                      initial="rest"
-                      animate="rest"
-                      whileHover={isReduced ? undefined : "hover"}
-                      variants={{
-                        rest: { y: 0, borderColor: "rgba(234,222,206,0.25)", color: "#EADECE" },
-                        hover: { y: -2, borderColor: "rgba(234,222,206,0.6)", color: "#FAF8F5" }
-                      }}
-                      whileTap={isReduced ? undefined : { scale: 0.985 }}
-                      transition={PREMIUM_SPRING}
-                      className="mt-4 flex w-fit cursor-pointer items-center gap-3 border border-brand-cream/25 px-6 py-3 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream focus:outline-none focus-visible:border-brand-gold"
-                    >
-                      <span>{vehicle.cta}</span>
-                      <motion.span
-                        aria-hidden="true"
-                        variants={{
-                          rest: { x: 0 },
-                          hover: { x: 4 }
-                        }}
-                        transition={PREMIUM_SPRING}
-                      >
-                        →
-                      </motion.span>
-                    </motion.button>
-                  )}
-                </div>
-                </motion.article>
-              </motion.div>
-            );
-          })}
+            <TravelHeadline />
+          </motion.div>
         </div>
+      </div>
+
+      <div className="fleet-body">
+        <FleetDetail
+          activeGalleryId={activeGalleryId}
+          onSelectGallery={setActiveGalleryId}
+          onRequestScroll={onRequestScroll}
+          isReduced={isReduced}
+        />
       </div>
     </section>
   );

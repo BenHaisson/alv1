@@ -218,7 +218,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   return (
     <motion.section
       ref={sectionRef}
-      animate={{ backgroundColor: selectedIdx === 0 ? "#0A0A0A" : "#08130D" }}
+      animate={{ backgroundColor: selectedIdx === 0 ? "#000000" : "#08130D" }}
       transition={{ duration: isReduced ? 0 : MOTION_DURATION.cinematic, ease: MOTION_EASE }}
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >

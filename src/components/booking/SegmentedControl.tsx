@@ -53,7 +53,7 @@ export function SegmentedControl({ value, onChange }: SegmentedControlProps) {
             }}
             animate={{
               backgroundColor: isSelected ? "#D4AA43" : "rgba(0, 0, 0, 0)",
-              color: isSelected ? "#0A0A0A" : "#F6F2E9"
+              color: isSelected ? "#000000" : "#F6F2E9"
             }}
             whileTap={isReduced ? undefined : { scale: 0.985 }}
             transition={

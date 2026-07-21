@@ -7,7 +7,6 @@ import CinematicOpeningPortal from "./components/CinematicOpeningPortal";
 import LuxuryHeader from "./components/LuxuryHeader";
 import HeroCommandDeck from "./components/HeroCommandDeck";
 import NotForEveryone from "./components/NotForEveryone";
-import FleetControlSlider from "./components/FleetControlSlider";
 import FleetRevealMotion from "./components/motion/FleetRevealMotion";
 import DestinationStackMotion from "./components/motion/DestinationStackMotion";
 import PrivateIntervalMotion from "./components/motion/PrivateIntervalMotion";
@@ -156,14 +155,11 @@ export default function App() {
 
           {isIntroComplete && <LuxuryHeader onNavClick={scrollToSection} activeSection={activeKey} />}
 
-          {/* 01 — Booking Hero: the first screen exists only for the order. It
-              slides over the pinned opening portal (stage z-0). */}
+          {/* 01 — Booking Hero: full-viewport, fixed CSS background image.
+              Content scrolls 1:1 with the page; the background stays pinned
+              to the viewport until the hero box scrolls past. */}
           <div id="hero-section" className="relative z-[1]">
-            <HeroCommandDeck
-              booking={booking}
-              onBookingChange={updateBooking}
-              isIntroComplete={isIntroComplete}
-            />
+            <HeroCommandDeck booking={booking} onBookingChange={updateBooking} />
           </div>
 
           {/* From here down each chapter is a sheet in the card stack: it pins
@@ -173,17 +169,18 @@ export default function App() {
               internal sticky pins — inside relative z-index wrappers so they
               cover previously pinned sheets. z ascends down the page. */}
 
-          {/* 02 — "NOT FOR EVERYONE. FOR YOU." — short brand identity. */}
-          <div className="relative z-[2] -mt-[64svh]">
-            <NotForEveryone />
-          </div>
+          {/* 02 — "NOT FOR EVERYONE. FOR YOU." — pins as a stacked sheet; the
+              pure-black Fleet chapter below scrolls up and covers it. */}
+          <StackedChapter zIndex={2}>
+            <NotForEveryone onRequest={() => scrollToSection("hero")} />
+          </StackedChapter>
 
-          {/* 03 — Fleet: visual choice first (reveal cards + Book CTAs), cabin
-              gallery below. FleetRevealMotion drives its own scroll progress but
-              has no internal sticky, so it survives the stacked wrapper. */}
+          {/* 03 — Fleet: "Travel, Refined" headline, then the BMW i7 vehicle
+              detail — image, passenger-experience panel, and gallery.
+              FleetRevealMotion drives its own scroll progress but has no
+              internal sticky, so it survives the stacked wrapper. */}
           <StackedChapter zIndex={3} id="fleet-section" stacked={false}>
             <FleetRevealMotion onRequestScroll={handleFleetRequest} />
-            <FleetControlSlider onRequestScroll={handleFleetRequest} />
           </StackedChapter>
 
           {/* Private Interval: the approved cabin video moment — cabin visuals
