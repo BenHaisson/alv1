@@ -95,9 +95,9 @@ export function BookingDropdown({
         aria-invalid={invalid}
         onClick={() => setIsOpen((open) => !open)}
         onKeyDown={handleKeyDown}
-        className="flex w-full items-center justify-between gap-3 bg-transparent text-left text-[15px] font-light text-brand-cream focus:outline-none"
+        className="flex w-full min-w-0 items-center justify-between gap-3 overflow-hidden bg-transparent text-left font-sans text-[15px] font-light text-brand-cream focus:outline-none"
       >
-        <span className={selectedLabel ? "text-brand-cream" : "text-brand-cream/50"}>
+        <span className={`min-w-0 flex-1 overflow-hidden whitespace-nowrap [mask-image:linear-gradient(to_right,#000_calc(100%-18px),transparent)] ${selectedLabel ? "text-brand-cream" : "text-brand-cream/50"}`}>
           {selectedLabel || placeholder}
         </span>
         <ChevronDown className="h-4 w-4 shrink-0 text-brand-cream" aria-hidden="true" />

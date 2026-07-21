@@ -26,7 +26,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 h-[76px] border-b border-[rgba(246,242,233,0.08)] bg-[rgba(5,8,6,0.72)] backdrop-blur-md md:h-14 md:bg-brand-black/28 md:supports-[backdrop-filter]:bg-brand-black/20 luxury-noise">
+      <header className="fixed left-0 right-0 top-0 z-40 h-[76px] border-b border-brand-cream/10 bg-[linear-gradient(180deg,rgba(5,12,8,0.78),rgba(5,12,8,0.46))] shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md md:h-14 md:bg-[linear-gradient(180deg,rgba(5,12,8,0.7),rgba(5,12,8,0.38))] luxury-noise">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 md:px-8 lg:px-14">
           <motion.button
             type="button"
@@ -36,7 +36,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             transition={{ type: "spring", stiffness: 420, damping: 34 }}
             className="flex cursor-pointer flex-col items-start text-left focus:outline-none"
           >
-            <BrandLockup size="nav" />
+            <BrandLockup size="nav" tone="white" withSlogan={false} />
           </motion.button>
 
           <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary journey">
@@ -52,7 +52,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
                   whileHover={{ y: -1, opacity: 0.92 }}
                   whileTap={{ scale: 0.975 }}
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className={`relative cursor-pointer py-1.5 text-[9px] font-mono uppercase tracking-[0.18em] focus:outline-none ${
+                  className={`relative cursor-pointer py-1.5 text-[10px] font-mono uppercase tracking-[0.16em] focus:outline-none ${
                     isActive ? "text-brand-cream" : "text-brand-stone hover:text-brand-cream"
                   }`}
                 >
@@ -73,14 +73,10 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             <motion.button
               type="button"
               onClick={() => handleLinkClick("hero")}
-              whileHover={{ y: -1, borderColor: "rgba(205, 162, 80, 0.9)" }}
+              whileHover={{ y: -1, borderColor: "rgba(212, 175, 55, 0.9)" }}
               whileTap={{ scale: 0.975 }}
               transition={{ type: "spring", stiffness: 420, damping: 34 }}
-              className={`cursor-pointer border px-4 py-2 text-[9px] font-mono uppercase tracking-[0.2em] ${
-                activeSection === "hero"
-                  ? "border-brand-gold bg-brand-gold-muted text-brand-cream"
-                  : "border-brand-gold/30 text-brand-gold hover:bg-brand-gold-muted"
-              }`}
+              className="cursor-pointer border border-brand-gold bg-brand-gold px-4 py-2 text-[10px] font-mono font-semibold uppercase tracking-[0.16em] text-brand-black hover:bg-brand-ivory hover:border-brand-ivory"
             >
               Request Chauffeur
             </motion.button>

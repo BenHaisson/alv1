@@ -17,12 +17,21 @@ import bmwI7TheatreNight from "./assets/images/bmw_i7_theatre_night.jpg";
 import bmwI7TheatreScreen from "./assets/images/bmw_i7_theatre_screen.jpg";
 import bmwI7Exterior from "./assets/images/bmw_i7_exterior_1782843633996.jpg";
 import bmwI7RearWorkspace from "./assets/images/bmw_i7_rear_workspace_1782861794303.jpg";
+// Branded ALAIR NOIR studio + cabin set (client upload, Jul 2026) — the final
+// photography for the fleet section's vehicle frame and gallery thumbs.
+import bmwI7StudioFront from "./assets/images/bmw_i7_studio_front.png";
+import bmwI7StudioRear from "./assets/images/bmw_i7_studio_rear.png";
+import bmwI7StudioDoorsOpen from "./assets/images/bmw_i7_studio_doors_open.png";
+import bmwI7TheatreAppleTv from "./assets/images/bmw_i7_theatre_apple_tv.png";
+import bmwI7DoorTouchControl from "./assets/images/bmw_i7_door_touch_control.png";
+import bmwI7RearWorkspaceZurich from "./assets/images/bmw_i7_rear_workspace_zurich.png";
+import bmwI7RearClimateConsole from "./assets/images/bmw_i7_rear_climate_console.png";
 import bmwI7RunwaySunset from "./assets/images/bmw_i7_runway_sunset.jpg";
 import bmwI7StMoritzDusk from "./assets/images/bmw_i7_st_moritz_dusk_1782861783352.jpg";
 import bmwI7TarmacMeet from "./assets/images/bmw_i7_tarmac_meet_1782861771287.jpg";
 import chauffeurDoorHotelNight from "./assets/images/chauffeur_door_hotel_night.webp";
-import executiveSchedulesDesktop from "./assets/images/executive_schedules_desktop.jpg";
-import executiveSchedulesMobile from "./assets/images/executive_schedules_mobile.jpg";
+import executiveSchedulesDesktop from "./assets/images/executive_schedules_desktop.png";
+import executiveSchedulesMobile from "./assets/images/executive_schedules_mobile.png";
 import luxuryAirportWelcome from "./assets/images/luxury_airport_welcome_1782845067151.jpg";
 import luxuryBmwI7 from "./assets/images/luxury_bmw_i7_1782845017654.jpg";
 import luxuryVClass from "./assets/images/luxury_v_class_1782845034354.jpg";
@@ -31,8 +40,8 @@ import luxuryVipCabin from "./assets/images/luxury_vip_cabin_1782845049105.jpg";
 // the landscape frame is the desktop crop and the portrait frame is mobile.
 import longDistanceRoutesDesktop from "./assets/images/long_distance_routes_mobile.jpg";
 import longDistanceRoutesMobile from "./assets/images/long_distance_routes_desktop.jpg";
-import privateArrivalsDesktop from "./assets/images/private_arrivals_desktop.jpg";
-import privateArrivalsMobile from "./assets/images/private_arrivals_mobile.jpg";
+import privateArrivalsDesktop from "./assets/images/private_arrivals_desktop.png";
+import privateArrivalsMobile from "./assets/images/private_arrivals_mobile.png";
 import sectionNotForEveryoneZurich from "./assets/images/section_02_not_for_everyone_zurich.png";
 import vclassAlairNoirArrival from "./assets/images/vclass_alair_noir_arrival.png";
 import vclassInterior from "./assets/images/vclass_interior_1782843650116.jpg";
@@ -80,6 +89,13 @@ export const imageAssets = {
   bmwI7RearCabin,
   bmwI7RearConsole,
   bmwI7RearWorkspace,
+  bmwI7StudioFront,
+  bmwI7StudioRear,
+  bmwI7StudioDoorsOpen,
+  bmwI7TheatreAppleTv,
+  bmwI7DoorTouchControl,
+  bmwI7RearWorkspaceZurich,
+  bmwI7RearClimateConsole,
   bmwI7RunwaySunset,
   bmwI7TheatreNight,
   bmwI7TheatreScreen,

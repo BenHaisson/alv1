@@ -1,247 +1,261 @@
-import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { BriefcaseBusiness, MapPin, Plane, Users, type LucideIcon } from "lucide-react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef, type CSSProperties } from "react";
 import { imageAssets } from "../assets";
-import { useReducedMotionPref } from "./MotionProvider";
+import "../mobility-showcase.css";
+import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
 
 interface ServiceCard {
-  label: string;
   title: string;
   description: string;
   image: string;
   mobileImage?: string;
   desktopPosition: string;
   mobilePosition: string;
+  icon: LucideIcon;
 }
 
 const SERVICE_CARDS: ServiceCard[] = [
   {
-    label: "Private",
-    title: "Private arrivals",
-    description: "Your chauffeur is already waiting. No queues, no uncertainty, no delay.",
+    title: "Private Arrival",
+    description: "Flight-tracked airport transfers with your chauffeur waiting before you arrive.",
     image: imageAssets.privateArrivalsDesktop,
     mobileImage: imageAssets.privateArrivalsMobile,
-    desktopPosition: "center 56%",
-    mobilePosition: "center 48%"
+    desktopPosition: "58% 42%",
+    mobilePosition: "68% 50%",
+    icon: Plane
   },
   {
-    label: "Precision",
-    title: "Executive schedules",
-    description: "Built around your agenda, with discreet waiting and flexible departures.",
+    title: "Executive Day",
+    description: "Your private driver remains available throughout meetings, appointments, and changing schedules.",
     image: imageAssets.executiveSchedulesDesktop,
     mobileImage: imageAssets.executiveSchedulesMobile,
-    desktopPosition: "62% 50%",
-    mobilePosition: "center 46%"
+    desktopPosition: "center 42%",
+    mobilePosition: "58% 50%",
+    icon: BriefcaseBusiness
   },
   {
-    label: "Flight-aware",
-    title: "Airport transfers",
-    description: "Flight-aware pickups with seamless transfers from terminal to destination.",
-    image: imageAssets.airportTransfersDesktop,
-    mobileImage: imageAssets.airportTransfersMobile,
-    desktopPosition: "center 58%",
-    mobilePosition: "center 45%"
-  },
-  {
-    label: "Europe",
-    title: "Long-distance routes",
-    description: "Private journeys across Switzerland and throughout Europe, without compromise.",
+    title: "Private Routes",
+    description: "Long-distance travel across Switzerland and Europe without compromise.",
     image: imageAssets.longDistanceRoutesDesktop,
     mobileImage: imageAssets.longDistanceRoutesMobile,
     desktopPosition: "center 58%",
-    mobilePosition: "center 48%"
+    mobilePosition: "center 48%",
+    icon: MapPin
+  },
+  {
+    title: "Group & Family",
+    description: "Spacious executive travel prepared for families, colleagues, and private groups.",
+    image: imageAssets.airportTransfersDesktop,
+    mobileImage: imageAssets.airportTransfersMobile,
+    desktopPosition: "center 58%",
+    mobilePosition: "center 45%",
+    icon: Users
   }
 ];
 
-const FINAL_CARD_HOLD = 0.16;
-const HEADING_REVEAL_END = 0.14;
+const HEADLINE_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const REVEAL_VIEWPORT = { once: true, margin: "0px 0px -12% 0px" } as const;
 
-interface ServiceCardContentProps {
-  card: ServiceCard;
+interface SectionHeadingProps {
+  isReduced: boolean;
 }
 
-function ServiceCardContent({ card }: ServiceCardContentProps) {
-  const isReduced = useReducedMotionPref();
+/**
+ * Staggered top-to-bottom unveiling: line 1 fades up, "For you." follows a
+ * beat later, the underline draws in left-to-right once the text has landed,
+ * and the two supporting lines arrive last, slower and with less movement.
+ */
+function SectionHeading({ isReduced }: SectionHeadingProps) {
+  const reveal = (delay: number, y: number, duration: number) => ({
+    initial: isReduced ? false : { opacity: 0, y },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: REVEAL_VIEWPORT,
+    transition: { duration, delay, ease: HEADLINE_EASE }
+  });
 
   return (
-    <>
-      <picture className="mobility-card__media absolute inset-0 block">
-        {card.mobileImage && <source media="(max-width: 767px)" srcSet={card.mobileImage} />}
-        <motion.img
-          src={card.image}
-          alt=""
-          loading="eager"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          initial={isReduced ? false : { clipPath: "inset(0 0 100% 0)" }}
-          animate={isReduced ? undefined : { clipPath: "inset(0 0 0% 0)" }}
-          whileHover={isReduced ? undefined : { scale: 1.025, filter: "brightness(0.9) contrast(1.06)" }}
-          transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}
-          className="mobility-card__image h-full w-full object-cover brightness-[0.82] contrast-[1.06]"
-        />
-      </picture>
-
-      <motion.div
-        className="mobility-card__content"
-        whileHover={isReduced ? undefined : { y: -5 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <span className="mobility-card__eyebrow font-sans font-medium uppercase text-brand-gold">
-          {card.label}
-        </span>
-        <h3 className="mobility-card__title font-editorial font-normal text-brand-ivory">
-          {card.title}
-        </h3>
-        <span className="mobility-card__divider block h-px bg-brand-gold" aria-hidden="true" />
-        <p className="mobility-card__description font-light text-brand-cream/72">
-          {card.description}
-        </p>
-      </motion.div>
-    </>
-  );
-}
-
-interface StackedServiceCardProps {
-  card: ServiceCard;
-  index: number;
-  progress: MotionValue<number>;
-}
-
-function StackedServiceCard({ card, index, progress }: StackedServiceCardProps) {
-  const isReduced = useReducedMotionPref();
-  const outgoingCards = SERVICE_CARDS.length - 1;
-  const movementRange = 1 - FINAL_CARD_HOLD;
-  const segment = movementRange / outgoingCards;
-  const start = index * segment;
-  const end = start + segment;
-  const isFinalCard = index === SERVICE_CARDS.length - 1;
-  const y = useTransform(
-    progress,
-    isFinalCard ? [0, 1] : [start, end],
-    isFinalCard ? ["0%", "0%"] : ["0%", "-125%"]
-  );
-  const visibility = useTransform(progress, (value) =>
-    isFinalCard || value < end ? ("visible" as const) : ("hidden" as const)
-  );
-
-  return (
-    <motion.article
-      style={{
-        y,
-        visibility,
-        zIndex: SERVICE_CARDS.length - index,
-        ...({
-          "--desktop-position": card.desktopPosition,
-          "--mobile-position": card.mobilePosition
-        } as CSSProperties)
-      }}
-      whileHover={isReduced ? undefined : { borderColor: "rgba(234, 222, 206, 0.28)" }}
-      transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
-      className="mobility-card absolute inset-0 isolate overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest shadow-[0_28px_90px_rgba(0,0,0,0.48)] md:rounded-[28px]"
-    >
-      <ServiceCardContent card={card} />
-    </motion.article>
-  );
-}
-
-function SectionHeading() {
-  return (
-    <div className="mobility-section__header shrink-0 border-b border-brand-cream/10 pb-5 md:pb-6">
-      <div className="flex items-center gap-4 self-start md:pt-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-gold">
-          02
-        </span>
-        <span className="h-px w-12 bg-brand-cream/25" aria-hidden="true" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-brand-stone">
-          Private mobility
-        </span>
-      </div>
-
-      <div className="mt-4 max-w-3xl text-left md:mt-5">
-        <h2 className="font-serif text-[2.65rem] font-light leading-[0.94] text-brand-ivory md:text-5xl lg:text-[3.35rem]">
-          Not for everyone. <span className="italic text-brand-stone">For you.</span>
-        </h2>
-        <p className="mt-3 max-w-[48ch] text-[13px] font-light leading-5 text-brand-body md:text-sm md:leading-6">
-          Four ways to move with certainty, prepared around your time, privacy, and destination.
-        </p>
-      </div>
+    <div className="mx-auto flex max-w-[92rem] flex-col items-center px-5 text-center">
+      <h2 className="section-heading max-w-[min(100%,78rem)] overflow-visible pb-[0.1em] text-[clamp(2.9rem,5.8vw,6.2rem)] leading-[1.05]">
+        <motion.span className="block" {...reveal(0, 20, 0.6)}>
+          Not for everyone.
+        </motion.span>
+        <motion.span className="services-heading-foryou mt-1 block pb-[0.1em]" {...reveal(0.18, 20, 0.6)}>
+          For you.
+        </motion.span>
+      </h2>
+      <motion.span
+        className="mt-6 block h-px w-14 bg-brand-gold/60"
+        style={{ transformOrigin: "left center" }}
+        initial={isReduced ? false : { scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={REVEAL_VIEWPORT}
+        transition={{ duration: 0.4, delay: 0.82, ease: "easeOut" }}
+        aria-hidden="true"
+      />
+      <p className="section-subtitle mx-auto mt-6 max-w-3xl tracking-[0.02em]">
+        <motion.span className="block" {...reveal(1.05, 10, 0.85)}>
+          Every journey begins with a different purpose.
+        </motion.span>
+        <motion.span className="block" {...reveal(1.2, 10, 0.85)}>
+          Each one is prepared with the same discretion, precision, and quiet attention.
+        </motion.span>
+      </p>
     </div>
   );
 }
 
-function ReducedMotionCards() {
+interface EditorialServiceCardProps {
+  card: ServiceCard;
+  index: number;
+  isReduced: boolean;
+  onRequest?: () => void;
+}
+
+function EditorialServiceCard({ card, index, isReduced, onRequest }: EditorialServiceCardProps) {
+  const Icon = card.icon;
+  const cardDelay = index * 0.13;
+  const [firstWord, ...restWords] = card.title.split(" ");
+  const remainder = restWords.join(" ");
+
   return (
-    <section className="mobility-section mobility-section--static relative border-b border-brand-cream/10 bg-brand-black">
-      <div className="mx-auto max-w-[90rem]">
-        <SectionHeading />
-        <div className="mobility-card-grid mt-0 grid gap-5 md:grid-cols-2">
-          {SERVICE_CARDS.map((card) => (
-            <article
-              key={card.title}
-              className="mobility-card relative isolate overflow-hidden rounded-[26px] border border-brand-cream/16 bg-brand-deep-forest md:rounded-[28px]"
-              style={{
-                "--desktop-position": card.desktopPosition,
-                "--mobile-position": card.mobilePosition
-              } as CSSProperties}
-            >
-              <ServiceCardContent card={card} />
-            </article>
-          ))}
-        </div>
+    <motion.article
+      className="service-card-block"
+      style={{
+        "--desktop-position": card.desktopPosition,
+        "--mobile-position": card.mobilePosition
+      } as CSSProperties}
+      initial={isReduced ? false : { opacity: 0, y: 24 }}
+      whileInView={isReduced ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+      transition={{ duration: 0.8, delay: cardDelay, ease: HEADLINE_EASE }}
+    >
+      <div className="service-card">
+        <picture className="service-card__media">
+          {card.mobileImage && <source media="(max-width: 767px)" srcSet={card.mobileImage} />}
+          <img
+            src={card.image}
+            alt=""
+            loading={index < 2 ? "eager" : "lazy"}
+            decoding="async"
+            referrerPolicy="no-referrer"
+            className="service-card__image"
+          />
+        </picture>
+
+        <div className="service-card__scrim" aria-hidden="true" />
+
+        {/* Quiet viewfinder corners replace a solid edge — the same framing
+            motif used on the fleet cards. Draws in a beat after the content
+            settles, once the card has landed. */}
+        <motion.div
+          className="service-card__corners"
+          initial={isReduced ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+          transition={{ duration: 0.6, delay: cardDelay + 0.35, ease: "easeOut" }}
+        >
+          <CornerMarkers tone="cream" />
+        </motion.div>
+
+        <span className="service-card__icon" aria-hidden="true">
+          <Icon strokeWidth={1.25} />
+        </span>
       </div>
-    </section>
+
+      <div className="service-card__caption">
+        <h3 className="service-card__title font-serif">
+          {firstWord}
+          {remainder && (
+            <>
+              {" "}
+              <span className="service-card__title-accent">{remainder}</span>
+            </>
+          )}
+        </h3>
+        <p className="service-card__description font-sans">{card.description}</p>
+        {onRequest && (
+          <button
+            type="button"
+            className="service-card__cta font-mono"
+            onClick={onRequest}
+            aria-label={`Request ${card.title}`}
+          >
+            Request this service
+            <span className="service-card__cta-arrow" aria-hidden="true">
+              →
+            </span>
+          </button>
+        )}
+      </div>
+    </motion.article>
   );
 }
 
-export default function NotForEveryone() {
-  const sectionRef = useRef<HTMLElement>(null);
+interface NotForEveryoneProps {
+  onRequest?: () => void;
+}
+
+export default function NotForEveryone({ onRequest }: NotForEveryoneProps) {
+  const introRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotionPref();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
+
+  // Full-screen brand-phrase stage: zooms up as it enters, holds, then
+  // shrinks and dims as the user scrolls on toward the cards.
+  const { scrollYProgress: introProgress } = useScroll({
+    target: introRef,
+    offset: ["start 78%", "end 18%"]
   });
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 118,
-    damping: 30,
-    mass: 0.72,
+  const easedIntroProgress = useSpring(introProgress, {
+    stiffness: 88,
+    damping: 28,
+    mass: 0.9,
     restDelta: 0.001
   });
-  const headingOpacity = useTransform(progress, [0, 0.06, HEADING_REVEAL_END], [1, 1, 0]);
-  const headingY = useTransform(progress, [0, HEADING_REVEAL_END], [0, -28]);
-  // Hold the first card in place until the section heading has fully cleared.
-  // The cards then consume the remaining scroll range as one continuous gallery.
-  const galleryProgress = useTransform(progress, [0, HEADING_REVEAL_END, 1], [0, 0, 1]);
+  const introOpacity = useTransform(easedIntroProgress, [0, 0.2, 0.76, 1], [0.52, 1, 1, 0.68]);
+  const introY = useTransform(easedIntroProgress, [0, 0.28, 0.76, 1], [42, 0, 0, -34]);
+  const introScale = useTransform(easedIntroProgress, [0, 0.34, 0.76, 1], [0.62, 1.1, 1.1, 0.78]);
 
-  if (isReduced) return <ReducedMotionCards />;
+  // Ambient shift: warm forest behind the phrase cools to pure black by the
+  // time the card grid is in view. Gold accents stay the fixed anchor.
+  const { scrollYProgress: bgProgress } = useScroll({
+    target: gridRef,
+    offset: ["start 96%", "start 42%"]
+  });
+  const sectionBackground = useTransform(bgProgress, [0, 1], ["#0E1F16", "#0A0A0A"]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="mobility-section relative h-[400svh] border-b border-brand-cream/10 bg-brand-black luxury-noise"
+    <motion.section
+      className="mobility-section relative bg-brand-deep-forest luxury-noise"
+      style={isReduced ? undefined : { backgroundColor: sectionBackground }}
     >
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-brand-gold/35" />
+      <div ref={introRef} className="services-editorial__intro">
+        <motion.div
+          className="relative z-[1] mx-auto w-full max-w-[90rem]"
+          style={
+            isReduced
+              ? undefined
+              : { opacity: introOpacity, y: introY, scale: introScale, transformOrigin: "center center" }
+          }
+        >
+          <SectionHeading isReduced={isReduced} />
+        </motion.div>
+      </div>
 
-      <div className="mobility-section__viewport mobility-section__viewport--gallery sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-14 md:h-[calc(100svh-3.5rem)]">
-        <div className="mobility-section__layout mobility-section__layout--gallery relative mx-auto h-full max-w-[90rem]">
-          <motion.div
-            className="mobility-section__header-overlay"
-            style={{ opacity: headingOpacity, y: headingY }}
-          >
-            <SectionHeading />
-          </motion.div>
-
-          <div className="mobility-card-stage relative">
-            {SERVICE_CARDS.map((card, index) => (
-              <StackedServiceCard
-                key={card.title}
-                card={card}
-                index={index}
-                progress={galleryProgress}
-              />
-            ))}
-          </div>
-
+      <div ref={gridRef} className="services-editorial">
+        <div className="services-editorial__grid">
+          {SERVICE_CARDS.map((card, index) => (
+            <EditorialServiceCard
+              key={card.title}
+              card={card}
+              index={index}
+              isReduced={isReduced}
+              onRequest={onRequest}
+            />
+          ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

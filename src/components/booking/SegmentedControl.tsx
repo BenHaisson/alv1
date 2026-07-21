@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { useReducedMotionPref } from "../MotionProvider";
+import { PREMIUM_SPRING } from "../../lib/motion";
 
 export type BookingType = "oneWay" | "hourly";
 
@@ -51,14 +52,14 @@ export function SegmentedControl({ value, onChange }: SegmentedControlProps) {
               }
             }}
             animate={{
-              backgroundColor: isSelected ? "#D4AA43" : "rgba(0, 0, 0, 0)",
-              color: isSelected ? "#0A0A0A" : "#F6F2E9"
+              backgroundColor: isSelected ? "#D4AF37" : "rgba(0, 0, 0, 0)",
+              color: isSelected ? "#0A0A0A" : "#D6C7B0"
             }}
             whileTap={isReduced ? undefined : { scale: 0.985 }}
             transition={
               isReduced
                 ? { duration: 0 }
-                : { type: "spring", stiffness: 420, damping: 38, mass: 0.75 }
+                : PREMIUM_SPRING
             }
           >
             {option.label}

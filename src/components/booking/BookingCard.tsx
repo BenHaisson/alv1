@@ -1,7 +1,6 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
-
-const SHORT_EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
+import { MOTION_EASE } from "../../lib/motion";
 
 interface BookingCardProps {
   children: ReactNode;
@@ -14,7 +13,7 @@ export function BookingCard({ children, expanded }: BookingCardProps) {
       layout
       layoutDependency={expanded}
       className={`hero-booking-grid ${expanded ? "hero-booking-grid--expanded" : ""}`}
-      transition={{ layout: { duration: 0.34, ease: SHORT_EASE } }}
+      transition={{ layout: { duration: 0.42, ease: MOTION_EASE } }}
     >
       {children}
     </motion.div>

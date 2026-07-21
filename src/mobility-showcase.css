@@ -1,0 +1,340 @@
+/* ALAIR NOIR — "Not for everyone" editorial services grid.
+   Static 2×2, all four services visible at once. Left content panel over a
+   forest-black scrim, cinematic image on the right. Calm 500–700ms
+   interactions only: subtle zoom, softened scrim, 3–4px title lift. */
+
+/* Full-screen brand-phrase stage: the phrase owns one viewport, zooms up as
+   it enters, then shrinks as the user scrolls on toward the cards. A soft
+   vignette darkens the edges so attention stays on the type. */
+.services-editorial__intro {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: calc(76px + clamp(34px, 6vh, 80px)) clamp(24px, 4.5vw, 72px) clamp(60px, 9vh, 110px);
+}
+
+.services-editorial__intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 45%,
+    transparent 52%,
+    rgba(0, 0, 0, 0.42) 100%
+  );
+}
+
+/* "For you." — spoken aside in brand gold, the accent moment of the phrase. */
+.services-heading-foryou {
+  font-style: italic;
+  color: #D4AF37;
+}
+
+.services-editorial {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(32px, 4vw, 48px);
+  padding-bottom: clamp(56px, 8vh, 110px);
+}
+
+.services-editorial__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .services-editorial__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── Card block: image panel + caption below ────────────────────────────── */
+
+.service-card-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Card + caption together fit one viewport: leave room below the image
+     for the title, description, and CTA so nothing spills past the page. */
+  height: clamp(360px, calc(100svh - 380px), 620px);
+  border-radius: 20px;
+  background: #0B1811;
+}
+
+/* Quiet viewfinder corners — no solid ring around the card. The same
+   restrained framing device used on the fleet cards, in cream rather than
+   gold so it reads as structure, not ornament. */
+.service-card__corners {
+  position: absolute;
+  inset: 14px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.service-card__corners span {
+  transition: border-color 620ms ease;
+}
+
+.service-card-block:hover .service-card__corners span,
+.service-card-block:focus-within .service-card__corners span {
+  border-color: rgba(214, 199, 176, 0.7) !important;
+}
+
+/* ── Image ──────────────────────────────────────────────────────────────── */
+
+.service-card__media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 0;
+}
+
+.service-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--desktop-position, center center);
+  filter: brightness(0.82) saturate(0.78) contrast(1.05);
+  transition:
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 620ms ease;
+  will-change: transform;
+}
+
+.service-card-block:hover .service-card__image,
+.service-card-block:focus-within .service-card__image {
+  transform: scale(1.025);
+  filter: brightness(0.92) saturate(0.82) contrast(1.05);
+}
+
+/* Even cinematic wash + soft bottom grounding so the icon reads clearly. */
+.service-card__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 12, 8, 0.42) 0%,
+      rgba(3, 12, 8, 0.08) 34%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    rgba(0, 0, 0, 0.14);
+  transition: opacity 620ms ease;
+}
+
+.service-card-block:hover .service-card__scrim,
+.service-card-block:focus-within .service-card__scrim {
+  opacity: 0.82;
+}
+
+/* ── Icon — upper-left of the image panel ───────────────────────────────── */
+/* A soft frosted squircle rather than a ringed circle: quieter, more
+   architectural, and it leaves the gold accent on the glyph alone instead
+   of drawing a second border around it. */
+
+.service-card__icon {
+  position: absolute;
+  top: clamp(28px, 2.6vw, 38px);
+  left: clamp(28px, 2.6vw, 38px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: rgba(8, 12, 10, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(214, 199, 176, 0.95);
+  transition:
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 560ms ease;
+}
+
+.service-card__icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.service-card-block:hover .service-card__icon,
+.service-card-block:focus-within .service-card__icon {
+  transform: translateY(-2px);
+  background: rgba(8, 12, 10, 0.58);
+}
+
+/* ── Caption below the card ─────────────────────────────────────────────── */
+
+.service-card__caption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(20px, 1.6vw, 28px) 4px 0;
+}
+
+.service-card__title {
+  font-size: clamp(30px, 2.5vw, 40px);
+  font-weight: 300;
+  line-height: 1;
+  color: #F6F2E9;
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card-block:hover .service-card__title,
+.service-card-block:focus-within .service-card__title {
+  transform: translateY(-3px);
+}
+
+/* Second word of every card headline — always cream, fixed regardless of
+   hover state or the section's forest-to-black scroll transition. */
+.service-card__title-accent {
+  color: #D6C7B0 !important;
+}
+
+.service-card__description {
+  margin-top: 16px;
+  max-width: 460px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  font-weight: 300;
+  line-height: 1.55;
+  color: #A89E8B;
+}
+
+/* Quiet booking CTA. */
+.service-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(214, 199, 176, 0.85);
+  transition:
+    color 300ms ease;
+}
+
+.service-card__cta-arrow {
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card__cta:hover {
+  color: #D6C7B0;
+}
+
+.service-card__cta:hover .service-card__cta-arrow {
+  transform: translateX(4px);
+}
+
+.service-card__cta:focus-visible {
+  outline: 1px solid rgba(214, 199, 176, 0.7);
+  outline-offset: 6px;
+}
+
+/* ── Tablet: keep 2×2, tighten type and padding ─────────────────────────── */
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  .service-card__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .service-card__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .service-card__title {
+    font-size: clamp(28px, 3.6vw, 38px);
+  }
+
+  .service-card__description {
+    font-size: 16px;
+  }
+}
+
+/* ── Mobile: single-column stack, content near the top ──────────────────── */
+
+@media (max-width: 767px) {
+  .services-editorial {
+    padding-inline: 18px;
+  }
+
+  .services-editorial__intro {
+    padding-top: clamp(84px, 14vh, 120px);
+  }
+
+  .service-card {
+    height: clamp(360px, 52svh, 460px);
+  }
+
+  .service-card__image {
+    object-position: var(--mobile-position, center 45%);
+  }
+
+  .service-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+  }
+
+  .service-card__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .service-card__title {
+    font-size: clamp(30px, 8.4vw, 36px);
+  }
+
+  .service-card__description {
+    font-size: 16px;
+    max-width: none;
+  }
+}
+
+/* ── Reduced motion: fully static ───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card__corners span,
+  .service-card__icon,
+  .service-card__title,
+  .service-card__image,
+  .service-card__scrim,
+  .service-card__cta,
+  .service-card__cta-arrow {
+    transition: none;
+  }
+
+  .service-card-block:hover .service-card__image,
+  .service-card-block:focus-within .service-card__image {
+    transform: none;
+  }
+
+  .service-card-block:hover .service-card__icon,
+  .service-card-block:focus-within .service-card__icon {
+    transform: none;
+  }
+
+  .service-card-block:hover .service-card__title,
+  .service-card-block:focus-within .service-card__title {
+    transform: none;
+  }
+}

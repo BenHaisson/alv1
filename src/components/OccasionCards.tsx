@@ -77,7 +77,7 @@ function ServiceCard({ occasion, idx, key }: { occasion: typeof OCCASIONS[0]; id
         }}
         animate={{
           scale: isHovered ? 1.01 : 1,
-          borderColor: isHovered ? "rgba(234, 222, 206, 0.3)" : "rgba(234, 222, 206, 0.1)"
+          borderColor: isHovered ? "rgba(214, 199, 176, 0.3)" : "rgba(214, 199, 176, 0.1)"
         }}
         transition={{
           duration: 0.9,

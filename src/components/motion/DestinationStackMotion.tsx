@@ -1,13 +1,21 @@
 import { motion, useSpring, type MotionValue } from "motion/react";
 import StackedClientCards from "./StackedClientCards";
 import { DESTINATIONS } from "../../data/visualJourney";
+import {
+  HEADING_REVEAL_VARIANTS,
+  MOTION_EASE,
+  PREMIUM_SPRING,
+  REVEAL_VARIANTS,
+  STAGGER_GROUP_VARIANTS
+} from "../../lib/motion";
+import { useReducedMotionPref } from "../MotionProvider";
 
 interface DestinationStackMotionProps {
-  /** Scrolls to the request section — wired to the "Arrange Route" CTA. */
+  /** Scrolls to the request section, wired to the Arrange Route CTA. */
   onArrange?: () => void;
 }
 
-/** The booking route list — reduced to plain destinations for the client. */
+/** The booking route list, reduced to plain destinations for the client. */
 const ROUTE_LIST = [
   "Zürich Airport",
   "Zürich City",
@@ -21,13 +29,12 @@ const ROUTE_LIST = [
 ];
 
 /**
- * Section 04 — "Where we drive." The schematic SVG route line and 3D
- * destination card stack (StackedClientCards engine) are kept as the visual
- * map, but the copy is reduced to a simple route list and a single CTA so the
- * section stays booking-focused. Content lives in DESTINATIONS
- * (src/data/visualJourney.ts).
+ * Section 04, "Where we drive." The schematic SVG route line and destination
+ * card stack remain, but the copy reveals in a short scanning rhythm.
  */
 export default function DestinationStackMotion({ onArrange }: DestinationStackMotionProps) {
+  const isReduced = useReducedMotionPref();
+
   return (
     <StackedClientCards
       cards={DESTINATIONS}
@@ -36,38 +43,71 @@ export default function DestinationStackMotion({ onArrange }: DestinationStackMo
       sectionClassName="bg-brand-black"
       heightPerCardVh={44}
       aside={() => (
-        <div className="max-w-xl">
-          <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-brand-gold">
-            The Routes
-          </span>
-          <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-tight text-brand-ivory md:text-5xl lg:text-6xl">
+        <motion.div
+          className="max-w-xl"
+          initial={isReduced ? false : "hidden"}
+          whileInView="show"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={STAGGER_GROUP_VARIANTS}
+        >
+          <motion.h2
+            variants={HEADING_REVEAL_VARIANTS}
+            className="section-heading"
+          >
             Where we drive
-          </h2>
+          </motion.h2>
 
-          <ul className="mt-8 flex max-w-md flex-wrap gap-x-3 gap-y-3">
+          <motion.ul
+            className="mt-8 flex max-w-md flex-wrap gap-x-3 gap-y-3"
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } }
+            }}
+          >
             {ROUTE_LIST.map((route) => (
-              <li
+              <motion.li
                 key={route}
+                variants={{
+                  hidden: { opacity: 0, y: 24 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.68, ease: MOTION_EASE } }
+                }}
                 className="border border-brand-cream/15 bg-brand-black/40 px-3.5 py-2 text-[11px] font-mono uppercase tracking-[0.14em] text-brand-ivory/85"
               >
                 {route}
-              </li>
+              </motion.li>
             ))}
-          </ul>
+          </motion.ul>
 
-          <p className="mt-8 max-w-md text-sm font-light leading-relaxed text-brand-body">
+          <motion.p
+            variants={REVEAL_VARIANTS}
+            className="mt-8 max-w-md text-sm font-light leading-relaxed text-brand-body"
+          >
             Request your route. We confirm availability and rate directly.
-          </p>
+          </motion.p>
 
-          <button
+          <motion.button
             type="button"
             onClick={onArrange}
-            className="group mt-8 flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream transition-colors duration-300 hover:border-brand-cream/60 hover:text-brand-ivory focus:outline-none focus-visible:border-brand-gold"
+            variants={REVEAL_VARIANTS}
+            initial="rest"
+            animate="rest"
+            whileHover={isReduced ? undefined : "hover"}
+            transition={PREMIUM_SPRING}
+            className="group mt-8 flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.22em] text-brand-cream focus:outline-none focus-visible:border-brand-gold"
           >
             <span>Arrange Route</span>
-            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </button>
-        </div>
+            <motion.span
+              aria-hidden="true"
+              variants={{
+                rest: { x: 0 },
+                hover: { x: 4 }
+              }}
+              transition={PREMIUM_SPRING}
+            >
+              &rarr;
+            </motion.span>
+          </motion.button>
+        </motion.div>
       )}
       background={(progress) => <RouteLine progress={progress} />}
     />
@@ -79,25 +119,19 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
   const drawn = useSpring(progress, { stiffness: 60, damping: 22, restDelta: 0.001 });
 
   return (
-    <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className="h-full w-full opacity-45"
-    >
-      {/* Faint full route as reference. */}
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full opacity-45">
       <path
         d={ROUTE_PATH}
         fill="none"
-        stroke="rgba(234, 222, 206, 0.10)"
+        stroke="rgba(214, 199, 176, 0.10)"
         strokeWidth="0.18"
         vectorEffect="non-scaling-stroke"
         strokeDasharray="0.9 1.3"
       />
-      {/* The travelled portion draws with scroll. */}
       <motion.path
         d={ROUTE_PATH}
         fill="none"
-        stroke="rgba(205, 162, 80, 0.55)"
+        stroke="rgba(212, 175, 55, 0.55)"
         strokeWidth="0.3"
         vectorEffect="non-scaling-stroke"
         style={{ pathLength: drawn }}
@@ -110,7 +144,7 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
             cx={point.x}
             cy={point.y}
             r="0.55"
-            fill="rgba(205, 162, 80, 0.5)"
+            fill="rgba(212, 175, 55, 0.5)"
           />
         );
       })}
@@ -118,10 +152,6 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
   );
 }
 
-/**
- * A gentle west-to-east arc across the stage. routePoint() mirrors the same
- * curve analytically so destination stops sit exactly on the drawn path.
- */
 const ROUTE_PATH = buildRoutePath();
 
 function routePoint(t: number) {

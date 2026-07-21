@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Fragment, lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   CalendarCheck,
   CalendarDays,
@@ -10,9 +10,8 @@ import {
   Timer,
   type LucideIcon
 } from "lucide-react";
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useMediaQuery, useReducedMotionPref } from "./MotionProvider";
-import CinematicVideoBackground from "./motion/CinematicVideoBackground";
 import PlaceAutocompleteField from "./PlaceAutocompleteField";
 import BookingOptionsSheet from "./BookingOptionsSheet";
 import { BookingCard } from "./booking/BookingCard";
@@ -20,7 +19,7 @@ import { BookingDatePicker } from "./booking/BookingDatePicker";
 import { BookingDropdown } from "./booking/BookingDropdown";
 import { BookingField } from "./booking/BookingField";
 import { SegmentedControl, type BookingType } from "./booking/SegmentedControl";
-import { HERO_VIDEO } from "../data/visualJourney";
+import { imageAssets } from "../assets";
 import {
   DATE_INPUT_PLACEHOLDER,
   DURATION_OPTIONS,
@@ -83,13 +82,9 @@ const FIELD_CUES: Record<ActiveBookingField, { icon: LucideIcon; title: string; 
   }
 };
 
-export default function HeroCommandDeck({
-  booking,
-  onBookingChange
-}: HeroCommandDeckProps) {
+export default function HeroCommandDeck({ booking, onBookingChange }: HeroCommandDeckProps) {
   const isReduced = useReducedMotionPref();
   const isMobileBooking = useMediaQuery("(max-width: 767px)");
-  const sectionRef = useRef<HTMLElement>(null);
   const bookingShellRef = useRef<HTMLDivElement>(null);
   const [mapTarget, setMapTarget] = useState<MapTarget>(null);
   const [hasOpenedMap, setHasOpenedMap] = useState(false);
@@ -109,9 +104,7 @@ export default function HeroCommandDeck({
     if (!isBookingExpanded || isMobileBooking) return;
 
     const previousBookingExpanded = document.body.getAttribute("data-booking-expanded");
-    const previousOverflow = document.body.style.overflow;
     document.body.setAttribute("data-booking-expanded", "true");
-    document.body.style.overflow = "hidden";
 
     const handlePointerDown = (event: PointerEvent) => {
       if (bookingShellRef.current?.contains(event.target as Node)) return;
@@ -133,7 +126,6 @@ export default function HeroCommandDeck({
       } else {
         document.body.setAttribute("data-booking-expanded", previousBookingExpanded);
       }
-      document.body.style.overflow = previousOverflow;
     };
   }, [isBookingExpanded, isMobileBooking]);
 
@@ -178,118 +170,19 @@ export default function HeroCommandDeck({
   const timeMissing = !booking.time.trim();
   const isBookingValid = !pickupMissing && !secondFieldMissing && !dateMissing && !timeMissing;
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
-  });
-  const stagedProgress = useSpring(scrollYProgress, {
-    stiffness: 76,
-    damping: 24,
-    restDelta: 0.001
-  });
-  const backgroundScale = useTransform(stagedProgress, [0, 0.22, 0.62, 1], [1.01, 1.03, 1.12, 1.08]);
-  const backgroundY = useTransform(stagedProgress, [0, 0.62, 1], ["2.5%", "-1.5%", "-3.5%"]);
-  const darkVeilOpacity = useTransform(stagedProgress, [0, 0.28, 0.62], [0.16, 0.34, 0.46]);
-  const gradientOpacity = useTransform(stagedProgress, [0, 0.42, 1], [0.28, 0.86, 1]);
-  const headlineOpacity = useTransform(stagedProgress, [0.18, 0.34], [0, 1]);
-  const headlineY = useTransform(stagedProgress, [0.18, 0.34], [36, 0]);
-  const copyOpacity = useTransform(stagedProgress, [0.28, 0.44], [0, 1]);
-  const copyY = useTransform(stagedProgress, [0.28, 0.44], [28, 0]);
-  const cardOpacity = useTransform(stagedProgress, [0.42, 0.62], [0, 1]);
-  const cardY = useTransform(stagedProgress, [0.42, 0.62], [86, 0]);
-  const cardScale = useTransform(stagedProgress, [0.42, 0.62], [0.982, 1]);
-  const trustOpacity = useTransform(stagedProgress, [0.58, 0.74], [0, 1]);
-  const trustY = useTransform(stagedProgress, [0.58, 0.74], [18, 0]);
-  const mobileBackgroundY = useTransform(
-    stagedProgress,
-    [0, 0.34, 0.62, 1],
-    ["1%", "-2%", "-10%", "-12%"]
-  );
-  const mobileHeadlineOpacity = useTransform(
-    stagedProgress,
-    [0.08, 0.2],
-    [0, 1]
-  );
-  const mobileHeadlineY = useTransform(stagedProgress, [0.08, 0.2], [30, 0]);
-  const mobileCopyOpacity = useTransform(
-    stagedProgress,
-    [0.14, 0.26],
-    [0, 1]
-  );
-  const mobileCopyY = useTransform(stagedProgress, [0.14, 0.26], [22, 0]);
-  const mobileCardOpacity = useTransform(stagedProgress, [0.42, 0.6], [0, 1]);
-  const mobileCardY = useTransform(stagedProgress, [0.42, 0.62], [64, 0]);
-  const mobileCardScale = useTransform(stagedProgress, [0.42, 0.62], [0.985, 1]);
-
   return (
     <section
-      ref={sectionRef}
-      className={`relative border-b border-brand-cream/10 bg-brand-black luxury-noise ${
-        isReduced ? "min-h-[100svh]" : "h-[300svh] md:min-h-[500svh]"
-      }`}
+      className="hero-fixed-bg relative h-[100svh] bg-brand-black luxury-noise"
+      style={
+        {
+          "--hero-bg": `url(${imageAssets.bookingHeroZurichGold})`,
+          "--hero-bg-mobile": `url(${imageAssets.bookingHeroMobileAlairNoir})`
+        } as CSSProperties
+      }
     >
-      <div
-        className={
-          isReduced
-            ? "relative min-h-[100svh] overflow-hidden"
-            : "sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-0 md:h-[100svh]"
-        }
-      >
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={
-          isReduced
-            ? undefined
-            : isMobileBooking
-              ? { scale: backgroundScale, y: mobileBackgroundY }
-              : { scale: backgroundScale, y: backgroundY }
-        }
-      >
-        <CinematicVideoBackground
-          slot={HERO_VIDEO}
-          overlay={false}
-          priority
-          mediaClassName="-translate-y-[4%] scale-[1.08] object-top grayscale-[0.04] brightness-[0.95] contrast-[1.12] md:-translate-y-[2%] md:scale-[1.02] md:object-center md:brightness-[0.9]"
-        />
-      </motion.div>
+      <div aria-hidden="true" className="hero-image-overlay absolute inset-0 z-10" />
 
-      <div className="absolute inset-0 z-10 bg-[linear-gradient(to_bottom,rgba(5,8,6,0.72)_0%,rgba(5,8,6,0.35)_34%,rgba(5,8,6,0.78)_68%,rgba(5,8,6,0.96)_100%)] md:hidden" />
-      <motion.div className="absolute inset-0 z-10 hidden bg-black md:block" style={isReduced ? undefined : { opacity: darkVeilOpacity }} />
-      <motion.div
-        className="absolute inset-0 z-10 hidden bg-gradient-to-b from-brand-black/72 via-transparent to-brand-black/85 md:block"
-        style={isReduced ? undefined : { opacity: gradientOpacity }}
-      />
-
-      <div className="relative z-20 flex h-full flex-col items-center justify-start px-4 pb-[max(14px,env(safe-area-inset-bottom))] pt-[clamp(1rem,3vh,1.5rem)] text-center md:h-[100svh] md:justify-center md:px-12 md:pb-[clamp(14rem,30vh,18rem)] md:pt-32">
-        <motion.h1
-          style={
-            isReduced
-              ? undefined
-              : isMobileBooking
-                ? { opacity: mobileHeadlineOpacity, y: mobileHeadlineY }
-                : { opacity: headlineOpacity, y: headlineY }
-          }
-          className="mx-auto max-w-[92%] font-serif text-[clamp(36px,10vw,50px)] font-light leading-[0.95] text-brand-ivory md:max-w-none md:text-[clamp(2.6rem,6vw,4.5rem)] md:leading-[1.08]"
-        >
-          Your chauffeur
-          <br />
-          <span className="italic text-brand-stone">is ready.</span>
-        </motion.h1>
-
-        <motion.p
-          style={
-            isReduced
-              ? undefined
-              : isMobileBooking
-                ? { opacity: mobileCopyOpacity, y: mobileCopyY }
-                : { opacity: copyOpacity, y: copyY }
-          }
-          className="mx-auto mt-2 max-w-[31ch] text-[13px] font-light leading-[1.4] text-brand-ivory/80 md:mt-6 md:max-w-xl md:text-base md:leading-relaxed md:text-brand-body lg:text-lg"
-        >
-          Private transfers in Zürich, tailored for airport arrivals, business travel, and
-          discreet city movements.
-        </motion.p>
-
+      <div className="relative z-20 h-full px-4 pb-[max(14px,env(safe-area-inset-bottom))] text-center md:px-12">
         <AnimatePresence>
           {isBookingExpanded && (
             <motion.div
@@ -307,29 +200,34 @@ export default function HeroCommandDeck({
           ref={bookingShellRef}
           layout
           layoutDependency={isBookingExpanded}
-          style={
-            isReduced || isBookingExpanded
-              ? undefined
-              : isMobileBooking
-                ? { opacity: mobileCardOpacity, y: mobileCardY, scale: mobileCardScale }
-                : { opacity: cardOpacity, y: cardY, scale: cardScale }
-          }
-          transition={{ layout: { duration: 0.34, ease: EASE } }}
+          transition={{
+            layout: { duration: 0.34, ease: EASE }
+          }}
           className={
             isBookingExpanded
               ? "fixed inset-x-4 top-[clamp(6.5rem,16vh,9rem)] z-50 mx-auto flex w-[calc(100vw-2rem)] max-w-[1180px] flex-col items-center text-left md:inset-x-8 md:top-[clamp(7rem,18vh,10rem)]"
-              : "absolute inset-x-0 bottom-[clamp(7rem,18svh,10rem)] mx-auto flex w-[min(390px,calc(100vw-32px))] max-w-[1120px] flex-col items-center text-center md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
+              : "hero-booking-shell absolute inset-x-0 bottom-[clamp(7rem,18svh,10rem)] mx-auto flex w-[min(390px,calc(100vw-32px))] max-w-[1120px] flex-col items-center text-center md:bottom-[clamp(2.2rem,5.4vh,4rem)] md:left-0 md:right-0 md:w-[min(1120px,calc(100%-6rem))] md:text-left"
           }
           aria-label="Booking request"
           aria-expanded={isBookingExpanded}
         >
+          <div className="hero-card-entrance flex w-full flex-col items-center">
+          <div className="mb-4 w-full text-center md:mb-5">
+            <p className="mb-2 font-mono text-[11px] font-normal uppercase leading-none tracking-[0.24em] text-brand-cream/75">
+              Private chauffeur service in Zürich
+            </p>
+            <h1 className="mx-auto max-w-full whitespace-nowrap font-serif text-[clamp(1.85rem,8vw,3.55rem)] font-light leading-[0.98] tracking-[-0.025em] text-brand-ivory md:text-[clamp(3rem,4vw,3.5625rem)]">
+              Your chauffeur <span className="italic text-brand-stone/90">is ready.</span>
+            </h1>
+          </div>
+
           <SegmentedControl value={bookingType} onChange={handleBookingTypeChange} />
 
           <BookingCard expanded={isBookingExpanded}>
             <BookingField
               id="hero-pickup"
               label="Pickup location"
-              className="md:px-6 md:py-5"
+              className="md:px-5 md:py-3"
               onActivate={() => activateBookingField("pickup")}
               validationMessage={showValidation && pickupMissing ? "Enter a pickup location." : undefined}
             >
@@ -344,7 +242,7 @@ export default function HeroCommandDeck({
               />
             </BookingField>
 
-            <div className="grid min-h-[48px] border-b border-brand-cream/20 md:min-h-[90px] md:border-b-0 md:border-r md:border-brand-cream/48">
+            <div className="grid min-h-[34px] border-b border-brand-cream/20 md:min-h-[53px] md:border-b-0 md:border-r md:border-brand-cream/48">
               <AnimatePresence initial={false} mode="sync">
                 {bookingType === "hourly" ? (
                   <BookingField
@@ -352,7 +250,7 @@ export default function HeroCommandDeck({
                     id="hero-duration"
                     label="Duration"
                     replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
                     onActivate={() => activateBookingField("duration")}
                     validationMessage={showValidation && secondFieldMissing ? "Select a duration." : undefined}
                   >
@@ -371,7 +269,7 @@ export default function HeroCommandDeck({
                     id="hero-destination"
                     label="Drop-off location"
                     replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-6 md:py-5"
+                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
                     onActivate={() => activateBookingField("destination")}
                     validationMessage={showValidation && secondFieldMissing ? "Enter a drop-off location." : undefined}
                   >
@@ -391,7 +289,7 @@ export default function HeroCommandDeck({
             <BookingField
               id="hero-date"
               label="Date"
-              className="md:px-6 md:py-5"
+              className="md:px-5 md:py-3"
               onActivate={() => activateBookingField("date")}
               validationMessage={showValidation && dateMissing ? "Select a date." : undefined}
             >
@@ -408,7 +306,7 @@ export default function HeroCommandDeck({
             <BookingField
               id="hero-time"
               label="Pickup time"
-              className="md:border-r md:border-brand-cream/48 md:px-6 md:py-5"
+              className="md:border-r md:border-brand-cream/48 md:px-5 md:py-3"
               onActivate={() => activateBookingField("time")}
               validationMessage={showValidation && timeMissing ? "Select a pickup time." : undefined}
             >
@@ -423,7 +321,7 @@ export default function HeroCommandDeck({
               />
             </BookingField>
 
-            <div className="hero-booking-cta flex items-center md:p-5">
+            <div className="hero-booking-cta flex items-center md:p-3">
               <motion.button
                 type="button"
                 onClick={() => {
@@ -432,10 +330,10 @@ export default function HeroCommandDeck({
                   setIsBookingExpanded(false);
                   setIsOptionsOpen(true);
                 }}
-                whileHover={isReduced ? undefined : { backgroundColor: "#FAF8F5" }}
+                whileHover={isReduced ? undefined : { backgroundColor: "#F6F2E9" }}
                 whileTap={isReduced ? undefined : { opacity: 0.88 }}
                 transition={isReduced ? { duration: 0 } : { duration: 0.15, ease: "easeInOut" }}
-                className="flex h-11 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-sm font-semibold tracking-[0.02em] text-brand-black md:h-auto md:w-auto md:py-3.5 md:tracking-normal"
+                className="flex h-8 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-[11px] font-sans font-semibold uppercase tracking-[0.12em] text-brand-black md:h-auto md:w-auto md:py-2"
               >
                 View options
               </motion.button>
@@ -469,10 +367,7 @@ export default function HeroCommandDeck({
           </BookingCard>
 
           {!isBookingExpanded && (
-            <motion.div
-              style={isReduced ? undefined : { opacity: trustOpacity, y: trustY }}
-              className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0"
-            >
+            <div className="mt-5 grid w-full max-w-[960px] grid-cols-2 items-center justify-items-center gap-x-3 gap-y-4 text-center md:flex md:justify-center md:gap-x-0 md:gap-y-3 md:pb-0">
               {TRUST_LINE.map((item, index) => {
                 const TrustIcon = item.icon;
 
@@ -480,11 +375,11 @@ export default function HeroCommandDeck({
                   <Fragment key={item.label}>
                     {index > 0 && (
                       <span
-                        className="hidden h-4 w-px bg-[rgba(246,242,233,0.12)] md:mx-8 md:block lg:mx-10"
+                        className="hidden h-4 w-px bg-[rgba(214,199,176,0.12)] md:mx-8 md:block lg:mx-10"
                         aria-hidden="true"
                       />
                     )}
-                    <span className="inline-flex items-center justify-center gap-2 text-[10px] font-sans font-medium uppercase leading-none tracking-[0.12em] text-[rgba(246,242,233,0.62)] md:text-[11px] lg:text-xs">
+                    <span className="inline-flex items-center justify-center gap-2 text-[10px] font-sans font-medium uppercase leading-none tracking-[0.12em] text-[rgba(214,199,176,0.62)] md:text-[11px] lg:text-xs">
                       <TrustIcon
                         className="h-4 w-4 shrink-0 text-[rgba(214,199,176,0.78)] md:h-[18px] md:w-[18px]"
                         strokeWidth={1.65}
@@ -495,8 +390,9 @@ export default function HeroCommandDeck({
                   </Fragment>
                 );
               })}
-            </motion.div>
+            </div>
           )}
+          </div>
         </motion.div>
       </div>
 
@@ -520,7 +416,6 @@ export default function HeroCommandDeck({
         booking={booking}
         onBookingChange={onBookingChange}
       />
-      </div>
     </section>
   );
 }
