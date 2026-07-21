@@ -33,7 +33,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
-            <BrandLockup size="footer" className="mb-5" />
+            <BrandLockup size="footer" tone="white" className="mb-5" />
             <p className="max-w-sm text-sm font-light leading-relaxed text-brand-stone">
               ALAIR NOIR GmbH is a Zurich-based private chauffeur service for executives,
               private clients, airport transfers, and Switzerland-wide journeys.
@@ -142,7 +142,7 @@ export default function LuxuryFooter({ onNavClick }: LuxuryFooterProps) {
             Switzerland
           </div>
           <div className="text-right">
-            <BrandLockup size="compact" align="right" className="mb-3" />
+            <BrandLockup size="compact" tone="white" align="right" className="mb-3" />
             <div className="flex justify-start gap-4 text-[10px] font-mono tracking-widest text-brand-stone sm:justify-end">
               <span className="cursor-pointer uppercase transition-colors hover:text-brand-cream">Impressum</span>
               <span>.</span>

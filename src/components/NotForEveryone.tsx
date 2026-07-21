@@ -223,7 +223,7 @@ export default function NotForEveryone({ onRequest }: NotForEveryoneProps) {
     target: gridRef,
     offset: ["start 96%", "start 42%"]
   });
-  const sectionBackground = useTransform(bgProgress, [0, 1], ["#08130D", "#000000"]);
+  const sectionBackground = useTransform(bgProgress, [0, 1], ["#0E1F16", "#0A0A0A"]);
 
   return (
     <motion.section

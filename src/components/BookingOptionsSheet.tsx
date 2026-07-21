@@ -205,7 +205,7 @@ export default function BookingOptionsSheet({
                     type="button"
                     onClick={onClose}
                     aria-label="Close"
-                    whileHover={isReduced ? undefined : { y: -1, borderColor: "rgba(205,162,80,0.9)", color: "#CDA250" }}
+                    whileHover={isReduced ? undefined : { y: -1, borderColor: "rgba(212, 175, 55,0.9)", color: "#D4AF37" }}
                     whileTap={isReduced ? undefined : { scale: 0.96 }}
                     transition={PREMIUM_SPRING}
                     className="flex h-9 w-9 cursor-pointer items-center justify-center border border-brand-cream/20 text-brand-cream"

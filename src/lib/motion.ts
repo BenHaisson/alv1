@@ -41,11 +41,25 @@ export const CINEMATIC_TRANSITION: Transition = {
 };
 
 export const REVEAL_VARIANTS: Variants = {
-  hidden: { opacity: 0, y: 56 },
+  hidden: { opacity: 0, y: 48, filter: "blur(10px)" },
   show: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: REVEAL_TRANSITION
+  }
+};
+
+/* Large serif headlines: a slower settle with a soft focus pull, so display
+   type arrives like a title card rather than a list item. */
+export const HEADING_REVEAL_VARIANTS: Variants = {
+  hidden: { opacity: 0, y: 40, scale: 0.985, filter: "blur(14px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: CINEMATIC_TRANSITION
   }
 };
 
@@ -53,8 +67,8 @@ export const STAGGER_GROUP_VARIANTS: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.08
+      staggerChildren: 0.14,
+      delayChildren: 0.1
     }
   }
 };

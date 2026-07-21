@@ -94,7 +94,7 @@ export default function App() {
   return (
     <MotionProvider>
       <SmoothScroll>
-      <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-cream/35 selection:text-brand-black">
+      <div className="relative min-h-screen bg-brand-black text-brand-ivory font-sans selection:bg-brand-gold/40 selection:text-brand-black">
         <a
           href="#hero-section"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:border focus:border-brand-gold focus:bg-brand-black focus:px-4 focus:py-2 focus:text-xs focus:font-mono focus:uppercase focus:tracking-widest focus:text-brand-cream"

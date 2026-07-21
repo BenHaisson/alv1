@@ -2,6 +2,7 @@ import { motion, useSpring, type MotionValue } from "motion/react";
 import StackedClientCards from "./StackedClientCards";
 import { DESTINATIONS } from "../../data/visualJourney";
 import {
+  HEADING_REVEAL_VARIANTS,
   MOTION_EASE,
   PREMIUM_SPRING,
   REVEAL_VARIANTS,
@@ -50,7 +51,7 @@ export default function DestinationStackMotion({ onArrange }: DestinationStackMo
           variants={STAGGER_GROUP_VARIANTS}
         >
           <motion.h2
-            variants={REVEAL_VARIANTS}
+            variants={HEADING_REVEAL_VARIANTS}
             className="section-heading"
           >
             Where we drive
@@ -122,7 +123,7 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
       <path
         d={ROUTE_PATH}
         fill="none"
-        stroke="rgba(234, 222, 206, 0.10)"
+        stroke="rgba(214, 199, 176, 0.10)"
         strokeWidth="0.18"
         vectorEffect="non-scaling-stroke"
         strokeDasharray="0.9 1.3"
@@ -130,7 +131,7 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
       <motion.path
         d={ROUTE_PATH}
         fill="none"
-        stroke="rgba(205, 162, 80, 0.55)"
+        stroke="rgba(212, 175, 55, 0.55)"
         strokeWidth="0.3"
         vectorEffect="non-scaling-stroke"
         style={{ pathLength: drawn }}
@@ -143,7 +144,7 @@ function RouteLine({ progress }: { progress: MotionValue<number> }) {
             cx={point.x}
             cy={point.y}
             r="0.55"
-            fill="rgba(205, 162, 80, 0.5)"
+            fill="rgba(212, 175, 55, 0.5)"
           />
         );
       })}

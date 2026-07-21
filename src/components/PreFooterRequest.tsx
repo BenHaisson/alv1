@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
-import { MOTION_EASE, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../lib/motion";
+import { HEADING_REVEAL_VARIANTS, MOTION_EASE, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../lib/motion";
 import { useReducedMotionPref } from "./MotionProvider";
 
 interface PreFooterRequestProps {
@@ -27,7 +27,7 @@ export default function PreFooterRequest({ onRequestRoute }: PreFooterRequestPro
         variants={STAGGER_GROUP_VARIANTS}
       >
         <motion.h2
-          variants={REVEAL_VARIANTS}
+          variants={HEADING_REVEAL_VARIANTS}
           className="section-heading mx-auto max-w-5xl"
         >
           Tell us where and when.
@@ -67,7 +67,7 @@ export default function PreFooterRequest({ onRequestRoute }: PreFooterRequestPro
           <motion.button
             type="button"
             onClick={onRequestRoute}
-            whileHover={isReduced ? undefined : { y: -2, backgroundColor: "#FAF8F5" }}
+            whileHover={isReduced ? undefined : { y: -2, backgroundColor: "#F6F2E9" }}
             whileTap={isReduced ? undefined : { scale: 0.985 }}
             transition={{ duration: 0.48, ease: MOTION_EASE }}
             className="inline-flex min-h-14 w-full cursor-pointer items-center justify-center gap-6 bg-brand-gold px-8 text-[10px] font-mono font-semibold uppercase tracking-[0.2em] text-brand-black sm:w-auto"
@@ -80,7 +80,7 @@ export default function PreFooterRequest({ onRequestRoute }: PreFooterRequestPro
             href="https://wa.me/41772870956"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={isReduced ? undefined : { y: -2, borderColor: "rgba(246,242,233,0.55)" }}
+            whileHover={isReduced ? undefined : { y: -2, borderColor: "rgba(214, 199, 176,0.55)" }}
             whileTap={isReduced ? undefined : { scale: 0.985 }}
             transition={{ duration: 0.48, ease: MOTION_EASE }}
             className="inline-flex min-h-14 w-full items-center justify-center border border-brand-cream/25 px-8 text-[10px] font-mono font-semibold uppercase tracking-[0.2em] text-brand-cream sm:w-auto"

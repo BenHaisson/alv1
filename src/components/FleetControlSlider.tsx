@@ -50,9 +50,9 @@ function ConveyorFrame({
       animate={{
         scale: active ? 1 : 0.96,
         opacity: active ? 1 : neighbor ? 0.65 : 0.42,
-        borderColor: active ? "rgba(205,162,80,0.92)" : "rgba(246,242,233,0.12)"
+        borderColor: active ? "rgba(212, 175, 55,0.92)" : "rgba(214, 199, 176,0.12)"
       }}
-      whileHover={ariaHidden ? undefined : { borderColor: "rgba(205,162,80,0.7)" }}
+      whileHover={ariaHidden ? undefined : { borderColor: "rgba(212, 175, 55,0.7)" }}
       transition={PREMIUM_SPRING}
       data-frame-copy={ariaHidden ? 1 : 0}
       data-frame-index={index}
@@ -218,7 +218,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
   return (
     <motion.section
       ref={sectionRef}
-      animate={{ backgroundColor: selectedIdx === 0 ? "#000000" : "#08130D" }}
+      animate={{ backgroundColor: selectedIdx === 0 ? "#0A0A0A" : "#0E1F16" }}
       transition={{ duration: isReduced ? 0 : MOTION_DURATION.cinematic, ease: MOTION_EASE }}
       className="relative overflow-hidden border-b border-brand-cream/10 px-6 py-24 md:px-12 md:py-28 lg:px-24 luxury-noise"
     >
@@ -323,7 +323,7 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
                       animate={{
                         width: index === activeFrameIdx ? 22 : 6,
                         opacity: index === activeFrameIdx ? 1 : 0.42,
-                        backgroundColor: index === activeFrameIdx ? "#CDA250" : "rgba(246,242,233,0.42)"
+                        backgroundColor: index === activeFrameIdx ? "#D4AF37" : "rgba(214, 199, 176,0.42)"
                       }}
                       transition={PREMIUM_SPRING}
                       className="h-1.5 rounded-full"
@@ -373,8 +373,8 @@ export default function FleetControlSlider({ onRequestScroll }: FleetControlSlid
               whileHover={isReduced ? undefined : "hover"}
               whileTap={isReduced ? undefined : { scale: 0.985 }}
               variants={{
-                rest: { y: 0, borderColor: "rgba(234,222,206,0.25)", color: "#EADECE" },
-                hover: { y: -2, borderColor: "rgba(234,222,206,0.6)", color: "#FAF8F5" }
+                rest: { y: 0, borderColor: "rgba(214, 199, 176,0.25)", color: "#D6C7B0" },
+                hover: { y: -2, borderColor: "rgba(214, 199, 176,0.6)", color: "#F6F2E9" }
               }}
               transition={PREMIUM_SPRING}
               className="flex w-fit cursor-pointer items-center gap-4 border border-brand-cream/25 px-7 py-3.5 text-[10px] font-mono uppercase tracking-[0.25em] text-brand-cream focus:outline-none focus-visible:border-brand-gold"

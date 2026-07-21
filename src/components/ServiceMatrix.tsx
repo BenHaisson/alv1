@@ -26,7 +26,7 @@ export default function ServiceMatrix() {
     <section ref={sectionRef} className="relative overflow-hidden border-b border-brand-cream/10 bg-brand-black px-6 py-24 md:px-12 md:py-36 lg:px-24 luxury-noise">
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_48%_0%,rgba(38,59,44,0.55),transparent_42%),linear-gradient(180deg,#08130D_0%,#000000_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_48%_0%,rgba(47,74,51,0.55),transparent_42%),linear-gradient(180deg,#0E1F16_0%,#0A0A0A_100%)]"
         style={isReduced ? undefined : { opacity: forestOpacity }}
       />
       <motion.div

@@ -47,7 +47,7 @@ export default function BeforeRequestFAQ() {
                   className="group flex w-full items-center justify-between py-3 text-left focus:outline-none md:py-3.5"
                 >
                   <motion.span
-                    animate={{ color: isOpen ? "#F6F2E9" : "#FAF8F5" }}
+                    animate={{ color: isOpen ? "#F6F2E9" : "#D6C7B0" }}
                     transition={isReduced ? { duration: 0 } : { duration: 0.25, ease: MOTION_EASE }}
                     className="text-base font-serif font-light md:text-lg"
                   >

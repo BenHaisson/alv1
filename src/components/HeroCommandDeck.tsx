@@ -330,7 +330,7 @@ export default function HeroCommandDeck({ booking, onBookingChange }: HeroComman
                   setIsBookingExpanded(false);
                   setIsOptionsOpen(true);
                 }}
-                whileHover={isReduced ? undefined : { backgroundColor: "#FAF8F5" }}
+                whileHover={isReduced ? undefined : { backgroundColor: "#F6F2E9" }}
                 whileTap={isReduced ? undefined : { opacity: 0.88 }}
                 transition={isReduced ? { duration: 0 } : { duration: 0.15, ease: "easeInOut" }}
                 className="flex h-8 w-full items-center justify-center whitespace-nowrap rounded-full bg-brand-gold px-6 text-center text-[11px] font-sans font-semibold uppercase tracking-[0.12em] text-brand-black md:h-auto md:w-auto md:py-2"
@@ -375,11 +375,11 @@ export default function HeroCommandDeck({ booking, onBookingChange }: HeroComman
                   <Fragment key={item.label}>
                     {index > 0 && (
                       <span
-                        className="hidden h-4 w-px bg-[rgba(246,242,233,0.12)] md:mx-8 md:block lg:mx-10"
+                        className="hidden h-4 w-px bg-[rgba(214,199,176,0.12)] md:mx-8 md:block lg:mx-10"
                         aria-hidden="true"
                       />
                     )}
-                    <span className="inline-flex items-center justify-center gap-2 text-[10px] font-sans font-medium uppercase leading-none tracking-[0.12em] text-[rgba(246,242,233,0.62)] md:text-[11px] lg:text-xs">
+                    <span className="inline-flex items-center justify-center gap-2 text-[10px] font-sans font-medium uppercase leading-none tracking-[0.12em] text-[rgba(214,199,176,0.62)] md:text-[11px] lg:text-xs">
                       <TrustIcon
                         className="h-4 w-4 shrink-0 text-[rgba(214,199,176,0.78)] md:h-[18px] md:w-[18px]"
                         strokeWidth={1.65}

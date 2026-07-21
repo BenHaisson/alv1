@@ -248,7 +248,7 @@ export default function StackedClientCards({
                   aria-label={`View ${card.title}`}
                   animate={{
                     width: index === active ? 28 : 6,
-                    backgroundColor: index === active ? "#CDA250" : "rgba(246,242,233,0.25)"
+                    backgroundColor: index === active ? "#D4AF37" : "rgba(214, 199, 176,0.25)"
                   }}
                   transition={PREMIUM_SPRING}
                   className="h-1.5 rounded-full"

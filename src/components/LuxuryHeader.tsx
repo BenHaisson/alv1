@@ -36,7 +36,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             transition={{ type: "spring", stiffness: 420, damping: 34 }}
             className="flex cursor-pointer flex-col items-start text-left focus:outline-none"
           >
-            <BrandLockup size="nav" />
+            <BrandLockup size="nav" tone="white" withSlogan={false} />
           </motion.button>
 
           <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary journey">
@@ -73,7 +73,7 @@ export default function LuxuryHeader({ onNavClick, activeSection = "" }: LuxuryH
             <motion.button
               type="button"
               onClick={() => handleLinkClick("hero")}
-              whileHover={{ y: -1, borderColor: "rgba(205, 162, 80, 0.9)" }}
+              whileHover={{ y: -1, borderColor: "rgba(212, 175, 55, 0.9)" }}
               whileTap={{ scale: 0.975 }}
               transition={{ type: "spring", stiffness: 420, damping: 34 }}
               className="cursor-pointer border border-brand-gold bg-brand-gold px-4 py-2 text-[10px] font-mono font-semibold uppercase tracking-[0.16em] text-brand-black hover:bg-brand-ivory hover:border-brand-ivory"

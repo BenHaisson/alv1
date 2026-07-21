@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap');
 
-/* ALAIR NOIR — BMW i7 chauffeur fleet, presented as a pinned scroll
-   sequence: the "Travel, Refined" headline zooms in to fill the screen, then
-   zooms out and hands off to the fleet composition, which reveals small and
-   grows to a single-screen spread. Reference layout: compact headline
-   top-left, vehicle presentation + thumb strip left, "Your Journey" panel
-   right. All image slots stay empty until real assets arrive. */
+/* ALAIR NOIR — BMW i7 fleet chapter. The pinned "Travel, Refined" headline
+   hands off to one immersive spread: a full-bleed photographic stage on the
+   left (every frame an identical cover crop — mixed source ratios never change
+   the composition) and the "Your Journey" passenger panel on the right. The
+   stage is driven by an editorial chapter rail with an auto-advance progress
+   hairline instead of a conventional thumbnail slider. */
 
 .fleet-detail {
-  --forest: #07100c;
+  --forest: #09140e;
   --forest-soft: #0e1f16;
-  --forest-panel: #081611;
+  --forest-panel: #0b1b12;
   --cream: #d6c7b0;
   --ivory: #f6f2e9;
   --stone: #a89e8b;
-  --muted: #7f796f;
-  --accent: #b18b52;
+  --muted: #756d5e;
+  --accent: #D4AF37;
   --border: rgba(214, 199, 176, 0.14);
 
   color: var(--ivory);
@@ -23,11 +23,6 @@
 }
 
 /* ── Headline stage — reveals, then pins to the top and shrinks ──────────── */
-/* One "Travel, Refined" reveal: it grows in as it rises, sticks to the top of
-   the section while it zooms out, and holds there until the BMW body scrolls
-   up to its lower edge and pushes it away. The tall track gives the sticky
-   header room to stay pinned; its height sets how far the body travels up to
-   reach the headline. */
 .fleet-intro {
   position: relative;
   height: 190svh;
@@ -52,18 +47,19 @@
   will-change: transform, opacity;
 }
 
-/* ── Fleet body — the composition fills its own screen, in normal flow ──── */
+/* ── Fleet body — one viewport, no spill ─────────────────────────────────── */
 .fleet-body {
   display: flex;
   align-items: center;
-  min-height: calc(100svh - 56px);
-  padding: clamp(16px, 2.6vh, 40px) clamp(24px, 3.4vw, 72px) clamp(20px, 3vh, 48px);
+  height: calc(100svh - 56px);
+  padding: clamp(14px, 2.2vh, 32px) clamp(24px, 3.4vw, 72px) clamp(16px, 2.6vh, 40px);
 }
 
 .fleet-body .fleet-detail {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   max-width: 1600px;
   margin-inline: auto;
 }
@@ -73,13 +69,14 @@
   min-height: 0;
 }
 
-/* ── Main layout: vehicle left, passenger panel right ───────────────────── */
+/* ── Main layout: stage left, passenger panel right ─────────────────────── */
 
 .bmw-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.95fr);
+  grid-template-columns: minmax(0, 1.6fr) minmax(360px, 0.9fr);
   align-items: stretch;
-  min-height: clamp(320px, 40vh, 520px);
+  height: 100%;
+  min-height: 0;
 }
 
 .bmw-divider {
@@ -95,20 +92,60 @@
   background: var(--border);
 }
 
-/* ── Left: vehicle presentation ─────────────────────────────────────────── */
+/* ── Left: the immersive stage ───────────────────────────────────────────── */
 
-.bmw-vehicle {
-  display: flex;
-  flex-direction: column;
+.fleet-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 0;
-  padding: clamp(16px, 2.2vh, 28px) clamp(26px, 2.6vw, 40px) clamp(14px, 1.8vh, 22px);
-  background: radial-gradient(
-    circle at 50% 46%,
-    rgba(214, 199, 176, 0.3) 0%,
-    rgba(168, 158, 139, 0.13) 30%,
-    rgba(7, 16, 12, 0.86) 68%,
-    var(--forest) 100%
-  );
+  background: var(--forest);
+}
+
+.fleet-stage__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.fleet-stage__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.94) saturate(0.92);
+  will-change: transform, opacity;
+}
+
+/* Shade pass — a veil of shadow that lifts off each newly revealed frame. */
+.fleet-stage__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #050a07;
+}
+
+/* Cinematic scrim: grounded at the base, lifted at the left edge so the
+   overlaid identity and rail always read against the photograph. */
+.fleet-stage__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5, 10, 7, 0.52) 0%, rgba(5, 10, 7, 0.06) 26%, rgba(5, 10, 7, 0.08) 55%, rgba(5, 10, 7, 0.82) 100%),
+    linear-gradient(90deg, rgba(5, 10, 7, 0.5) 0%, rgba(5, 10, 7, 0.12) 32%, transparent 55%);
+}
+
+/* Identity, top-left on the image. */
+.fleet-stage__head {
+  position: absolute;
+  z-index: 2;
+  top: clamp(20px, 3vh, 34px);
+  left: clamp(22px, 2.4vw, 40px);
+  right: clamp(22px, 2.4vw, 40px);
 }
 
 .bmw-section-label {
@@ -119,7 +156,7 @@
   color: var(--accent);
 }
 
-.bmw-vehicle__heading {
+.fleet-stage__title-row {
   margin-top: 8px;
   display: flex;
   flex-wrap: wrap;
@@ -133,6 +170,7 @@
   font-size: clamp(30px, 2.8vw, 48px);
   line-height: 0.98;
   color: var(--ivory);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 }
 
 .bmw-vehicle-year {
@@ -141,119 +179,178 @@
   color: var(--accent);
 }
 
-.bmw-vehicle-subtitle {
+.fleet-stage__subtitle {
   margin-top: 10px;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
-  color: rgba(246, 242, 233, 0.7);
+  color: rgba(246, 242, 233, 0.78);
 }
 
-.bmw-vehicle__divider {
-  width: 46px;
-  height: 1px;
-  margin-top: 12px;
-  background: var(--accent);
-  opacity: 0.7;
-}
+/* ── Active chapter title, top-left below the vehicle headline ───────────── */
 
-/* Empty studio frame — no border box, no icon, no upload text. */
-.main-vehicle-frame {
+.fleet-stage__chapter {
   position: relative;
-  flex: 1 1 auto;
-  width: 100%;
-  min-height: 160px;
-  margin-top: 14px;
-  overflow: hidden;
-  background: transparent;
+  margin-top: clamp(16px, 3vh, 30px);
+  min-height: 78px;
 }
 
-.main-vehicle-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
+.fleet-stage__chapter > div {
+  position: absolute;
+  inset: 0;
+}
+
+.fleet-stage__chapter-index {
   display: block;
-  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.bmw-vehicle:hover .main-vehicle-frame img {
-  transform: scale(1.015);
-}
-
-/* Active-frame caption between the frame and the thumb strip. */
-.fleet-caption-row {
-  flex: 0 0 auto;
-  min-height: 30px;
-  margin-top: 6px;
-}
-
-.fleet-caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.fleet-caption__index {
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   color: var(--accent);
 }
 
-.fleet-caption__title {
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ivory);
-}
-
-.fleet-caption__subtitle {
-  font-size: 11.5px;
-  color: var(--stone);
-}
-
-/* Thumb strip — six empty frames, active marked with a gold edge. */
-.fleet-thumbs {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
+.fleet-stage__chapter-title {
   margin-top: 8px;
+  font-family: "Bodoni Moda", "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.2vw, 36px);
+  line-height: 1.02;
+  color: var(--ivory);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
-.fleet-thumb {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  min-width: 0;
+.fleet-stage__chapter-sub {
+  margin-top: 8px;
+  max-width: 34ch;
+  font-family: "Bodoni Moda", "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(13px, 1.15vw, 16px);
+  line-height: 1.35;
+  color: rgba(246, 242, 233, 0.82);
+}
+
+/* ── Slider menu: a row of numbered preview tiles along the bottom ───────── */
+
+.fleet-rail {
+  position: absolute;
+  z-index: 2;
+  left: clamp(22px, 2.4vw, 40px);
+  right: clamp(22px, 2.4vw, 40px);
+  bottom: clamp(18px, 2.6vh, 30px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 0.9vw, 14px);
+}
+
+.fleet-rail__item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: clamp(76px, 8.5vw, 110px);
   padding: 0;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: rgba(246, 242, 233, 0.015);
+  border: 0;
+  background: none;
   cursor: pointer;
-  transition: border-color 400ms ease, background-color 400ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.fleet-thumb img {
+/* Preview tile: resting frames sit dimmed under a low shadow; the active
+   frame is lit. The whole tile leans toward the pointer (--rail-rx/ry). */
+.fleet-rail__tile {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 3px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+  transform: perspective(600px) rotateX(var(--rail-rx, 0deg)) rotateY(var(--rail-ry, 0deg));
+  transition: transform 260ms ease, box-shadow 450ms ease;
+}
+
+.fleet-rail__tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(0.48) saturate(0.85);
+  transform: scale(1.01);
+  transition: filter 450ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Small number, lower-left corner of each tile — the only mark on the image. */
+.fleet-rail__num {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  z-index: 1;
+  font-family: "Bodoni Moda", "Cormorant Garamond", serif;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: rgba(246, 242, 233, 0.72);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  transition: color 400ms ease;
+}
+
+.fleet-rail__item:hover .fleet-rail__tile,
+.fleet-rail__item:focus-visible .fleet-rail__tile {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+.fleet-rail__item:hover .fleet-rail__tile img,
+.fleet-rail__item:focus-visible .fleet-rail__tile img {
+  filter: brightness(0.82) saturate(0.95);
+  transform: scale(1.08);
+}
+
+.fleet-rail__item--active .fleet-rail__tile {
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(212, 175, 55, 0.7);
+}
+
+.fleet-rail__item--active .fleet-rail__tile img {
+  filter: brightness(1.08) saturate(1);
+}
+
+.fleet-rail__item--active .fleet-rail__num {
+  color: var(--accent);
+}
+
+/* Progress hairline under the active tile: fills across the dwell time. */
+.fleet-rail__bar {
   display: block;
+  height: 1px;
+  background: rgba(214, 199, 176, 0.14);
+  overflow: hidden;
 }
 
-.fleet-thumb:hover {
-  border-color: rgba(214, 199, 176, 0.38);
+.fleet-rail__item:not(.fleet-rail__item--active) .fleet-rail__bar {
+  background: transparent;
 }
 
-.fleet-thumb--active {
-  border-color: rgba(177, 139, 82, 0.8);
-  background: rgba(246, 242, 233, 0.03);
+.fleet-rail__progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation-name: fleetRailProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }
 
-.fleet-thumb:focus-visible {
-  outline: 1px solid var(--ivory);
-  outline-offset: 2px;
+@keyframes fleetRailProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.fleet-rail__item:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
 }
 
 /* ── Right: passenger experience panel ──────────────────────────────────── */
@@ -262,25 +359,65 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: clamp(16px, 2.2vh, 28px) clamp(28px, 2.8vw, 44px) clamp(14px, 1.8vh, 22px);
+  padding: clamp(18px, 2.6vh, 32px) clamp(28px, 2.8vw, 44px) clamp(18px, 2.4vh, 28px);
   background: linear-gradient(150deg, var(--forest-soft) 0%, var(--forest-panel) 55%, var(--forest) 100%);
 }
 
 .bmw-journey-heading {
-  margin-top: 6px;
+  margin-top: 8px;
   font-family: "Bodoni Moda", "Cormorant Garamond", serif;
   font-weight: 400;
-  font-size: clamp(19px, 1.7vw, 27px);
-  line-height: 1.1;
+  font-size: clamp(22px, 2vw, 32px);
+  line-height: 1.12;
   color: var(--ivory);
 }
 
 .bmw-journey-description {
-  margin-top: 8px;
+  margin-top: 10px;
   max-width: 46ch;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: rgba(246, 242, 233, 0.72);
+  font-size: clamp(13px, 1vw, 14px);
+  line-height: 1.5;
+  color: rgba(214, 199, 176, 0.72);
+}
+
+/* ── The spec band — the i7's defining numbers ───────────────────────────── */
+
+.journey-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(12px, 1.4vw, 22px);
+  margin: clamp(12px, 1.8vh, 22px) 0 0;
+  padding: clamp(10px, 1.5vh, 18px) 0;
+  border-top: 1px solid var(--border);
+}
+
+.journey-stat {
+  min-width: 0;
+}
+
+.journey-stat__value {
+  font-family: "Bodoni Moda", "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: clamp(26px, 2.2vw, 38px);
+  line-height: 1;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+}
+
+.journey-stat__suffix {
+  margin-left: 3px;
+  font-size: 0.55em;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.journey-stat__label {
+  margin-top: 6px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--stone);
 }
 
 /* Feature grid — two clean columns, horizontal row dividers only. */
@@ -289,15 +426,15 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: clamp(20px, 2.4vw, 34px);
   border-top: 1px solid var(--border);
-  margin-top: clamp(8px, 1.2vh, 14px);
+  margin-top: clamp(10px, 1.6vh, 18px);
 }
 
 .feature-item {
   display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: 10px;
+  grid-template-columns: 34px 1fr;
+  gap: 11px;
   align-items: start;
-  padding: clamp(6px, 1vh, 11px) 0 clamp(5px, 0.9vh, 9px);
+  padding: clamp(8px, 1.3vh, 14px) 0 clamp(7px, 1.2vh, 12px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -309,69 +446,69 @@
 }
 
 .feature-icon svg {
-  width: 23px;
-  height: 23px;
+  width: 22px;
+  height: 22px;
 }
 
+/* Titles lead in ivory; gold stays reserved for the icons, numbers and CTA. */
 .feature-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ivory);
   transition: color 400ms ease;
 }
 
 .feature-item:hover .feature-title {
-  color: var(--ivory);
-}
-
-.feature-description {
-  margin-top: 3px;
-  font-size: 11.5px;
-  line-height: 1.4;
-  color: rgba(246, 242, 233, 0.72);
-}
-
-.bmw-journey__footer {
-  margin-top: clamp(8px, 1.2vh, 14px);
-}
-
-.bmw-journey__footer-line {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--accent);
 }
 
+.feature-description {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(214, 199, 176, 0.72);
+}
+
+/* The footer anchors to the panel's base — whatever slack the viewport
+   leaves lands here, so the reserve action always sits at the bottom. */
+.bmw-journey__footer {
+  margin-top: auto;
+  padding-top: clamp(10px, 1.5vh, 16px);
+}
+
 .bmw-journey__footer-line--muted {
-  margin-top: 7px;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--stone);
 }
 
+/* Primary action — the one gold block in the panel. */
 .bmw-journey__cta {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: clamp(10px, 1.4vh, 16px);
-  padding: 0;
-  border: 0;
-  background: none;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  margin-top: clamp(10px, 1.5vh, 16px);
+  padding: 0 20px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
   cursor: pointer;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent);
-  transition: color 300ms ease;
+  color: #0a0a0a;
+  transition: background-color 300ms ease, border-color 300ms ease;
 }
 
 .bmw-journey__cta:hover {
-  color: var(--ivory);
+  background: var(--ivory);
+  border-color: var(--ivory);
 }
 
 .bmw-journey__cta-arrow {
@@ -384,14 +521,14 @@
 
 .bmw-journey__cta:focus-visible {
   outline: 1px solid var(--ivory);
-  outline-offset: 6px;
+  outline-offset: 3px;
 }
 
-/* ── Tablet: single column, right panel full width ──────────────────────── */
+/* ── Tablet: stacked, stage keeps a firm aspect ─────────────────────────── */
 
 @media (max-width: 1100px) {
   /* The stacked composition is taller than a screen here, so release the
-     pinned-headline track and let the intro flow as a normal block. */
+     pinned-headline track and the one-viewport lock; the section flows. */
   .fleet-intro {
     height: auto;
     min-height: 100svh;
@@ -406,16 +543,19 @@
   }
 
   .fleet-body {
+    height: auto;
     min-height: 0;
     align-items: stretch;
   }
 
   .fleet-body .fleet-detail {
     display: block;
+    height: auto;
   }
 
   .bmw-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
     min-height: 0;
   }
 
@@ -423,21 +563,14 @@
     display: none;
   }
 
+  /* Height derives from the container width — a min-height here would force
+     an intrinsic min-width through the aspect ratio and overflow the page. */
+  .fleet-stage {
+    aspect-ratio: 16 / 10;
+  }
+
   .bmw-journey {
-    order: 2;
-  }
-
-  .bmw-vehicle {
-    order: 1;
-  }
-
-  .main-vehicle-frame {
-    min-height: 300px;
-  }
-
-  .fleet-thumbs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    padding-block: 26px 22px;
   }
 }
 
@@ -453,43 +586,78 @@
     padding-inline: 20px;
   }
 
-  .bmw-vehicle {
-    padding: 24px 20px 20px;
+  .fleet-stage {
+    aspect-ratio: auto;
+    height: clamp(440px, 66svh, 580px);
+  }
+
+  .bmw-vehicle-title {
+    font-size: 30px;
+  }
+
+  .fleet-stage__subtitle {
+    font-size: 11px;
+  }
+
+  /* The bottom rail tightens to a compact row of numbered tiles. */
+  .fleet-rail {
+    left: 20px;
+    right: 20px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .fleet-rail__item {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    gap: 5px;
+  }
+
+  .fleet-rail__item:not(.fleet-rail__item--active) .fleet-rail__bar {
+    background: rgba(214, 199, 176, 0.14);
+  }
+
+  .fleet-stage__chapter {
+    min-height: 68px;
   }
 
   .bmw-journey {
     padding: 26px 20px 22px;
   }
 
-  .bmw-vehicle-title {
-    font-size: 32px;
-  }
-
-  .main-vehicle-frame {
-    min-height: 200px;
+  .journey-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 14px;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
     column-gap: 0;
   }
-
-  .fleet-thumbs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
 }
 
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
-  .main-vehicle-frame img,
+  .fleet-rail__num,
+  .fleet-rail__tile,
+  .fleet-rail__tile img,
   .feature-title,
-  .fleet-thumb,
   .bmw-journey__cta,
   .bmw-journey__cta-arrow {
     transition: none;
   }
 
-  .bmw-vehicle:hover .main-vehicle-frame img {
+  .fleet-rail__tile {
     transform: none;
+  }
+
+  .fleet-rail__item:hover .fleet-rail__tile img {
+    transform: none;
+  }
+
+  .fleet-rail__progress {
+    animation: none;
   }
 }

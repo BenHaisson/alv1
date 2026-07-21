@@ -7,6 +7,10 @@ type BrandLockupAlign = "left" | "center" | "right";
 interface BrandLockupProps {
   size?: BrandLockupSize;
   align?: BrandLockupAlign;
+  /** "white" for header/footer placements; "cream" everywhere else. */
+  tone?: "cream" | "white";
+  /** Set false to render the brand name alone, without the slogan line. */
+  withSlogan?: boolean;
   className?: string;
 }
 
@@ -47,18 +51,23 @@ const alignClass: Record<BrandLockupAlign, string> = {
 export default function BrandLockup({
   size = "nav",
   align = "left",
+  tone = "cream",
+  withSlogan = true,
   className = ""
 }: BrandLockupProps) {
   const classes = sizeClasses[size];
+  const toneClass = tone === "white" ? "text-white" : "text-brand-cream";
 
   return (
     <div className={`flex flex-col ${classes.gap} ${alignClass[align]} ${className}`}>
-      <span className={`block select-none font-serif font-light uppercase leading-none text-brand-cream ${classes.name}`}>
+      <span className={`block select-none font-serif font-light uppercase leading-none ${toneClass} ${classes.name}`}>
         {BRAND_NAME}
       </span>
-      <span className={`block font-serif font-light italic leading-none text-brand-cream ${classes.slogan}`}>
-        {BRAND_SLOGAN}
-      </span>
+      {withSlogan && (
+        <span className={`block font-serif font-light italic leading-none ${toneClass} ${classes.slogan}`}>
+          {BRAND_SLOGAN}
+        </span>
+      )}
     </div>
   );
 }

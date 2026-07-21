@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { ALAIR_STANDARDS } from "../data";
 import { CornerMarkers, useReducedMotionPref } from "./MotionProvider";
-import { MOTION_EASE, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../lib/motion";
+import { HEADING_REVEAL_VARIANTS, MOTION_EASE, REVEAL_VARIANTS, STAGGER_GROUP_VARIANTS } from "../lib/motion";
 
 export default function StandardsSection() {
   const isReduced = useReducedMotionPref();
@@ -17,7 +17,7 @@ export default function StandardsSection() {
           variants={STAGGER_GROUP_VARIANTS}
         >
           <motion.h2
-            variants={REVEAL_VARIANTS}
+            variants={HEADING_REVEAL_VARIANTS}
             className="section-heading mb-6"
           >
             Five principles <span className="section-heading-muted">behind every journey.</span>
@@ -38,7 +38,7 @@ export default function StandardsSection() {
               whileHover={
                 isReduced
                   ? undefined
-                  : { y: -4, borderColor: "rgba(205,162,80,0.9)", backgroundColor: "rgba(13,26,19,0.4)" }
+                  : { y: -4, borderColor: "rgba(212, 175, 55,0.9)", backgroundColor: "rgba(13,26,19,0.4)" }
               }
               transition={{ duration: 0.9, delay: isReduced ? 0 : index * 0.1, ease: MOTION_EASE }}
               className={`group relative flex min-h-[220px] flex-col justify-between border border-brand-cream/10 bg-brand-deep-forest/20 p-7 ${
