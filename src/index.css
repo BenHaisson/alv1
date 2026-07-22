@@ -754,11 +754,14 @@ body[data-booking-expanded="true"] #hero-section {
   }
 }
 
-/* Consistent keyboard-focus default. :where() keeps specificity at zero so
-   components that define their own focus-visible treatment still win. */
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 1px solid rgba(212, 175, 55, 0.75);
+/* Consistent keyboard-focus ring in brand gold. Many controls use Tailwind's
+   `focus:outline-none` (which also suppresses the outline for keyboard users),
+   so the ring is marked !important to guarantee it wins — :focus-visible only
+   matches keyboard/programmatic focus, so pointer users never see it. */
+:where(a, button, input, select, textarea, summary, [role="radio"], [role="combobox"], [role="option"], [tabindex]):focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.9) !important;
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ── Fleet conveyor — continuous cinematic drift ─────────────────────────

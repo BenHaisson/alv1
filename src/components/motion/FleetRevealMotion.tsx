@@ -248,7 +248,7 @@ function FleetStage({ isReduced }: { isReduced: boolean }) {
           <motion.img
             key={active.id}
             src={active.image}
-            alt=""
+            alt={`BMW i7 xDrive60 chauffeur — ${active.title}`}
             style={{ objectPosition: active.focus }}
             initial={
               isReduced

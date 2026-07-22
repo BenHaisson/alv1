@@ -31,10 +31,10 @@ export function BookingField({
   return (
     <motion.div
       className={`hero-booking-field group ${className}`}
-      initial={replacement && !isReduced ? { opacity: 0.76 } : false}
+      initial={replacement && !isReduced ? { opacity: 0 } : false}
       animate={{ opacity: 1 }}
-      exit={replacement && !isReduced ? { opacity: 0.76 } : undefined}
-      transition={isReduced ? { duration: 0 } : { duration: 0.14, ease: "easeInOut" }}
+      exit={replacement && !isReduced ? { opacity: 0 } : undefined}
+      transition={isReduced ? { duration: 0 } : { duration: 0.13, ease: "easeInOut" }}
       onPointerDownCapture={onActivate}
       onFocusCapture={() => {
         setIsFocused(true);
