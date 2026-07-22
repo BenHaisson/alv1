@@ -10,6 +10,8 @@ interface ServiceCard {
   description: string;
   image: string;
   mobileImage?: string;
+  /** Accessible + SEO alt describing the service the frame represents. */
+  alt: string;
   desktopPosition: string;
   mobilePosition: string;
   icon: LucideIcon;
@@ -21,6 +23,7 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Flight-tracked airport transfers with your chauffeur waiting before you arrive.",
     image: imageAssets.privateArrivalsDesktop,
     mobileImage: imageAssets.privateArrivalsMobile,
+    alt: "Alair Noir private airport arrival chauffeur service in Zürich.",
     desktopPosition: "58% 42%",
     mobilePosition: "68% 50%",
     icon: Plane
@@ -30,6 +33,7 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Your private driver remains available throughout meetings, appointments, and changing schedules.",
     image: imageAssets.executiveSchedulesDesktop,
     mobileImage: imageAssets.executiveSchedulesMobile,
+    alt: "Alair Noir executive chauffeur on call through a full day in Zürich.",
     desktopPosition: "center 42%",
     mobilePosition: "58% 50%",
     icon: BriefcaseBusiness
@@ -39,6 +43,7 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Long-distance travel across Switzerland and Europe without compromise.",
     image: imageAssets.longDistanceRoutesDesktop,
     mobileImage: imageAssets.longDistanceRoutesMobile,
+    alt: "Alair Noir long-distance chauffeur travel across Switzerland and Europe.",
     desktopPosition: "center 58%",
     mobilePosition: "center 48%",
     icon: MapPin
@@ -48,6 +53,7 @@ const SERVICE_CARDS: ServiceCard[] = [
     description: "Spacious executive travel prepared for families, colleagues, and private groups.",
     image: imageAssets.airportTransfersDesktop,
     mobileImage: imageAssets.airportTransfersMobile,
+    alt: "Alair Noir spacious executive transfer for groups and families in Zürich.",
     desktopPosition: "center 58%",
     mobilePosition: "center 45%",
     icon: Users
@@ -135,7 +141,7 @@ function EditorialServiceCard({ card, index, isReduced, onRequest }: EditorialSe
           {card.mobileImage && <source media="(max-width: 767px)" srcSet={card.mobileImage} />}
           <img
             src={card.image}
-            alt=""
+            alt={card.alt}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
             referrerPolicy="no-referrer"

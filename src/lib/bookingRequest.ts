@@ -95,13 +95,17 @@ export const EMPTY_BOOKING: BookingState = {
 export interface DurationOption {
   /** Hours, as a string, e.g. "2". */
   value: string;
+  /** Full label with the included distance — shown in the open dropdown list. */
   label: string;
+  /** Compact label for the closed field, so it never overruns the divider. */
+  triggerLabel: string;
 }
 
 /** By-the-hour packages — 40 km included per hour. */
 export const DURATION_OPTIONS: DurationOption[] = [2, 3, 4, 5, 6, 7].map((hours) => ({
   value: String(hours),
-  label: `${hours} hours (${hours * 40} km included)`
+  label: `${hours} hours (${hours * 40} km included)`,
+  triggerLabel: `${hours} hours`
 }));
 
 export function durationLabelFor(value: string): string {

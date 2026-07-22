@@ -242,48 +242,50 @@ export default function HeroCommandDeck({ booking, onBookingChange }: HeroComman
               />
             </BookingField>
 
+            {/* Second slot swaps between Drop-off (one way) and Duration
+                (hourly). Only the active field is rendered — keyed so it
+                remounts and fades in cleanly. No exit animation to wait on, so
+                the two states never overlap and the swap can't stall. */}
             <div className="grid min-h-[34px] border-b border-brand-cream/20 md:min-h-[53px] md:border-b-0 md:border-r md:border-brand-cream/48">
-              <AnimatePresence initial={false} mode="sync">
-                {bookingType === "hourly" ? (
-                  <BookingField
-                    key="duration"
+              {bookingType === "hourly" ? (
+                <BookingField
+                  key="duration"
+                  id="hero-duration"
+                  label="Duration"
+                  replacement
+                  className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
+                  onActivate={() => activateBookingField("duration")}
+                  validationMessage={showValidation && secondFieldMissing ? "Select a duration." : undefined}
+                >
+                  <BookingDropdown
                     id="hero-duration"
-                    label="Duration"
-                    replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
-                    onActivate={() => activateBookingField("duration")}
-                    validationMessage={showValidation && secondFieldMissing ? "Select a duration." : undefined}
-                  >
-                    <BookingDropdown
-                      id="hero-duration"
-                      value={booking.duration}
-                      options={DURATION_OPTIONS}
-                      onChange={(duration) => onBookingChange({ duration })}
-                      labelledBy="hero-duration-label"
-                      invalid={showValidation && secondFieldMissing}
-                    />
-                  </BookingField>
-                ) : (
-                  <BookingField
-                    key="destination"
+                    value={booking.duration}
+                    options={DURATION_OPTIONS}
+                    onChange={(duration) => onBookingChange({ duration })}
+                    labelledBy="hero-duration-label"
+                    invalid={showValidation && secondFieldMissing}
+                  />
+                </BookingField>
+              ) : (
+                <BookingField
+                  key="destination"
+                  id="hero-destination"
+                  label="Drop-off location"
+                  replacement
+                  className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
+                  onActivate={() => activateBookingField("destination")}
+                  validationMessage={showValidation && secondFieldMissing ? "Enter a drop-off location." : undefined}
+                >
+                  <PlaceAutocompleteField
                     id="hero-destination"
-                    label="Drop-off location"
-                    replacement
-                    className="col-start-1 row-start-1 border-b-0 md:px-5 md:py-3"
-                    onActivate={() => activateBookingField("destination")}
-                    validationMessage={showValidation && secondFieldMissing ? "Enter a drop-off location." : undefined}
-                  >
-                    <PlaceAutocompleteField
-                      id="hero-destination"
-                      placeholder="Address, airport, hotel, ..."
-                      value={booking.destination}
-                      onChange={(location) => onBookingChange({ destination: location })}
-                      onOpenMap={() => openMap("destination")}
-                      inputClassName={fieldInputClass}
-                    />
-                  </BookingField>
-                )}
-              </AnimatePresence>
+                    placeholder="Address, airport, hotel, ..."
+                    value={booking.destination}
+                    onChange={(location) => onBookingChange({ destination: location })}
+                    onOpenMap={() => openMap("destination")}
+                    inputClassName={fieldInputClass}
+                  />
+                </BookingField>
+              )}
             </div>
 
             <BookingField

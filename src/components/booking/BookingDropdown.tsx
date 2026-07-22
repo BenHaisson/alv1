@@ -6,6 +6,8 @@ import { useReducedMotionPref } from "../MotionProvider";
 export interface BookingDropdownOption {
   value: string;
   label: string;
+  /** Optional compact label for the closed trigger; falls back to `label`. */
+  triggerLabel?: string;
 }
 
 interface BookingDropdownProps {
@@ -78,7 +80,8 @@ export function BookingDropdown({
     }
   };
 
-  const selectedLabel = options.find((option) => option.value === value)?.label;
+  const selectedOption = options.find((option) => option.value === value);
+  const selectedLabel = selectedOption?.triggerLabel ?? selectedOption?.label;
 
   return (
     <div ref={wrapperRef} className="relative w-full">
